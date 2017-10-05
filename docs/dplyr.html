@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Data Wrangling with R</title>
+  <meta name="description" content="Workshop materials for Data Wrangling with R">
+  <meta name="generator" content="bookdown 0.4.2 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Data Wrangling with R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Workshop materials for Data Wrangling with R" />
+  <meta name="github-repo" content="cengel/R-data-wrangling" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Data Wrangling with R" />
+  
+  <meta name="twitter:description" content="Workshop materials for Data Wrangling with R" />
+  
+
+<meta name="author" content="Claudia A Engel">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="tidyr.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Data Wrangling with R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prerequisites and Preparations</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>1</b> Data Manipulation using <strong><code>dplyr</code></strong></a><ul>
+<li class="chapter" data-level="1.1" data-path="dplyr.html"><a href="dplyr.html#what-is-dplyr"><i class="fa fa-check"></i><b>1.1</b> What is <strong><code>dplyr</code></strong>?</a></li>
+<li class="chapter" data-level="1.2" data-path="dplyr.html"><a href="dplyr.html#subsetting-columns-and-rows"><i class="fa fa-check"></i><b>1.2</b> Subsetting columns and rows</a></li>
+<li class="chapter" data-level="1.3" data-path="dplyr.html"><a href="dplyr.html#pipes"><i class="fa fa-check"></i><b>1.3</b> Pipes</a></li>
+<li class="chapter" data-level="1.4" data-path="dplyr.html"><a href="dplyr.html#add-new-columns"><i class="fa fa-check"></i><b>1.4</b> Add new columns</a></li>
+<li class="chapter" data-level="1.5" data-path="dplyr.html"><a href="dplyr.html#what-is-split-apply-combine"><i class="fa fa-check"></i><b>1.5</b> What is split-apply-combine?</a></li>
+<li class="chapter" data-level="1.6" data-path="dplyr.html"><a href="dplyr.html#tallying"><i class="fa fa-check"></i><b>1.6</b> Tallying</a></li>
+<li class="chapter" data-level="1.7" data-path="dplyr.html"><a href="dplyr.html#joining-two-tables"><i class="fa fa-check"></i><b>1.7</b> Joining two tables</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Data Manipulation using <strong><code>tidyr</code></strong></a><ul>
+<li class="chapter" data-level="2.1" data-path="tidyr.html"><a href="tidyr.html#about-long-and-wide-table-format"><i class="fa fa-check"></i><b>2.1</b> About long and wide table format</a></li>
+<li class="chapter" data-level="2.2" data-path="tidyr.html"><a href="tidyr.html#long-to-wide-with-spread"><i class="fa fa-check"></i><b>2.2</b> Long to Wide with <code>spread</code></a></li>
+<li class="chapter" data-level="2.3" data-path="tidyr.html"><a href="tidyr.html#wide-to-long-with-gather"><i class="fa fa-check"></i><b>2.3</b> Wide to long with <code>gather</code></a></li>
+<li class="chapter" data-level="2.4" data-path="tidyr.html"><a href="tidyr.html#exporting-data"><i class="fa fa-check"></i><b>2.4</b> Exporting data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html"><i class="fa fa-check"></i><b>3</b> Data Visualization with <code id="ggplot">ggplot2</code></a><ul>
+<li class="chapter" data-level="3.1" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#plotting-with-ggplot2"><i class="fa fa-check"></i><b>3.1</b> Plotting with <strong><code>ggplot2</code></strong></a></li>
+<li class="chapter" data-level="3.2" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#building-your-plots-iteratively"><i class="fa fa-check"></i><b>3.2</b> Building your plots iteratively</a></li>
+<li class="chapter" data-level="3.3" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#barplot"><i class="fa fa-check"></i><b>3.3</b> Barplot</a></li>
+<li class="chapter" data-level="3.4" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#boxplot"><i class="fa fa-check"></i><b>3.4</b> Boxplot</a></li>
+<li class="chapter" data-level="3.5" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#plotting-time-series-data"><i class="fa fa-check"></i><b>3.5</b> Plotting time series data</a></li>
+<li class="chapter" data-level="3.6" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#faceting"><i class="fa fa-check"></i><b>3.6</b> Faceting</a></li>
+<li class="chapter" data-level="3.7" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#ggplot2-themes"><i class="fa fa-check"></i><b>3.7</b> <strong><code>ggplot2</code></strong> themes</a></li>
+<li class="chapter" data-level="3.8" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html#customization"><i class="fa fa-check"></i><b>3.8</b> Customization</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Wrangling with R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="dplyr" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Data Manipulation using <strong><code>dplyr</code></strong></h1>
+<blockquote>
+<p>Learning Objectives</p>
+<ul>
+<li>Select columns in a data frame with the <strong><code>dplyr</code></strong> function <code>select</code>.</li>
+<li>Select rows in a data frame according to filtering conditions with the <strong><code>dplyr</code></strong> function <code>filter</code>.</li>
+<li>Direct the output of one <strong><code>dplyr</code></strong> function to the input of another function with the ‘pipe’ operator <code>%&gt;%</code>.</li>
+<li>Add new columns to a data frame that are functions of existing columns with <code>mutate</code>.</li>
+<li>Understand the split-apply-combine concept for data analysis.</li>
+<li>Use <code>summarize</code>, <code>group_by</code>, and <code>tally</code> to split a data frame into groups of observations, apply a summary statistics for each group, and then combine the results.</li>
+</ul>
+</blockquote>
+<hr />
+<p>We will be working a small subset of the data from the <a href="https://openpolicing.stanford.edu">Stanford Open Policing Project</a>. It contains information about traffic stops for blacks and whites in the state of Mississippi during January 2013 to mid-July of 2016.</p>
+<p>Let’s begin with loading our sample data into a data frame.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_trafficstops_bw_age.csv&quot;</span>)</code></pre></div>
+<p>Manipulation of dataframes is a common task when you start exploring your data. We might select certain observations (rows) or variables (columns), group the data by a certain variable(s), or calculate summary statistics.</p>
+<p>If we were interested in the mean age of the driver in different counties we can do this using the normal base R operations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Tallahatchie County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
+<pre><code>#&gt; [1] NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Walthall County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
+<pre><code>#&gt; [1] 34.3326</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Oktibbeha County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
+<pre><code>#&gt; [1] NA</code></pre>
+<p>Bracket subsetting is handy, but it can be cumbersome and difficult to read, especially for complicated operations. Furthermore, there is a fair amount of repetition. Repeating yourself will cost you time, both now and later, and potentially introduce some nasty bugs.</p>
+<p><strong><code>dplyr</code></strong> is a package for making tabular data manipulation easier.</p>
+<blockquote>
+<p>Brief recap: Packages in R are sets of additional functions that let you do more stuff. Functions like <code>str()</code> or <code>data.frame()</code>, come built into R; packages give you access to more of them. Before you use a package for the first time you need to install it on your machine, and then you should import it in every subsequent R session when you need it.</p>
+</blockquote>
+<p>If you haven’t, please installe the <strong><code>tidyverse</code></strong> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>)    </code></pre></div>
+<p><strong><code>tidyverse</code></strong> is an “umbrella-package” that installs a series of packages useful for data analysis which work together well. Some of them are considered <strong>core</strong> packages (among them <strong><code>tidyr</code></strong>, <strong><code>dplyr</code></strong>, <strong><code>ggplot2</code></strong>), because you are likely to use them in almost every analysis. Other packages, like <code>lubridate</code> or <code>stringr</code> that you are likely to use not for every analysis are also installed.</p>
+<p>If you type the following command, it will load the <strong>core</strong> <code>tidyverse</code> packages.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;tidyverse&quot;</span>)    ## load the core tidyverse packages, incl. dplyr</code></pre></div>
+<p>If you need to use functions from <code>tidyverse</code> packages other than the core packages, you will need to load them separately.</p>
+<div id="what-is-dplyr" class="section level2">
+<h2><span class="header-section-number">1.1</span> What is <strong><code>dplyr</code></strong>?</h2>
+<p><strong><code>dplyr</code></strong> is one part of a larger <strong><code>tidyverse</code></strong> that enables you to work with data in tidy data formats. “Tidy datasets are easy to manipulate, model and visualise, and have a specific structure: each variable is a column, each observation is a row, and each type of observational unit is a table.” (From Wickham, H. (2014): Tidy Data <a href="https://www.jstatsoft.org/article/view/v059i10" class="uri">https://www.jstatsoft.org/article/view/v059i10</a>)</p>
+<p>The package <strong><code>dplyr</code></strong> provides convenient tools for the most common data manipulation tasks. It is built to work directly with data frames, with many common tasks optimized by being written in a compiled language (C++). An additional feature is the ability to work directly with data stored in an external database. The benefits of doing this are that the data can be managed natively in a relational database, queries can be conducted on that database, and only the results of the query are returned.</p>
+<p>This addresses a common problem with R in that all operations are conducted in-memory and thus the amount of data you can work with is limited by available memory. The database connections essentially remove that limitation in that you can have a database of many 100s GB, conduct queries on it directly, and pull back into R only what you need for analysis.</p>
+<p>To learn more about <strong><code>dplyr</code></strong> after the workshop, you may want to check out the <a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf">handy data transformation with <strong><code>dplyr</code></strong> cheatsheet</a>.</p>
+</div>
+<div id="subsetting-columns-and-rows" class="section level2">
+<h2><span class="header-section-number">1.2</span> Subsetting columns and rows</h2>
+<p>To select columns of a data frame with <code>dplyr</code>, use <code>select()</code>. The first argument to this function is the data frame (<code>trafficstops</code>), and the subsequent arguments are the columns to keep.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(trafficstops, police_department, officer_id, driver_race)</code></pre></div>
+<pre><code>#&gt;            police_department officer_id driver_race
+#&gt; 1 Mississippi Highway Patrol       J042       Black
+#&gt; 2 Mississippi Highway Patrol       B026       Black
+#&gt; 3 Mississippi Highway Patrol       M009       Black
+#&gt; 4 Mississippi Highway Patrol       K035       White
+#&gt; 5 Mississippi Highway Patrol       D028       White
+#&gt; 6 Mississippi Highway Patrol       K023       White</code></pre>
+<p>It is worth knowing that <code>dplyr</code> comes with a number of <a href="https://www.rdocumentation.org/packages/dplyr/versions/0.7.2/topics/select_helpers">“select helpers”</a>, which are functions that allow you to select columns based on their names. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(trafficstops, <span class="kw">starts_with</span>(<span class="st">&quot;driver&quot;</span>))</code></pre></div>
+<pre><code>#&gt;   driver_gender driver_birthdate driver_race driver_age
+#&gt; 1          male       1950-06-14       Black         63
+#&gt; 2          male       1967-04-06       Black         46
+#&gt; 3          male       1974-04-15       Black         39
+#&gt; 4          male       1981-03-23       White         32
+#&gt; 5          male       1992-08-03       White         20
+#&gt; 6        female       1960-05-02       White         53</code></pre>
+<p>To choose rows based on specific criteria, use <code>filter()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(trafficstops, county_name ==<span class="st"> &quot;Tallahatchie County&quot;</span>)</code></pre></div>
+<pre><code>#&gt;              id state  stop_date         county_name county_fips
+#&gt; 1 MS-2013-00473    MS 2013-01-03 Tallahatchie County       28135
+#&gt; 2 MS-2013-00474    MS 2013-01-03 Tallahatchie County       28135
+#&gt; 3 MS-2013-00503    MS 2013-01-03 Tallahatchie County       28135
+#&gt; 4 MS-2013-00504    MS 2013-01-03 Tallahatchie County       28135
+#&gt; 5 MS-2013-00715    MS 2013-01-04 Tallahatchie County       28135
+#&gt; 6 MS-2013-00765    MS 2013-01-04 Tallahatchie County       28135
+#&gt;            police_department driver_gender driver_birthdate driver_race
+#&gt; 1 Mississippi Highway Patrol        female       1983-03-23       Black
+#&gt; 2 Mississippi Highway Patrol        female       1993-02-17       White
+#&gt; 3 Mississippi Highway Patrol        female       1989-03-18       Black
+#&gt; 4 Mississippi Highway Patrol        female       1989-03-18       Black
+#&gt; 5 Mississippi Highway Patrol          male       1992-07-20       Black
+#&gt; 6 Mississippi Highway Patrol          male       1977-07-29       Black
+#&gt;                                                 violation_raw officer_id
+#&gt; 1 Speeding - Regulated or posted speed limit and actual speed       E028
+#&gt; 2                                       Following too closely       E039
+#&gt; 3 Speeding - Regulated or posted speed limit and actual speed       E028
+#&gt; 4                             Driving while license suspended       E028
+#&gt; 5                     Seat belt not used properly as required       E029
+#&gt; 6            Failure to maintain required liability insurance       E009
+#&gt;   driver_age                violation
+#&gt; 1         30                 Speeding
+#&gt; 2         20         Careless driving
+#&gt; 3         24                 Speeding
+#&gt; 4         24 License-Permit-Insurance
+#&gt; 5         20                Seat belt
+#&gt; 6         35 License-Permit-Insurance</code></pre>
+<p>Here are some other ways to select rows:</p>
+<ul>
+<li>select certain rows by row number: <code>slice(trafficstops, 1:3) # rows 1-3</code></li>
+<li>select random rows:
+<ul>
+<li><code>sample_n(trafficstops, 5) # number of rows to select</code></li>
+<li><code>sample_frac(trafficstops, .01) # fraction of rows to select</code></li>
+</ul></li>
+</ul>
+<p>To sort rows by variables use the <code>arrange</code> function: <code>arrange(trafficstops, county_name, stop_date)</code></p>
+<pre><code>#&gt;              id state  stop_date  county_name county_fips
+#&gt; 1 MS-2013-07659    MS 2013-02-09 Adams County       28001
+#&gt; 2 MS-2013-11819    MS 2013-03-02 Adams County       28001
+#&gt; 3 MS-2013-14647    MS 2013-03-16 Adams County       28001
+#&gt; 4 MS-2013-15430    MS 2013-03-20 Adams County       28001
+#&gt; 5 MS-2013-18581    MS 2013-04-06 Adams County       28001
+#&gt; 6 MS-2013-20016    MS 2013-04-13 Adams County       28001
+#&gt;            police_department driver_gender driver_birthdate driver_race
+#&gt; 1 Mississippi Highway Patrol          male       1989-06-12       Black
+#&gt; 2 Mississippi Highway Patrol        female       1974-10-16       Black
+#&gt; 3 Mississippi Highway Patrol        female       1977-07-15       Black
+#&gt; 4 Mississippi Highway Patrol        female       1991-06-15       Black
+#&gt; 5 Mississippi Highway Patrol        female       1980-04-18       White
+#&gt; 6 Mississippi Highway Patrol        female       1996-01-14       Black
+#&gt;                                                 violation_raw officer_id
+#&gt; 1 Speeding - Regulated or posted speed limit and actual speed       M004
+#&gt; 2                             Driving while license suspended       M042
+#&gt; 3 Speeding - Regulated or posted speed limit and actual speed       M049
+#&gt; 4            Failure to maintain required liability insurance       M049
+#&gt; 5            Failure to maintain required liability insurance       M010
+#&gt; 6 Speeding - Regulated or posted speed limit and actual speed       M024
+#&gt;   driver_age                violation
+#&gt; 1         24                 Speeding
+#&gt; 2         38 License-Permit-Insurance
+#&gt; 3         36                 Speeding
+#&gt; 4         22 License-Permit-Insurance
+#&gt; 5         33 License-Permit-Insurance
+#&gt; 6         17                 Speeding</code></pre>
+</div>
+<div id="pipes" class="section level2">
+<h2><span class="header-section-number">1.3</span> Pipes</h2>
+<p>What if you wanted to select and filter at the same time? There are three ways to do this: use intermediate steps, nested functions, or pipes.</p>
+<ul>
+<li>Intermediate steps:</li>
+</ul>
+<p>With intermediate steps, you essentially create a temporary data frame and use that as input to the next function. This can clutter up your workspace with lots of objects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp_df &lt;-<span class="st"> </span><span class="kw">filter</span>(trafficstops, driver_age &gt;<span class="st"> </span><span class="dv">85</span>)
+<span class="kw">select</span>(tmp_df, violation_raw, driver_gender, driver_race)</code></pre></div>
+<ul>
+<li>Nested functions</li>
+</ul>
+<p>You can also nest functions (i.e. one function inside of another). This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(<span class="kw">filter</span>(trafficstops, driver_age &gt;<span class="st"> </span><span class="dv">85</span>), violation_raw, driver_gender, driver_race)</code></pre></div>
+<ul>
+<li>Pipes!</li>
+</ul>
+<p>The last option, pipes, are a fairly recent addition to R. Pipes let you take the output of one function and send it directly to the next, which is useful when you need to do many things to the same dataset. Pipes in R look like <code>%&gt;%</code> and are made available via the <code>magrittr</code> package, installed automatically with <strong><code>dplyr</code></strong>. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a PC or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a Mac.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(driver_age &gt;<span class="st"> </span><span class="dv">85</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(violation_raw, driver_gender, driver_race)</code></pre></div>
+<p>In the above, we use the pipe to send the <code>trafficstops</code> dataset first through <code>filter()</code> to keep rows where <code>driver_race</code> is Black, then through <code>select()</code> to keep only the <code>officer_id</code> and <code>stop_date</code> columns. Since <code>%&gt;%</code> takes the object on its left and passes it as the first argument to the function on its right, we don’t need to explicitly include it as an argument to the <code>filter()</code> and <code>select()</code> functions anymore.</p>
+<p>If we wanted to create a new object with this smaller version of the data, we could do so by assigning it a new name:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">senior_drivers &lt;-<span class="st"> </span>trafficstops %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(driver_age &gt;<span class="st"> </span><span class="dv">85</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(violation_raw, driver_gender, driver_race)
+
+senior_drivers</code></pre></div>
+<pre><code>#&gt;                                                 violation_raw
+#&gt; 1                     Seat belt not used properly as required
+#&gt; 2 Speeding - Regulated or posted speed limit and actual speed
+#&gt; 3                     Seat belt not used properly as required
+#&gt;   driver_gender driver_race
+#&gt; 1          male       White
+#&gt; 2          male       White
+#&gt; 3          male       Black</code></pre>
+<p>Note that the final data frame is the leftmost part of this expression.</p>
+<blockquote>
+<h3>
+Challenge
+</h3>
+<p>Using pipes, subset the <code>trafficstops</code> data to include stops in Tunica County only and retain the columns <code>stop_date</code>, <code>driver_race</code>, <code>driver_gender</code>, and <code>violation_raw</code>.</p>
+</blockquote>
+<!---
+
+```r
+## Answer
+trafficstops %>%
+    filter(county_name == "Tunica County") %>%
+    select(stop_date, driver_race, driver_gender, violation_raw)
+```
+--->
+</div>
+<div id="add-new-columns" class="section level2">
+<h2><span class="header-section-number">1.4</span> Add new columns</h2>
+<p>Frequently you’ll want to create new columns based on the values in existing columns. For this we’ll use <code>mutate()</code>.</p>
+<p>To create a new column with the year the driver was born we will use the lubridate library, which is installed with <code>tidyverse</code>. We use <code>ymd()</code> to convert the date column into a date object and then use <code>year()</code> to extract the year only.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
+
+trafficstops %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)))</code></pre></div>
+<p>If this runs off your screen and you just want to see the first few rows, you can use a pipe to view the <code>head()</code> of the data. (Pipes work with non-<strong><code>dplyr</code></strong> functions, too, as long as the <strong><code>dplyr</code></strong> or <code>magrittr</code> package is loaded). When piping into a function with no additional arguments, you can call the function with or without parentheses (e.g. <code>head</code> or <code>head()</code>). (I like to add the parentheses to remind myself that it is a function and not a variable.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate))) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">head</span>()</code></pre></div>
+<p>You can also create a second new column based on the first new column within the same call of <code>mutate()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
+           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year/<span class="dv">10</span>)*<span class="dv">10</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">head</span>()</code></pre></div>
+<p>We are beginning to see the power of piping. Here is a slightly expanded example, where we select the column <code>birth_cohort</code> that we have created and send it to plot:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
+           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year/<span class="dv">10</span>)*<span class="dv">10</span>,
+           <span class="dt">birth_cohort =</span> <span class="kw">factor</span>(birth_cohort)) %&gt;%
+<span class="st">    </span><span class="kw">select</span>(birth_cohort) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">plot</span>()</code></pre></div>
+<div class="figure"><span id="fig:driver-birth-cohorts"></span>
+<img src="R-data-wrangling_files/figure-html/driver-birth-cohorts-1.png" alt="Driver Birth Cohorts" width="672" />
+<p class="caption">
+Figure 1.1: Driver Birth Cohorts
+</p>
+</div>
+<blockquote>
+<h3>
+Challenge
+</h3>
+<p>Create a new data frame from the <code>trafficstops</code> data that meets the following criteria: contains only the <code>violation_raw</code> column for female drivers of age 50 that were stopped on a Sunday. For this add a new column to your data frame called <code>weekday_of_stop</code> containing the number of the weekday when the stop occurred. Use the <code>wday()</code> function from <code>lubridate</code> (Sunday = 1).</p>
+<p>Think about how the commands should be ordered to produce this data frame!</p>
+</blockquote>
+<!---
+
+```r
+## Answer
+trafficstops %>% 
+  filter(driver_age == 50 & driver_gender == "F") %>% 
+  mutate(wds = wday(ymd(stop_date))) %>% 
+  select(violation_raw, wds) %>% 
+  filter(wds == 1)
+```
+--->
+</div>
+<div id="what-is-split-apply-combine" class="section level2">
+<h2><span class="header-section-number">1.5</span> What is split-apply-combine?</h2>
+<p>Many data analysis tasks can be approached using the <em>split-apply-combine</em> paradigm: split the data into groups, apply some analysis to each group, and then combine the results.</p>
+<div class="figure"><span id="fig:split-apply-combine"></span>
+<img src="img/split-apply-combine.png" alt="Split - Apply - Combine" width="\textwidth" />
+<p class="caption">
+Figure 1.2: Split - Apply - Combine
+</p>
+</div>
+<p><strong><code>dplyr</code></strong> makes this very easy through the use of the <code>group_by()</code> function.</p>
+<p><code>group_by()</code> is often used together with <code>summarize()</code>, which collapses each group into a single-row summary of that group. <code>group_by()</code> takes as arguments the column names that contain the <strong>categorical</strong> variables for which you want to calculate the summary statistics. So to view the mean age for black and white drivers:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(driver_race) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>#&gt; # A tibble: 3 x 2
+#&gt;   driver_race mean_age
+#&gt;        &lt;fctr&gt;    &lt;dbl&gt;
+#&gt; 1       Black  34.2485
+#&gt; 2       White  36.2140
+#&gt; 3          NA  34.5000</code></pre>
+<p>If we wanted to remove the line with <code>NA</code> we could insert a <code>filter()</code> in the chain:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>#&gt; # A tibble: 2 x 2
+#&gt;   driver_race mean_age
+#&gt;        &lt;fctr&gt;    &lt;dbl&gt;
+#&gt; 1       Black  34.2485
+#&gt; 2       White  36.2140</code></pre>
+<p>Recall that <code>is.na()</code> is a function that determines whether something is an <code>NA</code>. The <code>!</code> symbol negates the result, so we’re asking for everything that is <em>not</em> an <code>NA</code>.</p>
+<p>You may have noticed that the output from these calls looks a little different. That’s because <strong><code>dplyr</code></strong> has changed our <code>data.frame</code> object to an object of class <code>tbl_df</code>, also known as a “tibble”. Tibble’s data structure is very similar to a data frame. For our purposes the only differences are that (1) columns of class <code>character</code> are never converted into factors, and (2) in addition to displaying the data type of each column under its name, it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the <code>width</code> parameter to <code>Inf</code>. To print the first 6 rows for example we would do this: <code>print(my_tibble, n=6, width=Inf)</code>.</p>
+<p>You can also group by multiple columns:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>#&gt; # A tibble: 4 x 3
+#&gt; # Groups:   driver_race [?]
+#&gt;   driver_race driver_gender mean_age
+#&gt;        &lt;fctr&gt;        &lt;fctr&gt;    &lt;dbl&gt;
+#&gt; 1       Black        female 33.14806
+#&gt; 2       Black          male 35.17587
+#&gt; 3       White        female 35.68603
+#&gt; 4       White          male 36.54476</code></pre>
+<p>Once the data are grouped, you can also summarize multiple variables at the same time (and not necessarily on the same variable). For instance, we could add a column indicating the minimum age:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+            <span class="dt">min_age =</span> <span class="kw">min</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>#&gt; # A tibble: 4 x 4
+#&gt; # Groups:   driver_race [?]
+#&gt;   driver_race driver_gender mean_age min_age
+#&gt;        &lt;fctr&gt;        &lt;fctr&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1       Black        female 33.14806      16
+#&gt; 2       Black          male 35.17587       7
+#&gt; 3       White        female 35.68603      15
+#&gt; 4       White          male 36.54476      15</code></pre>
+</div>
+<div id="tallying" class="section level2">
+<h2><span class="header-section-number">1.6</span> Tallying</h2>
+<p>Add in <code>count</code> and <code>n()</code></p>
+<p>When working with data, it is also common to want to know the number of observations found for each factor or combination of factors. For this, <strong><code>dplyr</code></strong> provides <code>tally()</code>. For example, if we wanted to see how many traffic stops each officer recorded we would do:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+<span class="st">  </span><span class="kw">tally</span>()</code></pre></div>
+<p>Here, <code>tally()</code> is the action applied to the groups created by <code>group_by()</code> and counts the total number of records for each category.</p>
+<p>Alternatives:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">count</span>(officer_id) <span class="co"># count() calls group_by automatically, then tallies</span>
+
+trafficstops %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="co"># n() is useful when count is needed for a calculation</span></code></pre></div>
+<p>We can optionally sort the results in descending order by adding <code>sort=TRUE</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+<span class="st">  </span><span class="kw">tally</span>(<span class="dt">sort=</span><span class="ot">TRUE</span>)</code></pre></div>
+<blockquote>
+<h3>
+Challenge
+</h3>
+<p>Which 5 counties were the ones with the most stops in 2013?</p>
+</blockquote>
+<!---
+
+--->
+</div>
+<div id="joining-two-tables" class="section level2">
+<h2><span class="header-section-number">1.7</span> Joining two tables</h2>
+<p>It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. For example, to calculate the proportion of stopped black and white drivers in relation to the entire populations of white and black persons in each county we introduce another table with that demographic information. These are the estimated values of the 5 year average of the 2011-2015 American Community Survey (ACS):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MS_bw_pop &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)
+<span class="kw">head</span>(MS_bw_pop)</code></pre></div>
+<pre><code>#&gt;    FIPS black_pop white_pop
+#&gt; 1 28001     17757     12856
+#&gt; 2 28003      4281     31563
+#&gt; 3 28005      5416      7395
+#&gt; 4 28007      8194     10649
+#&gt; 5 28009      3078      5166
+#&gt; 6 28011     21648     11197</code></pre>
+<p>As unique ID, which uniquely identifies the corresponding records in each table we use the <a href="https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards">FIPS code</a>. It is stored in the <code>county_fips</code> column in the <code>trafficstops</code> data frame and in the <code>FIPS</code> column in <code>MS_bw_pop</code>). <code>dplyr</code> makes it very easy to bring the two tables together. We will use <code>left_join</code> to bring the two tables together into one:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">head</span>()</code></pre></div>
+<pre><code>#&gt;              id state  stop_date       county_name county_fips
+#&gt; 1 MS-2013-00001    MS 2013-01-01      Jones County       28067
+#&gt; 2 MS-2013-00002    MS 2013-01-01 Lauderdale County       28075
+#&gt; 3 MS-2013-00003    MS 2013-01-01       Pike County       28113
+#&gt; 4 MS-2013-00004    MS 2013-01-01    Hancock County       28045
+#&gt; 5 MS-2013-00005    MS 2013-01-01     Holmes County       28051
+#&gt; 6 MS-2013-00006    MS 2013-01-01    Jackson County       28059
+#&gt;            police_department driver_gender driver_birthdate driver_race
+#&gt; 1 Mississippi Highway Patrol          male       1950-06-14       Black
+#&gt; 2 Mississippi Highway Patrol          male       1967-04-06       Black
+#&gt; 3 Mississippi Highway Patrol          male       1974-04-15       Black
+#&gt; 4 Mississippi Highway Patrol          male       1981-03-23       White
+#&gt; 5 Mississippi Highway Patrol          male       1992-08-03       White
+#&gt; 6 Mississippi Highway Patrol        female       1960-05-02       White
+#&gt;                                                 violation_raw officer_id
+#&gt; 1                     Seat belt not used properly as required       J042
+#&gt; 2                                            Careless driving       B026
+#&gt; 3 Speeding - Regulated or posted speed limit and actual speed       M009
+#&gt; 4 Speeding - Regulated or posted speed limit and actual speed       K035
+#&gt; 5 Speeding - Regulated or posted speed limit and actual speed       D028
+#&gt; 6 Speeding - Regulated or posted speed limit and actual speed       K023
+#&gt;   driver_age        violation black_pop white_pop
+#&gt; 1         63        Seat belt     19711     47154
+#&gt; 2         46 Careless driving     33893     43482
+#&gt; 3         39         Speeding     21028     18282
+#&gt; 4         32         Speeding      4172     39686
+#&gt; 5         20         Speeding     15498      3105
+#&gt; 6         53         Speeding     30704    101686</code></pre>
+<p><code>dplyr</code> join functions are generally equivalent <code>merge</code> from the base command, but there are a few advantages:</p>
+<ul>
+<li>rows are kept in existing order</li>
+<li>much faster</li>
+<li>tells you what keys you’re merging by (if you don’t supply)</li>
+<li>also work with database tables.</li>
+</ul>
+<p><a href="https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ" class="uri">https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ</a></p>
+<p>See <code>?dplyr::join</code> for all the possible joins.</p>
+<p>Now that we got a little bit of an odd table, lets see how we can reshape it to make more sense of it.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tidyr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/cengel/R-data-wrangling/edit/master/01-dplyr.Rmd",
+"text": "Edit"
+},
+"download": ["R-data-wrangling.pdf", "R-data-wrangling.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

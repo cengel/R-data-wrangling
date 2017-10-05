@@ -1,0 +1,39 @@
+--- 
+title: "Data Wrangling with R"
+author: "Claudia A Engel"
+date: "Last updated: `r format(Sys.time(), '%B %d, %Y')`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: cengel/R-data-wrangling
+description: "Workshop materials for Data Wrangling with R"
+---
+
+
+# Prerequisites and Preparations {-}
+
+- You should have some **basic knowledge** of R, and be familiar with the topics covered in the [Introduction to R](https://cengel.github.io/R-intro/).
+- Have a recent version of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/) installed. 
+- Install and load the `tidyverse` package.
+- Download `MS_trafficstops_bw.csv` from here: https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv
+- Recommended: Create a new RStudio project `R-data-ws` in a new folder `R-data-ws` and download `MS_trafficstops_bw.csv` into a subdirectory called `data`.
+- Optional: Download the Code Handout from here...
+
+__Next workshop:   
+Thu, November 16, 2017, 1:30-4pm,  
+Green Library, Room 121A__
+
+
+## References {-}
+Boehmke, Bradley C. (2016) Data Wrangling with R
+http://link.springer.com/book/10.1007%2F978-3-319-45599-0
+
+Wickham, H. (2014): Tidy Data https://www.jstatsoft.org/article/view/v059i10
+
+Grolemund, G & Wickham, H (2017): R for Data Science http://r4ds.had.co.nz
+
+## Acknowledgements {-}
+Part of the materials for this tutorial are adapted from http://datacarpentry.org and http://softwarecarpentry.org.
