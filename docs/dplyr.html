@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Data Wrangling with R</title>
   <meta name="description" content="Workshop materials for Data Wrangling with R">
-  <meta name="generator" content="bookdown 0.4.2 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
   <meta property="og:title" content="Data Wrangling with R" />
   <meta property="og:type" content="book" />
@@ -170,12 +170,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_trafficstops_bw_age.csv&quot;</span>)</code></pre></div>
 <p>Manipulation of dataframes is a common task when you start exploring your data. We might select certain observations (rows) or variables (columns), group the data by a certain variable(s), or calculate summary statistics.</p>
 <p>If we were interested in the mean age of the driver in different counties we can do this using the normal base R operations:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Tallahatchie County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
-<pre><code>#&gt; [1] NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Walthall County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops<span class="op">$</span>county_name <span class="op">==</span><span class="st"> &quot;Tallahatchie County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>#&gt; [1] 36.70663</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops<span class="op">$</span>county_name <span class="op">==</span><span class="st"> &quot;Walthall County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#&gt; [1] 34.3326</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops$county_name ==<span class="st"> &quot;Oktibbeha County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>])</code></pre></div>
-<pre><code>#&gt; [1] NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(trafficstops[trafficstops<span class="op">$</span>county_name <span class="op">==</span><span class="st"> &quot;Oktibbeha County&quot;</span>, <span class="st">&quot;driver_age&quot;</span>], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>#&gt; [1] 32.07082</code></pre>
 <p>Bracket subsetting is handy, but it can be cumbersome and difficult to read, especially for complicated operations. Furthermore, there is a fair amount of repetition. Repeating yourself will cost you time, both now and later, and potentially introduce some nasty bugs.</p>
 <p><strong><code>dplyr</code></strong> is a package for making tabular data manipulation easier.</p>
 <blockquote>
@@ -215,7 +215,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 #&gt; 5          male       1992-08-03       White         20
 #&gt; 6        female       1960-05-02       White         53</code></pre>
 <p>To choose rows based on specific criteria, use <code>filter()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(trafficstops, county_name ==<span class="st"> &quot;Tallahatchie County&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(trafficstops, county_name <span class="op">==</span><span class="st"> &quot;Tallahatchie County&quot;</span>)</code></pre></div>
 <pre><code>#&gt;              id state  stop_date         county_name county_fips
 #&gt; 1 MS-2013-00473    MS 2013-01-03 Tallahatchie County       28135
 #&gt; 2 MS-2013-00474    MS 2013-01-03 Tallahatchie County       28135
@@ -290,24 +290,24 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Intermediate steps:</li>
 </ul>
 <p>With intermediate steps, you essentially create a temporary data frame and use that as input to the next function. This can clutter up your workspace with lots of objects.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp_df &lt;-<span class="st"> </span><span class="kw">filter</span>(trafficstops, driver_age &gt;<span class="st"> </span><span class="dv">85</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp_df &lt;-<span class="st"> </span><span class="kw">filter</span>(trafficstops, driver_age <span class="op">&gt;</span><span class="st"> </span><span class="dv">85</span>)
 <span class="kw">select</span>(tmp_df, violation_raw, driver_gender, driver_race)</code></pre></div>
 <ul>
 <li>Nested functions</li>
 </ul>
 <p>You can also nest functions (i.e. one function inside of another). This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(<span class="kw">filter</span>(trafficstops, driver_age &gt;<span class="st"> </span><span class="dv">85</span>), violation_raw, driver_gender, driver_race)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(<span class="kw">filter</span>(trafficstops, driver_age <span class="op">&gt;</span><span class="st"> </span><span class="dv">85</span>), violation_raw, driver_gender, driver_race)</code></pre></div>
 <ul>
 <li>Pipes!</li>
 </ul>
 <p>The last option, pipes, are a fairly recent addition to R. Pipes let you take the output of one function and send it directly to the next, which is useful when you need to do many things to the same dataset. Pipes in R look like <code>%&gt;%</code> and are made available via the <code>magrittr</code> package, installed automatically with <strong><code>dplyr</code></strong>. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a PC or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a Mac.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(driver_age &gt;<span class="st"> </span><span class="dv">85</span>) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(driver_age <span class="op">&gt;</span><span class="st"> </span><span class="dv">85</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(violation_raw, driver_gender, driver_race)</code></pre></div>
 <p>In the above, we use the pipe to send the <code>trafficstops</code> dataset first through <code>filter()</code> to keep rows where <code>driver_race</code> is Black, then through <code>select()</code> to keep only the <code>officer_id</code> and <code>stop_date</code> columns. Since <code>%&gt;%</code> takes the object on its left and passes it as the first argument to the function on its right, we don’t need to explicitly include it as an argument to the <code>filter()</code> and <code>select()</code> functions anymore.</p>
 <p>If we wanted to create a new object with this smaller version of the data, we could do so by assigning it a new name:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">senior_drivers &lt;-<span class="st"> </span>trafficstops %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(driver_age &gt;<span class="st"> </span><span class="dv">85</span>) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">senior_drivers &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(driver_age <span class="op">&gt;</span><span class="st"> </span><span class="dv">85</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(violation_raw, driver_gender, driver_race)
 
 senior_drivers</code></pre></div>
@@ -342,23 +342,23 @@ trafficstops %>%
 <p>To create a new column with the year the driver was born we will use the lubridate library, which is installed with <code>tidyverse</code>. We use <code>ymd()</code> to convert the date column into a date object and then use <code>year()</code> to extract the year only.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
 
-trafficstops %&gt;%<span class="st"> </span>
+trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)))</code></pre></div>
 <p>If this runs off your screen and you just want to see the first few rows, you can use a pipe to view the <code>head()</code> of the data. (Pipes work with non-<strong><code>dplyr</code></strong> functions, too, as long as the <strong><code>dplyr</code></strong> or <code>magrittr</code> package is loaded). When piping into a function with no additional arguments, you can call the function with or without parentheses (e.g. <code>head</code> or <code>head()</code>). (I like to add the parentheses to remind myself that it is a function and not a variable.)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate))) %&gt;%<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate))) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">head</span>()</code></pre></div>
 <p>You can also create a second new column based on the first new column within the same call of <code>mutate()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
-           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year/<span class="dv">10</span>)*<span class="dv">10</span>) %&gt;%<span class="st"> </span>
+           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">head</span>()</code></pre></div>
 <p>We are beginning to see the power of piping. Here is a slightly expanded example, where we select the column <code>birth_cohort</code> that we have created and send it to plot:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
-           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year/<span class="dv">10</span>)*<span class="dv">10</span>,
-           <span class="dt">birth_cohort =</span> <span class="kw">factor</span>(birth_cohort)) %&gt;%
-<span class="st">    </span><span class="kw">select</span>(birth_cohort) %&gt;%<span class="st"> </span>
+           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>,
+           <span class="dt">birth_cohort =</span> <span class="kw">factor</span>(birth_cohort)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">select</span>(birth_cohort) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">plot</span>()</code></pre></div>
 <div class="figure"><span id="fig:driver-birth-cohorts"></span>
 <img src="R-data-wrangling_files/figure-html/driver-birth-cohorts-1.png" alt="Driver Birth Cohorts" width="672" />
@@ -396,19 +396,19 @@ Figure 1.2: Split - Apply - Combine
 </div>
 <p><strong><code>dplyr</code></strong> makes this very easy through the use of the <code>group_by()</code> function.</p>
 <p><code>group_by()</code> is often used together with <code>summarize()</code>, which collapses each group into a single-row summary of that group. <code>group_by()</code> takes as arguments the column names that contain the <strong>categorical</strong> variables for which you want to calculate the summary statistics. So to view the mean age for black and white drivers:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(driver_race) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>#&gt; # A tibble: 3 x 2
 #&gt;   driver_race mean_age
 #&gt;        &lt;fctr&gt;    &lt;dbl&gt;
 #&gt; 1       Black  34.2485
 #&gt; 2       White  36.2140
-#&gt; 3          NA  34.5000</code></pre>
+#&gt; 3        &lt;NA&gt;  34.5000</code></pre>
 <p>If we wanted to remove the line with <code>NA</code> we could insert a <code>filter()</code> in the chain:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>#&gt; # A tibble: 2 x 2
 #&gt;   driver_race mean_age
@@ -418,9 +418,9 @@ Figure 1.2: Split - Apply - Combine
 <p>Recall that <code>is.na()</code> is a function that determines whether something is an <code>NA</code>. The <code>!</code> symbol negates the result, so we’re asking for everything that is <em>not</em> an <code>NA</code>.</p>
 <p>You may have noticed that the output from these calls looks a little different. That’s because <strong><code>dplyr</code></strong> has changed our <code>data.frame</code> object to an object of class <code>tbl_df</code>, also known as a “tibble”. Tibble’s data structure is very similar to a data frame. For our purposes the only differences are that (1) columns of class <code>character</code> are never converted into factors, and (2) in addition to displaying the data type of each column under its name, it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the <code>width</code> parameter to <code>Inf</code>. To print the first 6 rows for example we would do this: <code>print(my_tibble, n=6, width=Inf)</code>.</p>
 <p>You can also group by multiple columns:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>#&gt; # A tibble: 4 x 3
 #&gt; # Groups:   driver_race [?]
@@ -431,9 +431,9 @@ Figure 1.2: Split - Apply - Combine
 #&gt; 3       White        female 35.68603
 #&gt; 4       White          male 36.54476</code></pre>
 <p>Once the data are grouped, you can also summarize multiple variables at the same time (and not necessarily on the same variable). For instance, we could add a column indicating the minimum age:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(driver_race)) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
             <span class="dt">min_age =</span> <span class="kw">min</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>#&gt; # A tibble: 4 x 4
@@ -447,22 +447,21 @@ Figure 1.2: Split - Apply - Combine
 </div>
 <div id="tallying" class="section level2">
 <h2><span class="header-section-number">1.6</span> Tallying</h2>
-<p>Add in <code>count</code> and <code>n()</code></p>
 <p>When working with data, it is also common to want to know the number of observations found for each factor or combination of factors. For this, <strong><code>dplyr</code></strong> provides <code>tally()</code>. For example, if we wanted to see how many traffic stops each officer recorded we would do:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tally</span>()</code></pre></div>
 <p>Here, <code>tally()</code> is the action applied to the groups created by <code>group_by()</code> and counts the total number of records for each category.</p>
 <p>Alternatives:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">count</span>(officer_id) <span class="co"># count() calls group_by automatically, then tallies</span>
 
-trafficstops %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="co"># n() is useful when count is needed for a calculation</span></code></pre></div>
 <p>We can optionally sort the results in descending order by adding <code>sort=TRUE</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(officer_id) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tally</span>(<span class="dt">sort=</span><span class="ot">TRUE</span>)</code></pre></div>
 <blockquote>
 <h3>
@@ -487,8 +486,8 @@ Challenge
 #&gt; 5 28009      3078      5166
 #&gt; 6 28011     21648     11197</code></pre>
 <p>As unique ID, which uniquely identifies the corresponding records in each table we use the <a href="https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards">FIPS code</a>. It is stored in the <code>county_fips</code> column in the <code>trafficstops</code> data frame and in the <code>FIPS</code> column in <code>MS_bw_pop</code>). <code>dplyr</code> makes it very easy to bring the two tables together. We will use <code>left_join</code> to bring the two tables together into one:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops %&gt;%
-<span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) %&gt;%<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">head</span>()</code></pre></div>
 <pre><code>#&gt;              id state  stop_date       county_name county_fips
 #&gt; 1 MS-2013-00001    MS 2013-01-01      Jones County       28067

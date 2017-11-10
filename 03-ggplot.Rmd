@@ -33,6 +33,8 @@ If not still in the workspace, load the data we saved in the previous lesson.
 MS_demographic <- read.csv('data_output/MS_demographic.csv')
 ```
 
+(If you need to, you can also download the data from here: https://github.com/cengel/R-data-wrangling/raw/master/data_output/MS_demographic.csv)
+
 ## Plotting with **`ggplot2`**
 
 **`ggplot2`** is a plotting package that makes it simple to create complex plots
@@ -420,8 +422,9 @@ a placeholder that indicates only one row or column).
 
 ```
 
-<!-- Answer
+<!--
 ```{r average-age-time-series, purl=FALSE}
+# Answer
 trafficstops %>%
    filter(driver_age > 16) %>% 
    mutate(wk_day = wday(stop_date, label = TRUE)) %>%  

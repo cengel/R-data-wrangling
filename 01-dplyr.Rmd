@@ -30,11 +30,11 @@ Manipulation of dataframes is a common task when you start exploring your data. 
 If we were interested in the mean age of the driver in different counties we can do this using the normal base R operations:
 
 ```{r, results='show'}
-mean(trafficstops[trafficstops$county_name == "Tallahatchie County", "driver_age"])
+mean(trafficstops[trafficstops$county_name == "Tallahatchie County", "driver_age"], na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Walthall County", "driver_age"])
+mean(trafficstops[trafficstops$county_name == "Walthall County", "driver_age"], na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Oktibbeha County", "driver_age"])
+mean(trafficstops[trafficstops$county_name == "Oktibbeha County", "driver_age"], na.rm = TRUE)
 ```
 
 
@@ -356,8 +356,6 @@ trafficstops %>%
 
 
 ## Tallying
-
-Add in `count` and `n()`
 
 When working with data, it is also common to want to know the number of
 observations found for each factor or combination of factors. For this, **`dplyr`**

@@ -170,7 +170,7 @@ trafficstops %>%
 Now we can pipe this into our left join and calculate the percentages:
 
 ```{r, results='show'}
-# make sure you have the other table loaded
+# make sure you this table loaded:
 MS_bw_pop <- read.csv("data/MS_acs2015_bw.csv")
 
 trafficstops %>% 
@@ -178,8 +178,8 @@ trafficstops %>%
   count(county_name, county_fips, driver_race) %>% 
   spread(driver_race, n, fill = 0, sep = "_") %>%  
   left_join(MS_bw_pop, by = c("county_fips" = "FIPS")) %>% 
-  mutate(pct_black = driver_race_Black/black_pop,
-         pct_white = driver_race_White/white_pop) %>% 
+  mutate(pct_black_stopped = driver_race_Black/black_pop,
+         pct_white_stopped = driver_race_White/white_pop) %>% 
   print(n=5, width=Inf)
 ```
 

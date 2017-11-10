@@ -20,10 +20,9 @@ description: "Workshop materials for Data Wrangling with R"
 - Install and load the `tidyverse` package.
 - Download `MS_trafficstops_bw.csv` from here: https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv
 - Recommended: Create a new RStudio project `R-data-ws` in a new folder `R-data-ws` and download `MS_trafficstops_bw.csv` into a subdirectory called `data`.
-- Optional: Download the Code Handout from here...
 
 __Next workshop:   
-Thu, November 16, 2017, 1:30-4pm,  
+Thu, November 16, 2017, 2-4pm,  
 Green Library, Room 121A__
 
 
