@@ -81,7 +81,7 @@ memory. The database connections essentially remove that limitation in that you
 can have a database of many 100s GB, conduct queries on it directly, and pull
 back into R only what you need for analysis.
 
-To learn more about **`dplyr`** after the workshop, you may want to check out the [handy data transformation with **`dplyr`** cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf).
+To learn more about **`dplyr`** after the workshop, you may want to check out the [handy data transformation with **`dplyr`** cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).
 
 
 ## Subsetting columns and rows
@@ -197,22 +197,23 @@ Note that the final data frame is the leftmost part of this expression.
 
 > <h3>Challenge</h3>
 >
->  Using pipes, subset the `trafficstops` data to include stops in Tunica County only and retain the columns `stop_date`, `driver_race`, `driver_gender`, and `violation_raw`.
+>  Using pipes, subset the `trafficstops` data to include stops in Tunica County only and retain the columns `stop_date`, `driver_age`, and `violation_raw`. Bonus: sort the table by driver age.
 
 <!---
 ```{r, eval=FALSE, purl=FALSE}
 ## Answer
-trafficstops %>%
-    filter(county_name == "Tunica County") %>%
-    select(stop_date, driver_race, driver_gender, violation_raw)
+trafficstops %>% 
+  filter(county_name == "Tunica County") %>% 
+  select(stop_date, driver_age, violation) %>% 
+  arrange(driver_age)
 ```
 --->
 
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Pipes Challenge:
-##  Using pipes, subset the `trafficstops` data to include stops in
-## Tunica County only and retain the columns `stop_date`,
-## `driver_race`, `driver_gender`, and `violation_raw`.
+##  Using pipes, subset the `trafficstops` data to include stops in 
+## Tunica County only and retain the columns `stop_date`, `driver_age`,
+## and `violation_raw`. Bonus: sort the table by driver age.
 ```
 
 ## Add new columns
@@ -283,7 +284,7 @@ trafficstops %>%
 ```{r, eval=FALSE, purl=FALSE}
 ## Answer
 trafficstops %>% 
-  filter(driver_age == 50 & driver_gender == "F") %>% 
+  filter(driver_age == 50 & driver_gender == "female") %>% 
   mutate(wds = wday(ymd(stop_date))) %>% 
   select(violation_raw, wds) %>% 
   filter(wds == 1)
@@ -391,6 +392,7 @@ trafficstops %>%
 > <h3>Challenge</h3>
 > 
 > Which 5 counties were the ones with the most stops in 2013?
+> Hint: use the year() function from lubridate.
 
 <!---
 ```{r, eval=F, echo=FALSE, purl=FALSE}
@@ -401,14 +403,13 @@ trafficstops %>%
    filter(stopyear == 2013) %>% 
    count(county_name, sort=TRUE) %>% 
    head(5)
-  
-
 ```
 --->
 
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Tally Challenges:
-##  Which 5 counties were the ones with the most stops in 2013?
+## Which 5 counties were the ones with the most stops in 2013?
+## Hint: use the year() function from lubridate.
 ```
 
 ## Joining two tables

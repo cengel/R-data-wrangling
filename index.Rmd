@@ -21,10 +21,6 @@ description: "Workshop materials for Data Wrangling with R"
 - Download `MS_trafficstops_bw.csv` from here: https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv
 - Recommended: Create a new RStudio project `R-data-ws` in a new folder `R-data-ws` and download `MS_trafficstops_bw.csv` into a subdirectory called `data`.
 
-__Next workshop:   
-Thu, November 16, 2017, 2-4pm,  
-Green Library, Room 121A__
-
 
 ## References {-}
 Boehmke, Bradley C. (2016) Data Wrangling with R

@@ -13,12 +13,14 @@ trafficstops <- read.csv("data/MS_trafficstops_bw_age.csv")
 > * Reshape a data frame from long to wide format and back with the `spread` and `gather` commands from the **`tidyr`** package.
 > * Export a data frame to a .csv file.
 
+------------
 
 `dplyr` pairs nicely with **`tidyr`** which enables you to swiftly convert between different data formats for plotting and analysis.
 
 The package **`tidyr`** addresses the common problem of wanting to reshape your data for plotting and use by different R functions. Sometimes we want data sets where we have one row per observation. Sometimes we want a data frame where each observation type has its own column, and rows are instead more aggregated groups - like surveys, where each column represents an answer. Moving back and forth between these formats is nontrivial, and **`tidyr`** gives you tools for this and more sophisticated  data manipulation.
 
-To learn more about **`tidyr`** after the workshop, you may want to check out this [cheatsheet about **`tidyr`**](https://github.com/rstudio/cheatsheets/blob/master/source/pdfs/data-import-cheatsheet.pdf).
+To learn more about **`tidyr`** after the workshop, you may want to check out this [cheatsheet about **`tidyr`**](https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf).
+
 
 ## About long and wide table format
 

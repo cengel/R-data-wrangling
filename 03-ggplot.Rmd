@@ -20,6 +20,7 @@ trafficstops$stop_date <- ymd(trafficstops$stop_date)
 > * Break up plot into multiple panels (facetting)
 > * Apply ggplot themes and create and apply customized themes
 > * Save a plot created by ggplot as an image
+
 --------------
 
 We start by loading the required packages. **`ggplot2`** is included in the **`tidyverse`** package.
@@ -92,7 +93,7 @@ Notes:
 
 - Any parameters you set in the `ggplot()` function can be seen by any geom layers
   that you add (i.e., these are universal plot settings). This includes the x and y axis you set up in `aes()`.
-- Any parameters you set in the `geom_*()` functio nare treated independently of (and override) the settings defined globally in the `ggplot()` function. 
+- Any parameters you set in the `geom_*()` function are treated independently of (and override) the settings defined globally in the `ggplot()` function. 
 - Geoms are plotted in the order they are added after each `+`, that means geoms last added will display on top of prior geoms.
 - The `+` sign used to add layers **must be placed at the end of each line** containing
 a layer. If, instead, the `+` sign is added in the line before the other layer,
@@ -231,10 +232,10 @@ MS_demographic %>%
 
 > <h3>Challenge</h3>
 >
-> Make a plot that shows for each race the proportion of stops for male and female drivers. How could you get rid of the NAs?
+> Make a barplot that shows for each race the proportion of stops for male and female drivers. How could you get rid of the NAs?
 
 ```{r, echo=FALSE, eval=FALSE, purl=TRUE}
-## Challenge: make a plot that shows the percentage of stops per race for each gender. How could you get rid of the NAs?
+## Challenge: make a barplot that shows the proportion of stops per race for each gender. How could you get rid of the NAs?
 
 trafficstops %>% 
   filter(!is.na(driver_gender) & !is.na(driver_race)) %>% 
@@ -316,7 +317,7 @@ ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
 
 ##  1. Replace the box plot with a violin plot; see `geom_violin()`.
 
-##  2. Create boxplot for `driver_race` overlaid on a jitter layer.
+##  2. Create the age box plot for `driver_race`. Overlay the boxplot layer on a jitter layer to show actual measurements.
 ```
 
 
@@ -331,7 +332,7 @@ trafficstops$stop_date <- ymd(trafficstops$stop_date)
 class(trafficstops$stop_date)
 ```
 
-Let's calculate number of counts per weekday for each violation. For better understanding we will label the weekdays. First we need to group the data and count records within each group:
+Let's calculate number of violation per weekday. For better understanding we will label the weekdays. First we need to group the data and count records within each group:
 ```{r, purl=FALSE}
 trafficstops %>% 
   mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
@@ -410,21 +411,24 @@ a placeholder that indicates only one row or column).
 > 
 > Use what you just learned to create a plot that depicts how the average age
 > of each driver for the two recorded ethnicities changes through the week.
-> Hint: make sure you just use records where driver_age > 16.
+> Hint: make sure you remove the records with driver_age under 16.
 > How would you go about visualizing both lines and points on the plot? 
+> How would you split your plot into one per each violation type? 
 
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ### Plotting time series challenge:
 ##
 ## Use what you just learned to create a plot that depicts how the average age
 ## of each driver for the two recorded ethnicities changes through the week.
-## Hint: make sure you filter out the records with driver_age > 16.
+## Hint: make sure you remove the records with driver_age under 16.
+## How would you go about visualizing both lines and points on the plot? 
+## How would you split your plot into one per each violation type? 
 
 ```
 
 <!--
 ```{r average-age-time-series, purl=FALSE}
-# Answer
+# Answer1
 trafficstops %>%
    filter(driver_age > 16) %>% 
    mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
@@ -433,6 +437,17 @@ trafficstops %>%
    ggplot(aes(x = wk_day, y = avg_age, group = driver_race, color = driver_race)) +
      geom_line() +
      geom_point()
+
+# Answer2     
+trafficstops %>%
+  filter(driver_age >= 16) %>% 
+  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
+  group_by(wk_day, driver_race, violation) %>%
+  summarize(avg_age = mean(driver_age)) %>% 
+  ggplot(aes(x = wk_day, y = avg_age, group = driver_race, color = driver_race)) +
+    geom_line() +
+    geom_point() +
+    facet_wrap(~ violation)     
 ```
 -->
 
