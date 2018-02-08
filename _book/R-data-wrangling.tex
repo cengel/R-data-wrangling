@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{Last updated: November 10, 2017}
+  \date{Last updated: February 08, 2018}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -180,10 +180,6 @@ Preparations}\label{prerequisites-and-preparations}
   \texttt{MS\_trafficstops\_bw.csv} into a subdirectory called
   \texttt{data}.
 \end{itemize}
-
-\textbf{Next workshop:\\
-Thu, November 16, 2017, 2-4pm,\\
-Green Library, Room 121A}
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -362,7 +358,7 @@ analysis.
 
 To learn more about \textbf{\texttt{dplyr}} after the workshop, you may
 want to check out the
-\href{https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf}{handy
+\href{https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf}{handy
 data transformation with \textbf{\texttt{dplyr}} cheatsheet}.
 
 \section{Subsetting columns and rows}\label{subsetting-columns-and-rows}
@@ -602,8 +598,8 @@ Challenge
 
 Using pipes, subset the \texttt{trafficstops} data to include stops in
 Tunica County only and retain the columns \texttt{stop\_date},
-\texttt{driver\_race}, \texttt{driver\_gender}, and
-\texttt{violation\_raw}.
+\texttt{driver\_age}, and \texttt{violation\_raw}. Bonus: sort the table
+by driver age.
 \end{quote}
 
 \section{Add new columns}\label{add-new-columns}
@@ -720,10 +716,10 @@ summary statistics. So to view the mean age for black and white drivers:
 \begin{verbatim}
 #> # A tibble: 3 x 2
 #>   driver_race mean_age
-#>        <fctr>    <dbl>
-#> 1       Black  34.2485
-#> 2       White  36.2140
-#> 3        <NA>  34.5000
+#>   <fct>          <dbl>
+#> 1 Black           34.2
+#> 2 White           36.2
+#> 3 <NA>            34.5
 \end{verbatim}
 
 If we wanted to remove the line with \texttt{NA} we could insert a
@@ -741,9 +737,9 @@ If we wanted to remove the line with \texttt{NA} we could insert a
 \begin{verbatim}
 #> # A tibble: 2 x 2
 #>   driver_race mean_age
-#>        <fctr>    <dbl>
-#> 1       Black  34.2485
-#> 2       White  36.2140
+#>   <fct>          <dbl>
+#> 1 Black           34.2
+#> 2 White           36.2
 \end{verbatim}
 
 Recall that \texttt{is.na()} is a function that determines whether
@@ -778,11 +774,11 @@ You can also group by multiple columns:
 #> # A tibble: 4 x 3
 #> # Groups:   driver_race [?]
 #>   driver_race driver_gender mean_age
-#>        <fctr>        <fctr>    <dbl>
-#> 1       Black        female 33.14806
-#> 2       Black          male 35.17587
-#> 3       White        female 35.68603
-#> 4       White          male 36.54476
+#>   <fct>       <fct>            <dbl>
+#> 1 Black       female            33.1
+#> 2 Black       male              35.2
+#> 3 White       female            35.7
+#> 4 White       male              36.5
 \end{verbatim}
 
 Once the data are grouped, you can also summarize multiple variables at
@@ -803,11 +799,11 @@ we could add a column indicating the minimum age:
 #> # A tibble: 4 x 4
 #> # Groups:   driver_race [?]
 #>   driver_race driver_gender mean_age min_age
-#>        <fctr>        <fctr>    <dbl>   <dbl>
-#> 1       Black        female 33.14806      16
-#> 2       Black          male 35.17587       7
-#> 3       White        female 35.68603      15
-#> 4       White          male 36.54476      15
+#>   <fct>       <fct>            <dbl>   <dbl>
+#> 1 Black       female            33.1   16.0 
+#> 2 Black       male              35.2    7.00
+#> 3 White       female            35.7   15.0 
+#> 4 White       male              36.5   15.0
 \end{verbatim}
 
 \section{Tallying}\label{tallying}
@@ -856,7 +852,8 @@ We can optionally sort the results in descending order by adding
 \begin{quote}
 Challenge
 
-Which 5 counties were the ones with the most stops in 2013?
+Which 5 counties were the ones with the most stops in 2013? Hint: use
+the year() function from lubridate.
 \end{quote}
 
 \section{Joining two tables}\label{joining-two-tables}
@@ -978,6 +975,8 @@ Learning Objectives
 \end{itemize}
 \end{quote}
 
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
 \texttt{dplyr} pairs nicely with \textbf{\texttt{tidyr}} which enables
 you to swiftly convert between different data formats for plotting and
 analysis.
@@ -993,7 +992,7 @@ you tools for this and more sophisticated data manipulation.
 
 To learn more about \textbf{\texttt{tidyr}} after the workshop, you may
 want to check out this
-\href{https://github.com/rstudio/cheatsheets/blob/master/source/pdfs/data-import-cheatsheet.pdf}{cheatsheet
+\href{https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf}{cheatsheet
 about \textbf{\texttt{tidyr}}}.
 
 \section{About long and wide table
@@ -1059,14 +1058,14 @@ county:
 \begin{verbatim}
 #> # A tibble: 6 x 3
 #> # Groups:   county_name [3]
-#>     county_name driver_gender mean_age
-#>          <fctr>        <fctr>    <dbl>
-#> 1  Adams County        female 36.73176
-#> 2  Adams County          male 38.39265
-#> 3 Alcorn County        female 33.28516
-#> 4 Alcorn County          male 34.06153
-#> 5  Amite County        female 38.29559
-#> 6  Amite County          male 40.27757
+#>   county_name   driver_gender mean_age
+#>   <fct>         <fct>            <dbl>
+#> 1 Adams County  female            36.7
+#> 2 Adams County  male              38.4
+#> 3 Alcorn County female            33.3
+#> 4 Alcorn County male              34.1
+#> 5 Amite County  female            38.3
+#> 6 Amite County  male              40.3
 \end{verbatim}
 
 Now, to make this long data wide, we use \texttt{spread} from
@@ -1088,14 +1087,14 @@ argument.
 \begin{verbatim}
 #> # A tibble: 6 x 3
 #> # Groups:   county_name [6]
-#>      county_name   female     male
-#>           <fctr>    <dbl>    <dbl>
-#> 1   Adams County 36.73176 38.39265
-#> 2  Alcorn County 33.28516 34.06153
-#> 3   Amite County 38.29559 40.27757
-#> 4  Attala County 36.66609 38.12115
-#> 5  Benton County 32.07792 34.36496
-#> 6 Bolivar County 33.19608 36.26228
+#>   county_name    female  male
+#>   <fct>           <dbl> <dbl>
+#> 1 Adams County     36.7  38.4
+#> 2 Alcorn County    33.3  34.1
+#> 3 Amite County     38.3  40.3
+#> 4 Attala County    36.7  38.1
+#> 5 Benton County    32.1  34.4
+#> 6 Bolivar County   33.2  36.3
 \end{verbatim}
 
 We can now do things like compare the mean age of men against women
@@ -1115,10 +1114,10 @@ means that male drivers are on average older than women drivers.)
 
 \begin{verbatim}
 #> # A tibble: 2 x 4
-#>        county_name   female     male   agediff
-#>             <fctr>    <dbl>    <dbl>     <dbl>
-#> 1   Neshoba County 35.08824 31.14634 -3.941894
-#> 2 Yalobusha County 33.42958 39.42222  5.992645
+#>   county_name      female  male agediff
+#>   <fct>             <dbl> <dbl>   <dbl>
+#> 1 Neshoba County     35.1  31.1   -3.94
+#> 2 Yalobusha County   33.4  39.4    5.99
 \end{verbatim}
 
 Note that \texttt{trafficstops\_ma\_wide} is derived from
@@ -1155,14 +1154,14 @@ gathering, we would do the following:
 \begin{verbatim}
 #> # A tibble: 6 x 3
 #> # Groups:   county_name [6]
-#>      county_name gender mean_age
-#>           <fctr>  <chr>    <dbl>
-#> 1   Adams County female 36.73176
-#> 2  Alcorn County female 33.28516
-#> 3   Amite County female 38.29559
-#> 4  Attala County female 36.66609
-#> 5  Benton County female 32.07792
-#> 6 Bolivar County female 33.19608
+#>   county_name    gender mean_age
+#>   <fct>          <chr>     <dbl>
+#> 1 Adams County   female     36.7
+#> 2 Alcorn County  female     33.3
+#> 3 Amite County   female     38.3
+#> 4 Attala County  female     36.7
+#> 5 Benton County  female     32.1
+#> 6 Bolivar County female     33.2
 \end{verbatim}
 
 We could also have used a specification for what columns to include.
@@ -1182,14 +1181,14 @@ just use the \texttt{:} operator!
 \begin{verbatim}
 #> # A tibble: 6 x 3
 #> # Groups:   county_name [6]
-#>      county_name gender mean_age
-#>           <fctr>  <chr>    <dbl>
-#> 1   Adams County female 36.73176
-#> 2  Alcorn County female 33.28516
-#> 3   Amite County female 38.29559
-#> 4  Attala County female 36.66609
-#> 5  Benton County female 32.07792
-#> 6 Bolivar County female 33.19608
+#>   county_name    gender mean_age
+#>   <fct>          <chr>     <dbl>
+#> 1 Adams County   female     36.7
+#> 2 Alcorn County  female     33.3
+#> 3 Amite County   female     38.3
+#> 4 Attala County  female     36.7
+#> 5 Benton County  female     32.1
+#> 6 Bolivar County female     33.2
 \end{verbatim}
 
 \begin{quote}
@@ -1259,13 +1258,20 @@ Now we can pipe this into our left join and calculate the percentages:
 
 \begin{verbatim}
 #> # A tibble: 82 x 8
-#>     county_name county_fips driver_race_Black driver_race_White black_pop white_pop pct_black_stopped pct_white_stopped
-#>          <fctr>       <int>             <dbl>             <dbl>     <int>     <int>             <dbl>             <dbl>
-#> 1  Adams County       28001               583               359     17757     12856        0.03283212        0.02792470
-#> 2 Alcorn County       28003               468              2877      4281     31563        0.10932025        0.09115103
-#> 3  Amite County       28005              1589              1331      5416      7395        0.29338996        0.17998648
-#> 4 Attala County       28007              2096              2107      8194     10649        0.25579692        0.19785895
-#> 5 Benton County       28009               121                93      3078      5166        0.03931124        0.01800232
+#>   county_name   county_fips driver_race_Black driver_race_White black_pop
+#>   <fct>               <int>             <dbl>             <dbl>     <int>
+#> 1 Adams County        28001               583             359       17757
+#> 2 Alcorn County       28003               468            2877        4281
+#> 3 Amite County        28005              1589            1331        5416
+#> 4 Attala County       28007              2096            2107        8194
+#> 5 Benton County       28009               121              93.0      3078
+#>   white_pop pct_black_stopped pct_white_stopped
+#>       <int>             <dbl>             <dbl>
+#> 1     12856            0.0328            0.0279
+#> 2     31563            0.109             0.0912
+#> 3      7395            0.293             0.180 
+#> 4     10649            0.256             0.198 
+#> 5      5166            0.0393            0.0180
 #> # ... with 77 more rows
 \end{verbatim}
 
@@ -1317,6 +1323,7 @@ included:
 Learning Objectives
 
 \begin{itemize}
+\tightlist
 \item
   Bind a data frame to a plot
 \item
@@ -1340,11 +1347,12 @@ Learning Objectives
   Break up plot into multiple panels (facetting)
 \item
   Apply ggplot themes and create and apply customized themes
-\item ~
-  \section{Save a plot created by ggplot as an
-  image}\label{save-a-plot-created-by-ggplot-as-an-image}
+\item
+  Save a plot created by ggplot as an image
 \end{itemize}
 \end{quote}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 We start by loading the required packages. \textbf{\texttt{ggplot2}} is
 included in the \textbf{\texttt{tidyverse}} package.
@@ -1457,7 +1465,7 @@ Notes:
   settings). This includes the x and y axis you set up in
   \texttt{aes()}.
 \item
-  Any parameters you set in the \texttt{geom\_*()} functio nare treated
+  Any parameters you set in the \texttt{geom\_*()} function are treated
   independently of (and override) the settings defined globally in the
   \texttt{ggplot()} function.
 \item
@@ -1677,7 +1685,7 @@ have also flipped the coordinates:
 \begin{quote}
 Challenge
 
-Make a plot that shows for each race the proportion of stops for male
+Make a barplot that shows for each race the proportion of stops for male
 and female drivers. How could you get rid of the NAs?
 \end{quote}
 
@@ -1797,9 +1805,9 @@ to use to Date format.
 \end{Highlighting}
 \end{Shaded}
 
-Let's calculate number of counts per weekday for each violation. For
-better understanding we will label the weekdays. First we need to group
-the data and count records within each group:
+Let's calculate number of violation per weekday. For better
+understanding we will label the weekdays. First we need to group the
+data and count records within each group:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1913,11 +1921,27 @@ Challenge
 
 Use what you just learned to create a plot that depicts how the average
 age of each driver for the two recorded ethnicities changes through the
-week. Hint: make sure you just use records where driver\_age
-\textgreater{} 16. How would you go about visualizing both lines and
-points on the plot?
+week. Hint: make sure you remove the records with driver\_age under 16.
+How would you go about visualizing both lines and points on the plot?
+How would you split your plot into one per each violation type?
 \end{quote}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Answer2     }
+\NormalTok{trafficstops }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(driver_age }\OperatorTok{>=}\StringTok{ }\DecValTok{16}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{wk_day =} \KeywordTok{wday}\NormalTok{(stop_date, }\DataTypeTok{label =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{  }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(wk_day, driver_race, violation) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{avg_age =} \KeywordTok{mean}\NormalTok{(driver_age)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ wk_day, }\DataTypeTok{y =}\NormalTok{ avg_age, }\DataTypeTok{group =}\NormalTok{ driver_race, }\DataTypeTok{color =}\NormalTok{ driver_race)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{violation)     }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{R-data-wrangling_files/figure-latex/average-age-time-series-2.pdf}
 --\textgreater{}
 
 \section{\texorpdfstring{\textbf{\texttt{ggplot2}}
@@ -2102,7 +2126,7 @@ adjusting the appropriate arguments (\texttt{width}, \texttt{height} and
 Note: The parameters \texttt{width} and \texttt{height} also determine
 the font size in the saved plot.
 
-\bibliography{packages.bib,book.bib}
+\bibliography{book.bib,packages.bib}
 
 
 \end{document}

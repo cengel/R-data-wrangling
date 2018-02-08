@@ -576,12 +576,3 @@ ggsave("name_of_file.png", my_plot, width=15, height=10)
 
 Note: The parameters `width` and `height` also determine the font size in the saved plot.
 
-```{r final-challenge, eval=FALSE, purl=TRUE, echo=FALSE}
-### Final plotting challenge:
-##  With all of this information in hand, please take another five
-##  minutes to either improve one of the plots generated in this
-##  exercise or create a beautiful graph of your own. Use the RStudio
-##  ggplot2 cheat sheet for inspiration:
-##  https://www.rstudio.com/wp-content/uploads/2015/08/ggplot2-cheatsheet.pdf
-```
-
