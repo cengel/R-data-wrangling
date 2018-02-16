@@ -124,7 +124,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{Last updated: February 12, 2018}
+  \date{Last updated: February 16, 2018}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -173,10 +173,10 @@ Preparations}\label{prerequisites-and-preparations}
   Install and load the \texttt{tidyverse} package.
 \item
   Download \texttt{MS\_trafficstops\_bw.csv} from here:
-  \url{https://github.com/cengel/R-data-wrangling/blob/master/data/MS_trafficstops_bw_age.csv}
+  \url{https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_trafficstops_bw_age.csv}
 \item
   Download \texttt{MS\_acs2015\_bw.csv} from here:
-  \url{https://github.com/cengel/R-data-wrangling/blob/master/data/MS_acs2015_bw.csv}
+  \url{https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_acs2015_bw.csv}
 \item
   Recommended: Create a new RStudio project \texttt{R-data-ws} in a new
   folder \texttt{R-data-ws} and download both CSV files into a
@@ -1666,9 +1666,7 @@ parameter to `fill':
 
 The other type of barchart, \texttt{geom\_col}, is used if you want the
 heights of the bars to represent values in the data. It leaves the data
-as is.
-
-For example, we can use \texttt{geom\_col} for a different way of
+as is. For example, we can use \texttt{geom\_col} for a different way of
 visualizing the data shown in the scatterplot above. For readability I
 have also flipped the coordinates:
 
@@ -1927,24 +1925,6 @@ week. Hint: make sure you remove the records with driver\_age under 16.
 How would you go about visualizing both lines and points on the plot?
 How would you split your plot into one per each violation type?
 \end{quote}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# Answer2     }
-\NormalTok{trafficstops }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{filter}\NormalTok{(driver_age }\OperatorTok{>=}\StringTok{ }\DecValTok{16}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{wk_day =} \KeywordTok{wday}\NormalTok{(stop_date, }\DataTypeTok{label =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{  }
-\StringTok{  }\KeywordTok{group_by}\NormalTok{(wk_day, driver_race, violation) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{avg_age =} \KeywordTok{mean}\NormalTok{(driver_age)) }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ wk_day, }\DataTypeTok{y =}\NormalTok{ avg_age, }\DataTypeTok{group =}\NormalTok{ driver_race, }\DataTypeTok{color =}\NormalTok{ driver_race)) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
-\StringTok{    }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{violation)     }
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{R-data-wrangling_files/figure-latex/average-age-time-series-2.pdf}
---\textgreater{}
 
 \section{\texorpdfstring{\textbf{\texttt{ggplot2}}
 themes}{ggplot2 themes}}\label{ggplot2-themes}
