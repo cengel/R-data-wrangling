@@ -18,8 +18,8 @@ description: "Workshop materials for Data Wrangling with R"
 - You should have some **basic knowledge** of R, and be familiar with the topics covered in the [Introduction to R](https://cengel.github.io/R-intro/).
 - Have a recent version of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/) installed. 
 - Install and load the `tidyverse` package.
-- Download `MS_trafficstops_bw.csv` from here: https://github.com/cengel/R-data-wrangling/blob/master/data/MS_trafficstops_bw_age.csv
-- Download `MS_acs2015_bw.csv` from here: https://github.com/cengel/R-data-wrangling/blob/master/data/MS_acs2015_bw.csv
+- Download `MS_trafficstops_bw.csv` from here: https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_trafficstops_bw_age.csv
+- Download `MS_acs2015_bw.csv` from here: https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_acs2015_bw.csv
 - Recommended: Create a new RStudio project `R-data-ws` in a new folder `R-data-ws` and download both CSV files into a subdirectory called `data`.
 
 

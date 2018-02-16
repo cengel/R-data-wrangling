@@ -284,8 +284,7 @@ Challenge
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender), <span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>)</code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/color-bar-stretch-1.png" width="70%" /></p>
-<p>The other type of barchart, <code>geom_col</code>, is used if you want the heights of the bars to represent values in the data. It leaves the data as is.</p>
-<p>For example, we can use <code>geom_col</code> for a different way of visualizing the data shown in the scatterplot above. For readability I have also flipped the coordinates:</p>
+<p>The other type of barchart, <code>geom_col</code>, is used if you want the heights of the bars to represent values in the data. It leaves the data as is. For example, we can use <code>geom_col</code> for a different way of visualizing the data shown in the scatterplot above. For readability I have also flipped the coordinates:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MS_demographic <span class="op">%&gt;%</span><span class="st">   </span>
 <span class="st">  </span><span class="kw">filter</span>(pct_white_stopped <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">&amp;</span><span class="st"> </span>pct_black_stopped <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.5</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> county_name, <span class="dt">y =</span> pct_white_stopped <span class="op">-</span><span class="st"> </span>pct_black_stopped)) <span class="op">+</span><span class="st"> </span>
@@ -407,34 +406,6 @@ Challenge
 </blockquote>
 <!--
 
-```r
-# Answer1
-trafficstops %>%
-   filter(driver_age > 16) %>% 
-   mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-   group_by(wk_day, driver_race) %>%
-   summarize(avg_age = mean(driver_age)) %>% 
-   ggplot(aes(x = wk_day, y = avg_age, group = driver_race, color = driver_race)) +
-     geom_line() +
-     geom_point()
-```
-
-<img src="R-data-wrangling_files/figure-html/average-age-time-series-1.png" width="672" />
-
-```r
-# Answer2     
-trafficstops %>%
-  filter(driver_age >= 16) %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, driver_race, violation) %>%
-  summarize(avg_age = mean(driver_age)) %>% 
-  ggplot(aes(x = wk_day, y = avg_age, group = driver_race, color = driver_race)) +
-    geom_line() +
-    geom_point() +
-    facet_wrap(~ violation)     
-```
-
-<img src="R-data-wrangling_files/figure-html/average-age-time-series-2.png" width="672" />
 -->
 </div>
 <div id="ggplot2-themes" class="section level2">

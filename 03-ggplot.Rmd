@@ -219,7 +219,6 @@ ggplot(trafficstops, aes(violation)) +
 ```
 
 The other type of barchart, `geom_col`, is used if you want the heights of the bars to represent values in the data. It leaves the data as is.
-
 For example, we can use `geom_col` for a different way of visualizing the data shown in the scatterplot above. For readability I have also flipped the coordinates:
 
 ```{r demograph-barplot, results='show', purl=FALSE, fig.height=7}
@@ -418,27 +417,19 @@ a placeholder that indicates only one row or column).
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ### Plotting time series challenge:
 ##
-## Use what you just learned to create a plot that depicts how the average age
-## of each driver for the two recorded ethnicities changes through the week.
+### Plotting time series challenge:
+## Use what you just learned to create a plot that depicts 
+## the change of the average age of drivers through the week
+## for each driver race.
 ## Hint: make sure you remove the records with driver_age under 16.
+## Now split your plot so we can see one plot for each violation type.
 ## How would you go about visualizing both lines and points on the plot? 
-## How would you split your plot into one per each violation type? 
 
 ```
 
 <!--
-```{r average-age-time-series, purl=FALSE}
-# Answer1
-trafficstops %>%
-   filter(driver_age > 16) %>% 
-   mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-   group_by(wk_day, driver_race) %>%
-   summarize(avg_age = mean(driver_age)) %>% 
-   ggplot(aes(x = wk_day, y = avg_age, group = driver_race, color = driver_race)) +
-     geom_line() +
-     geom_point()
-
-# Answer2     
+```{r average-age-time-series, purl=FALSE, eval=FALSE, echo=FALSE}
+# Answer
 trafficstops %>%
   filter(driver_age >= 16) %>% 
   mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
