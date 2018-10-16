@@ -116,15 +116,16 @@
 }
 
 \setlength{\droptitle}{-2em}
+
   \title{Data Wrangling with R}
-  \pretitle{\vspace{\droptitle}\centering\huge}
+    \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-  \author{Claudia A Engel}
-  \preauthor{\centering\large\emph}
+    \author{Claudia A Engel}
+    \preauthor{\centering\large\emph}
   \postauthor{\par}
-  \predate{\centering\large\emph}
+      \predate{\centering\large\emph}
   \postdate{\par}
-  \date{Last updated: February 16, 2018}
+    \date{Last updated: October 16, 2018}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -171,17 +172,44 @@ Preparations}\label{prerequisites-and-preparations}
   \href{https://www.rstudio.com/}{RStudio} installed.
 \item
   Install and load the \texttt{tidyverse} package.
-\item
-  Download \texttt{MS\_trafficstops\_bw.csv} from here:
-  \url{https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_trafficstops_bw_age.csv}
-\item
-  Download \texttt{MS\_acs2015\_bw.csv} from here:
-  \url{https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_acs2015_bw.csv}
-\item
-  Recommended: Create a new RStudio project \texttt{R-data-ws} in a new
-  folder \texttt{R-data-ws} and download both CSV files into a
-  subdirectory called \texttt{data}.
 \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)  }
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a new RStudio project \texttt{R-data-ws} in a new folder
+  \texttt{R-data-ws}. Download both CSV files into a subdirectory called
+  \texttt{data} like this:
+\item
+  Download \texttt{MS\_trafficstops\_bw\_age.csv}:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{download.file}\NormalTok{(}\StringTok{"https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv"}\NormalTok{,}
+              \StringTok{"data/MS_trafficstops_bw_age.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Download \texttt{MS\_acs2015\_bw.csv}:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{download.file}\NormalTok{(}\StringTok{"https://github.com/cengel/R-data-wrangling/raw/master/data/MS_acs2015_bw.csv"}\NormalTok{,}
+              \StringTok{"data/MS_acs2015_bw.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -189,11 +217,11 @@ Preparations}\label{prerequisites-and-preparations}
 Boehmke, Bradley C. (2016) Data Wrangling with R
 \url{http://link.springer.com/book/10.1007\%2F978-3-319-45599-0}
 
-Wickham, H. (2014): Tidy Data
-\url{https://www.jstatsoft.org/article/view/v059i10}
-
 Grolemund, G \& Wickham, H (2017): R for Data Science
 \url{http://r4ds.had.co.nz}
+
+Wickham, H. (2014): Tidy Data
+\url{https://www.jstatsoft.org/article/view/v059i10}
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
@@ -802,10 +830,10 @@ we could add a column indicating the minimum age:
 #> # Groups:   driver_race [?]
 #>   driver_race driver_gender mean_age min_age
 #>   <fct>       <fct>            <dbl>   <dbl>
-#> 1 Black       female            33.1   16.0 
-#> 2 Black       male              35.2    7.00
-#> 3 White       female            35.7   15.0 
-#> 4 White       male              36.5   15.0
+#> 1 Black       female            33.1      16
+#> 2 Black       male              35.2       7
+#> 3 White       female            35.7      15
+#> 4 White       male              36.5      15
 \end{verbatim}
 
 \section{Tallying}\label{tallying}
@@ -1262,11 +1290,11 @@ Now we can pipe this into our left join and calculate the percentages:
 #> # A tibble: 82 x 8
 #>   county_name   county_fips driver_race_Black driver_race_White black_pop
 #>   <fct>               <int>             <dbl>             <dbl>     <int>
-#> 1 Adams County        28001               583             359       17757
-#> 2 Alcorn County       28003               468            2877        4281
-#> 3 Amite County        28005              1589            1331        5416
-#> 4 Attala County       28007              2096            2107        8194
-#> 5 Benton County       28009               121              93.0      3078
+#> 1 Adams County        28001               583               359     17757
+#> 2 Alcorn County       28003               468              2877      4281
+#> 3 Amite County        28005              1589              1331      5416
+#> 4 Attala County       28007              2096              2107      8194
+#> 5 Benton County       28009               121                93      3078
 #>   white_pop pct_black_stopped pct_white_stopped
 #>       <int>             <dbl>             <dbl>
 #> 1     12856            0.0328            0.0279

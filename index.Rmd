@@ -18,18 +18,31 @@ description: "Workshop materials for Data Wrangling with R"
 - You should have some **basic knowledge** of R, and be familiar with the topics covered in the [Introduction to R](https://cengel.github.io/R-intro/).
 - Have a recent version of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/) installed. 
 - Install and load the `tidyverse` package.
-- Download `MS_trafficstops_bw.csv` from here: https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_trafficstops_bw_age.csv
-- Download `MS_acs2015_bw.csv` from here: https://raw.githubusercontent.com/cengel/R-data-wrangling/master/data/MS_acs2015_bw.csv
-- Recommended: Create a new RStudio project `R-data-ws` in a new folder `R-data-ws` and download both CSV files into a subdirectory called `data`.
+```{r, eval=FALSE, purl = FALSE}
+install.packages("tidyverse")  
+library(tidyverse)
+```
+- Create a new RStudio project `R-data-ws` in a new folder `R-data-ws`. Download both CSV files into a subdirectory called `data` like this:
+- Download `MS_trafficstops_bw_age.csv`:
+```{r, eval=FALSE, purl = FALSE}
+download.file("https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv",
+              "data/MS_trafficstops_bw_age.csv")
+```
+- Download `MS_acs2015_bw.csv`:
+```{r, eval=FALSE, purl = FALSE}
+download.file("https://github.com/cengel/R-data-wrangling/raw/master/data/MS_acs2015_bw.csv",
+              "data/MS_acs2015_bw.csv")
+```
 
 
 ## References {-}
 Boehmke, Bradley C. (2016) Data Wrangling with R
 http://link.springer.com/book/10.1007%2F978-3-319-45599-0
 
+Grolemund, G & Wickham, H (2017): R for Data Science http://r4ds.had.co.nz
+
 Wickham, H. (2014): Tidy Data https://www.jstatsoft.org/article/view/v059i10
 
-Grolemund, G & Wickham, H (2017): R for Data Science http://r4ds.had.co.nz
 
 ## Acknowledgements {-}
 Part of the materials for this tutorial are adapted from http://datacarpentry.org and http://softwarecarpentry.org.
