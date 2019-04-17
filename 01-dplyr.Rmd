@@ -30,11 +30,11 @@ Manipulation of dataframes is a common task when you start exploring your data. 
 If we were interested in the mean age of the driver in different counties we can do this using the normal base R operations:
 
 ```{r, results='show'}
-mean(trafficstops[trafficstops$county_name == "Tallahatchie County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Clay County", "driver_age"], na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Walthall County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Lee County", "driver_age"], na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Oktibbeha County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Yazoo County", "driver_age"], na.rm = TRUE)
 ```
 
 
@@ -51,7 +51,7 @@ If you haven't, please installe the **`tidyverse`** package.
 install.packages("tidyverse")    
 ```
 
-**`tidyverse`** is an "umbrella-package" that installs a series of packages useful for data analysis which work together well. Some of them are considered **core** packages (among them **`tidyr`**, **`dplyr`**, **`ggplot2`**), because you are likely to use them in almost every analysis. Other packages, like `lubridate` or `stringr` that you are likely to use not for every analysis are also installed. 
+**`tidyverse`** is an "umbrella-package" that installs a series of packages useful for data analysis which work together well. Some of them are considered **core** packages (among them **`tidyr`**, **`dplyr`**, **`ggplot2`**), because you are likely to use them in almost every analysis. Other packages, like `lubridate` (to work wiht dates) or `haven` (for SPSS, Stata, and SAS data) that you are likely to use not for every analysis are also installed. 
 
 If you type the following command, it will load the **core** `tidyverse` packages. 
 
@@ -111,11 +111,11 @@ select(trafficstops, starts_with("driver")) %>% head()
 To choose rows based on specific criteria, use `filter()`:
 
 ```{r, eval=FALSE, purl = FALSE}
-filter(trafficstops, county_name == "Tallahatchie County")
+filter(trafficstops, county_name == "Yazoo County")
 ```
 
 ```{r, results='show', purl = FALSE, echo=FALSE}
-filter(trafficstops, county_name == "Tallahatchie County") %>% head()
+filter(trafficstops, county_name == "Yazoo County") %>% head()
 ```
 
 Here are some other ways to select rows:
@@ -136,7 +136,7 @@ trafficstops %>%
 
 ## Pipes
 
-What if you wanted to select and filter at the same time? There are three ways to do this: use intermediate steps, nested functions, or pipes.
+What if you wanted to filter **and** select on the same data? There are three ways to do this: use intermediate steps, nested functions, or pipes.
 
 * Intermediate steps:
 
@@ -414,20 +414,63 @@ trafficstops %>%
 
 ## Joining two tables
 
-It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. For example, to calculate the proportion of stopped black and white drivers in relation to the entire populations of white and black persons in each county we introduce another table with that demographic information. These are the estimated values of the 5 year average of the 2011-2015 American Community Survey (ACS):
+It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this wexample we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 
 ```{r, results='show'}
 MS_bw_pop <- read.csv("data/MS_acs2015_bw.csv")
 head(MS_bw_pop)
 ```
 
-As unique ID, which uniquely identifies the corresponding records in each table we use the [FIPS code](https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards). It is stored in the `county_fips` column in the `trafficstops` data frame and in the `FIPS` column in `MS_bw_pop`). `dplyr` makes it very easy to bring the two tables together. We will use `left_join` to bring the two tables together into one:
+
+In a first step we will use a prevous `dplyr` command to count all the trafficstops per county.
 
 ```{r, results='show'}
-trafficstops %>%
-  left_join(MS_bw_pop, by = c("county_fips" = "FIPS")) %>% 
+trafficstops %>% 
+  group_by(county_fips) %>% 
+  summarise(n_stops = n()) %>% head()
+```
+
+We will then pipe this into our next operation.
+
+`dplyr` can help us to bring the two tables together. We will use `left_join`, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the County Names. 
+
+```{r, results='show'}
+trafficstops %>% 
+  group_by(county_name) %>% 
+  summarise(n_stops = n()) %>% 
+  left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
   head()
 ```
+
+
+Now we can, for example calculate the percentage of the population that gets stopped in each county.
+
+> <h3>Challenge</h3>
+> 
+> Which county has the highest (lowest) percentage of stopped drivers?
+> Use the snippet from above and pipe into the additional operations
+> to do this.
+
+<!---
+```{r, eval=F, echo=FALSE, purl=FALSE}
+## Answer 
+trafficstops %>% 
+  group_by(county_name) %>% 
+  summarise(n_stops = n()) %>% 
+  left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
+  mutate(pct_stopped = n_stops/bw_pop * 100) %>% 
+  arrange(pct_stopped) %>% 
+  slice(c(1, n()))
+```
+--->
+
+```{r, eval=FALSE, purl=TRUE, echo=FALSE}
+## Join Challenge
+## In which county has the highest percentage of stopped drivers?
+## Use the snippet from above and pipe into the additional operations
+## to do this.
+```
+
 
 `dplyr` join functions are generally equivalent `merge` from the base command, but there are a few advantages: 
 
@@ -440,4 +483,4 @@ https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ
 
 See `?dplyr::join` for all the possible joins.
 
-Now that we got a little bit of an odd table, lets see how we can reshape it to make more sense of it.
+

@@ -1,5 +1,8 @@
 ```{r, echo=FALSE, purl=FALSE, message = FALSE}
 library(tidyverse)
+library(xtable)
+options(xtable.comment = FALSE)
+
 knitr::opts_chunk$set(results='hide', comment = "#>", purl = FALSE)
 trafficstops <- read.csv("data/MS_trafficstops_bw_age.csv")
 ```
@@ -33,10 +36,18 @@ In the 'long' format, you usually have 1 column for the observed variable and
 the other columns are ID variables.
 
 
-For the 'wide' format each row is often a site/subject/patient and you have
-multiple observation variables containing the same type of data. These can be
-either repeated observations over time, or observation of multiple variables (or
-a mix of both). You may find data input may be simpler or some other
+For the 'wide' format a row, for example could be a reserach subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:
+
+```{r wide-exmpl, results='asis', echo=FALSE}
+exmpl_obs <- data.frame(subject_ID = LETTERS[1:3], 
+                        question_1 = c(4, 4, 2),
+                        question_2 = c(3, 1, 5),
+                        question_3 = c(4, 5, 2))
+xtable(exmpl_obs)
+```
+
+
+You may find data input may be simpler or some other
 applications may prefer the 'wide' format. However, many of `R`'s functions have
 been designed assuming you have 'long' format data. This tutorial will help you
 efficiently transform your data regardless of original format.

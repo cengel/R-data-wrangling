@@ -25,12 +25,12 @@ library(tidyverse)
 - Create a new RStudio project `R-data-ws` in a new folder `R-data-ws`. Download both CSV files into a subdirectory called `data` like this:
 - Download `MS_trafficstops_bw_age.csv`:
 ```{r, eval=FALSE, purl = FALSE}
-download.file("https://github.com/cengel/R-data-wrangling/raw/master/data/MS_trafficstops_bw_age.csv",
+download.file("http://bit.ly/MS_trafficstops_bw_age",
               "data/MS_trafficstops_bw_age.csv")
 ```
 - Download `MS_acs2015_bw.csv`:
 ```{r, eval=FALSE, purl = FALSE}
-download.file("https://github.com/cengel/R-data-wrangling/raw/master/data/MS_acs2015_bw.csv",
+download.file("http://bit.ly/MS_acs_2015_bw",
               "data/MS_acs2015_bw.csv")
 ```
 

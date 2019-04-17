@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Data Wrangling with R</title>
+  <title>Chapter 2 Data Manipulation using tidyr | Data Wrangling with R</title>
   <meta name="description" content="Workshop materials for Data Wrangling with R">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Data Wrangling with R" />
+  <meta property="og:title" content="Chapter 2 Data Manipulation using tidyr | Data Wrangling with R" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="cengel/R-data-wrangling" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Data Wrangling with R" />
+  <meta name="twitter:title" content="Chapter 2 Data Manipulation using tidyr | Data Wrangling with R" />
   
   <meta name="twitter:description" content="Workshop materials for Data Wrangling with R" />
   
@@ -35,6 +35,7 @@
 <link rel="next" href="data-visualization-with-ggplot2.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
@@ -49,41 +50,67 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -173,8 +200,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>each column is a variable</li>
 <li>each row is an observation</li>
 </ul>
-<p>In the ‘long’ format, you usually have 1 column for the observed variable and the other columns are ID variables.</p>
-<p>For the ‘wide’ format each row is often a site/subject/patient and you have multiple observation variables containing the same type of data. These can be either repeated observations over time, or observation of multiple variables (or a mix of both). You may find data input may be simpler or some other applications may prefer the ‘wide’ format. However, many of <code>R</code>‘s functions have been designed assuming you have ’long’ format data. This tutorial will help you efficiently transform your data regardless of original format.</p>
+<p>In the ‘long’ format, you usually have 1 column for the observed variable and
+the other columns are ID variables.</p>
+<p>For the ‘wide’ format a row, for example could be a reserach subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:</p>
+
+<p>You may find data input may be simpler or some other
+applications may prefer the ‘wide’ format. However, many of <code>R</code>‘s functions have
+been designed assuming you have ’long’ format data. This tutorial will help you
+efficiently transform your data regardless of original format.</p>
 <div class="figure"><span id="fig:wide-vs-long"></span>
 <img src="img/wide-vs-long.png" alt="Wide vs. Long Table Format" width="30%" />
 <p class="caption">
@@ -189,13 +222,14 @@ Figure 2.1: Wide vs. Long Table Format
 </div>
 <div id="long-to-wide-with-spread" class="section level2">
 <h2><span class="header-section-number">2.2</span> Long to Wide with <code>spread</code></h2>
-<p>Now let’s see this in action. First, using <strong><code>dplyr</code></strong>, let’s create a data frame with the mean age of each driver by gender and county:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span>
+<p>Now let’s see this in action. First, using <strong><code>dplyr</code></strong>, let’s create a data frame
+with the mean age of each driver by gender and county:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_gender)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">group_by</span>(county_name, driver_gender) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
 
-<span class="kw">head</span>(trafficstops_ma)</code></pre></div>
+<span class="kw">head</span>(trafficstops_ma)</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
 #&gt; # Groups:   county_name [3]
 #&gt;   county_name   driver_gender mean_age
@@ -206,11 +240,14 @@ Figure 2.1: Wide vs. Long Table Format
 #&gt; 4 Alcorn County male              34.1
 #&gt; 5 Amite County  female            38.3
 #&gt; 6 Amite County  male              40.3</code></pre>
-<p>Now, to make this long data wide, we use <code>spread</code> from <code>tidyr</code> to spread out the driver gender into columns. <code>spread</code> takes three arguments - the data, the <em>key</em> column, or column with identifying information, the <em>values</em> column - the one with the numbers. We’ll use a pipe so we can ignore the data argument.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide &lt;-<span class="st"> </span>trafficstops_ma <span class="op">%&gt;%</span>
+<p>Now, to make this long data wide, we use <code>spread</code> from <code>tidyr</code> to spread out the
+driver gender into columns. <code>spread</code> takes three arguments - the data, the
+<em>key</em> column, or column with identifying information, the <em>values</em> column - the
+one with the numbers. We’ll use a pipe so we can ignore the data argument.</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide &lt;-<span class="st"> </span>trafficstops_ma <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">spread</span>(driver_gender, mean_age) 
 
-<span class="kw">head</span>(trafficstops_ma_wide)</code></pre></div>
+<span class="kw">head</span>(trafficstops_ma_wide)</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
 #&gt; # Groups:   county_name [6]
 #&gt;   county_name    female  male
@@ -222,10 +259,10 @@ Figure 2.1: Wide vs. Long Table Format
 #&gt; 5 Benton County    32.1  34.4
 #&gt; 6 Bolivar County   33.2  36.3</code></pre>
 <p>We can now do things like compare the mean age of men against women drivers. As example we use the age difference to find the counties with the largest and with the smallest number. (A negative number means that female drivers are on average older than male drivers, a positive number means that male drivers are on average older than women drivers.)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide <span class="op">%&gt;%</span><span class="st"> </span>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">agediff =</span> male <span class="op">-</span><span class="st"> </span>female) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">filter</span>(agediff <span class="op">%in%</span><span class="st"> </span><span class="kw">range</span>(agediff))</code></pre></div>
+<span class="st">  </span><span class="kw">filter</span>(agediff <span class="op">%in%</span><span class="st"> </span><span class="kw">range</span>(agediff))</code></pre>
 <pre><code>#&gt; # A tibble: 2 x 4
 #&gt;   county_name      female  male agediff
 #&gt;   &lt;fct&gt;             &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -235,11 +272,16 @@ Figure 2.1: Wide vs. Long Table Format
 </div>
 <div id="wide-to-long-with-gather" class="section level2">
 <h2><span class="header-section-number">2.3</span> Wide to long with <code>gather</code></h2>
-<p>What if we had the opposite problem, and wanted to go from a wide to long format? For that, we use <code>gather</code> to sweep up a set of columns into one key-value pair. We give it the arguments of a new key and value column name, and then we specify which columns we either want or do not want gathered up. So, to go backwards from <code>trafficstops_ma_wide</code>, and exclude <code>plot_id</code> from the gathering, we would do the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_long &lt;-<span class="st"> </span>trafficstops_ma_wide <span class="op">%&gt;%</span>
+<p>What if we had the opposite problem, and wanted to go from a wide to long
+format? For that, we use <code>gather</code> to sweep up a set of columns into one
+key-value pair. We give it the arguments of a new key and value column name, and
+then we specify which columns we either want or do not want gathered up. So, to
+go backwards from <code>trafficstops_ma_wide</code>, and exclude <code>plot_id</code> from the gathering,
+we would do the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_long &lt;-<span class="st"> </span>trafficstops_ma_wide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">gather</span>(gender, mean_age, <span class="op">-</span>county_name)
 
-<span class="kw">head</span>(trafficstops_ma_long)</code></pre></div>
+<span class="kw">head</span>(trafficstops_ma_long)</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
 #&gt; # Groups:   county_name [6]
 #&gt;   county_name    gender mean_age
@@ -250,10 +292,13 @@ Figure 2.1: Wide vs. Long Table Format
 #&gt; 4 Attala County  female     36.7
 #&gt; 5 Benton County  female     32.1
 #&gt; 6 Bolivar County female     33.2</code></pre>
-<p>We could also have used a specification for what columns to include. This can be useful if you have a large number of identifying columns, and it’s easier to specify what to gather than what to leave alone. And if the columns are in a row, we don’t even need to list them all out – just use the <code>:</code> operator!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide <span class="op">%&gt;%</span>
+<p>We could also have used a specification for what columns to include. This can be
+useful if you have a large number of identifying columns, and it’s easier to
+specify what to gather than what to leave alone. And if the columns are in a
+row, we don’t even need to list them all out – just use the <code>:</code> operator!</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">gather</span>(gender, mean_age, female<span class="op">:</span>male) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">head</span>()</code></pre></div>
+<span class="st">  </span><span class="kw">head</span>()</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
 #&gt; # Groups:   county_name [6]
 #&gt;   county_name    gender mean_age
@@ -270,22 +315,23 @@ Challenge
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>Make a wide data frame with <code>year</code> as columns, <code>violation_raw</code> as rows, and the values are the number of traffic stops per each violation. Use year() from the lubridate package. You will need to summarize before reshaping</p></li>
-<li><p>Now take that data frame, and make it long again, so each row is a unique <code>violation_raw</code> <code>year</code> combination.</p></li>
+<li><p>Now take that data frame, and make it long again, so each row is a unique
+<code>violation_raw</code> <code>year</code> combination.</p></li>
 </ol>
 </blockquote>
 <!---
   
 --->
 <p>Now that you have those commands under your belt, let’s go back to our table from before and reshape it so we can easily calculate the percentage of black and white. To clean things up a little, we remove rows where driver race is unknown.</p>
-<p>We then make sure that we count our <code>NA</code>s as <code>0</code>. We know from earlier that in Tunica County all reported stops are for black drivers (Check again with: <code>trafficstops %&gt;% filter(county_name == &quot;Tunica County&quot;)</code>). By default spread would set the value for white stops to NA. Sometimes it is fine to leave those as NA. Sometimes we want to fill them as zeros, in which case we would add the argument <code>fill = 0</code>. In our case we prefer to count this a 0.</p>
-<p>Lastly, we introduce a separator (<code>sep</code>) as parameter to the spread command. If <code>sep</code> is not <code>NULL</code>, the column names will be given by <code>&quot;&lt;key_name&gt;&lt;sep&gt;&lt;key_value&gt;&quot;</code> and make them more explicit, easier for you to interpret, and for anyone who might use your data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<p>We then make sure that we count our <code>NA</code>s as <code>0</code>. We know from earlier that in Tunica County all reported stops are for black drivers (Check again with: <code>trafficstops %&gt;% filter(county_name == "Tunica County")</code>). By default spread would set the value for white stops to NA. Sometimes it is fine to leave those as NA. Sometimes we want to fill them as zeros, in which case we would add the argument <code>fill = 0</code>. In our case we prefer to count this a 0.</p>
+<p>Lastly, we introduce a separator (<code>sep</code>) as parameter to the spread command. If <code>sep</code> is not <code>NULL</code>, the column names will be given by <code>"&lt;key_name&gt;&lt;sep&gt;&lt;key_value&gt;"</code> and make them more explicit, easier for you to interpret, and for anyone who might use your data.</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">count</span>(county_name, county_fips, driver_race) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">spread</span>(driver_race, n, <span class="dt">fill =</span> <span class="dv">0</span>, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">head</span>()</code></pre></div>
+<span class="st">  </span><span class="kw">head</span>()</code></pre>
 <p>Now we can pipe this into our left join and calculate the percentages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make sure you this table loaded:</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make sure you this table loaded:</span>
 MS_bw_pop &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)
 
 trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
@@ -295,39 +341,56 @@ trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct_black_stopped =</span> driver_race_Black<span class="op">/</span>black_pop,
          <span class="dt">pct_white_stopped =</span> driver_race_White<span class="op">/</span>white_pop) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">print</span>(<span class="dt">n=</span><span class="dv">5</span>, <span class="dt">width=</span><span class="ot">Inf</span>)</code></pre></div>
-<pre><code>#&gt; # A tibble: 82 x 8
-#&gt;   county_name   county_fips driver_race_Black driver_race_White black_pop
-#&gt;   &lt;fct&gt;               &lt;int&gt;             &lt;dbl&gt;             &lt;dbl&gt;     &lt;int&gt;
-#&gt; 1 Adams County        28001               583               359     17757
-#&gt; 2 Alcorn County       28003               468              2877      4281
-#&gt; 3 Amite County        28005              1589              1331      5416
-#&gt; 4 Attala County       28007              2096              2107      8194
-#&gt; 5 Benton County       28009               121                93      3078
-#&gt;   white_pop pct_black_stopped pct_white_stopped
-#&gt;       &lt;int&gt;             &lt;dbl&gt;             &lt;dbl&gt;
-#&gt; 1     12856            0.0328            0.0279
-#&gt; 2     31563            0.109             0.0912
-#&gt; 3      7395            0.293             0.180 
-#&gt; 4     10649            0.256             0.198 
-#&gt; 5      5166            0.0393            0.0180
-#&gt; # ... with 77 more rows</code></pre>
+<span class="st">  </span><span class="kw">print</span>(<span class="dt">n=</span><span class="dv">5</span>, <span class="dt">width=</span><span class="ot">Inf</span>)</code></pre>
+<pre><code>#&gt; # A tibble: 82 x 10
+#&gt;   county_name   county_fips driver_race_Black driver_race_White
+#&gt;   &lt;fct&gt;               &lt;int&gt;             &lt;dbl&gt;             &lt;dbl&gt;
+#&gt; 1 Adams County        28001               583               359
+#&gt; 2 Alcorn County       28003               468              2877
+#&gt; 3 Amite County        28005              1589              1331
+#&gt; 4 Attala County       28007              2096              2107
+#&gt; 5 Benton County       28009               121                93
+#&gt;   County        black_pop white_pop bw_pop pct_black_stopped
+#&gt;   &lt;fct&gt;             &lt;int&gt;     &lt;int&gt;  &lt;int&gt;             &lt;dbl&gt;
+#&gt; 1 Adams County      17757     12856  30613            0.0328
+#&gt; 2 Alcorn County      4281     31563  35844            0.109 
+#&gt; 3 Amite County       5416      7395  12811            0.293 
+#&gt; 4 Attala County      8194     10649  18843            0.256 
+#&gt; 5 Benton County      3078      5166   8244            0.0393
+#&gt;   pct_white_stopped
+#&gt;               &lt;dbl&gt;
+#&gt; 1            0.0279
+#&gt; 2            0.0912
+#&gt; 3            0.180 
+#&gt; 4            0.198 
+#&gt; 5            0.0180
+#&gt; # … with 77 more rows</code></pre>
 <p>Terrific.</p>
 <p>Now let’s use some visualization to help us understand our data. Before we do this though, let’s save this table out.</p>
 </div>
 <div id="exporting-data" class="section level2">
 <h2><span class="header-section-number">2.4</span> Exporting data</h2>
 <p>Instead of printing the above output to the screen we will pipe it into another command. Similar to the <code>read.csv()</code> function used for reading CSV files into R, there is a <code>write.csv()</code> function that generates CSV files from data frames.</p>
-<p>Before using <code>write.csv()</code>, we are going to create a new folder, <code>data_output</code>, in our working directory that will store this generated dataset. We don’t want to write generated datasets in the same directory as our raw data. It’s good practice to keep them separate. The <code>data</code> folder should only contain the raw, unaltered data, and should be left alone to make sure we don’t delete or modify it. In contrast, our script will generate the contents of the <code>data_output</code> directory, so even if the files it contains are deleted, we can always re-generate them.</p>
-<p>We can save the table generated by the join as a CSV file in our <code>data_output</code> folder. By default, <code>write.csv()</code> includes a column with row names (in our case the names are just the row numbers), so we need to add <code>row.names = FALSE</code> so they are not included:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<p>Before using <code>write.csv()</code>, we are going to create a new folder, <code>data_output</code>,
+in our working directory that will store this generated dataset. We don’t want
+to write generated datasets in the same directory as our raw data. It’s good
+practice to keep them separate. The <code>data</code> folder should only contain the raw,
+unaltered data, and should be left alone to make sure we don’t delete or modify
+it. In contrast, our script will generate the contents of the <code>data_output</code>
+directory, so even if the files it contains are deleted, we can always
+re-generate them.</p>
+<p>We can save the table generated by the join as a CSV file in our <code>data_output</code>
+folder. By default, <code>write.csv()</code> includes a column with row names (in our case
+the names are just the row numbers), so we need to add <code>row.names = FALSE</code> so
+they are not included:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">count</span>(county_name, county_fips, driver_race) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">spread</span>(driver_race, n, <span class="dt">fill =</span> <span class="dv">0</span>, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span>
 <span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct_black_stopped =</span> driver_race_Black<span class="op">/</span>black_pop,
          <span class="dt">pct_white_stopped =</span> driver_race_White<span class="op">/</span>white_pop) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">write.csv</span>(<span class="dt">file =</span> <span class="st">&quot;data_output/MS_demographic.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<span class="st">  </span><span class="kw">write.csv</span>(<span class="dt">file =</span> <span class="st">&quot;data_output/MS_demographic.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
 
 </div>
 </div>
@@ -357,7 +420,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -369,6 +432,10 @@ gitbook.start({
 "edit": {
 "link": "https://github.com/cengel/R-data-wrangling/edit/master/02-tidyr.Rmd",
 "text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
 },
 "download": ["R-data-wrangling.pdf", "R-data-wrangling.epub"],
 "toc": {
