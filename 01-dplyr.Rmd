@@ -414,7 +414,7 @@ trafficstops %>%
 
 ## Joining two tables
 
-It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this wexample we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
+It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 
 ```{r, results='show'}
 MS_bw_pop <- read.csv("data/MS_acs2015_bw.csv")
