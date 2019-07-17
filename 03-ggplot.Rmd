@@ -245,23 +245,23 @@ trafficstops %>%
 
 ## Boxplot
 
-For this segment let's extract and work with the stops for Chickasaw County only.
+For this segment let's extract and work with the stops for Yazoo County only.
 
-```{r chickasaw-extract}
-Chickasaw_stops <- filter(trafficstops, county_name == "Chickasaw County")
+```{r yazoo-extract}
+Yazoo_stops <- filter(trafficstops, county_name == "Yazoo County")
 ```
 
 We can use boxplots to visualize the distribution of driver age within each violation:
 
 ```{r boxplot, purl=FALSE, out.width='70%'}
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_boxplot()
 ```
 
 By adding points to boxplot, we can have a better idea of the number of
 measurements and of their distribution. 
 ```{r boxplot-with-jitter, purl=FALSE, out.width='70%'}
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_boxplot() +
     geom_jitter()
 ```
@@ -269,7 +269,7 @@ ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
 That looks quite messy. Let's clean it up by using the `alpha` parameter to make the dots more transparent and also change their color:
 
 ```{r boxplot-with-jitter-transparent, purl=FALSE, out.width='70%'}
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_boxplot() +
     geom_jitter(alpha = 0.5, color = "tomato")
 ```
@@ -277,7 +277,7 @@ ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
 Notice how the boxplot layer is behind the jitter layer. We will change the plotting order to keep the boxplot visible. 
 
 ```{r boxplot-with-jitter-reordered, purl=FALSE, out.width='70%'}
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_jitter(alpha = 0.1, color = "tomato") + 
     geom_boxplot()
 ```
@@ -285,7 +285,7 @@ ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
 And finally we will change the transparency of the box plot so it does not cover the points:
 
 ```{r boxplot-with-jitter-clean, purl=FALSE, out.width='70%'}
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_jitter(alpha = 0.1, color = "tomato") +
     geom_boxplot(alpha = 0)  
 ```
@@ -310,7 +310,7 @@ ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
 ```{r boxplot-challenge, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Challenge with boxplots:
 ##  Start with the boxplot we created:
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_jitter(alpha = 0.1, color = "tomato") +
     geom_boxplot(alpha = 0)
 
@@ -525,7 +525,7 @@ If you like the changes you created better than the default theme, you can save 
 grey_theme <- theme(axis.text.x = element_text(colour="grey40", size=12, angle=90, hjust=.5, vjust=.5),
                    axis.text.y = element_text(colour="grey40", size=12), text=element_text(size=16))
 
-ggplot(data = Chickasaw_stops, aes(x = violation, y = driver_age)) +
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
   geom_boxplot() + 
   grey_theme
 
