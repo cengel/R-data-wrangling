@@ -109,7 +109,7 @@ What if we had the opposite problem, and wanted to go from a wide to long
 format? For that, we use `gather` to sweep up a set of columns into one
 key-value pair. We give it the arguments of a new key and value column name, and
 then we specify which columns we either want or do not want gathered up. So, to
-go backwards from `trafficstops_ma_wide`, and exclude `plot_id` from the gathering,
+go backwards from `trafficstops_ma_wide`, and exclude `county_name` from the gathering,
 we would do the following:
 
 ```{r, results='show', purl=FALSE}
