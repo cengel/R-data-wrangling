@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 Data Manipulation using tidyr | Data Wrangling with R</title>
-  <meta name="description" content="Workshop materials for Data Wrangling with R">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="Workshop materials for Data Wrangling with R" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 Data Manipulation using tidyr | Data Wrangling with R" />
   <meta property="og:type" content="book" />
@@ -22,13 +21,13 @@
   <meta name="twitter:description" content="Workshop materials for Data Wrangling with R" />
   
 
-<meta name="author" content="Claudia A Engel">
+<meta name="author" content="Claudia A Engel" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
 <link rel="prev" href="dplyr.html">
@@ -249,7 +248,7 @@ one with the numbers. We’ll use a pipe so we can ignore the data argument.</p>
 
 <span class="kw">head</span>(trafficstops_ma_wide)</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
-#&gt; # Groups:   county_name [6]
+#&gt; # Groups:   county_name [82]
 #&gt;   county_name    female  male
 #&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;dbl&gt;
 #&gt; 1 Adams County     36.7  38.4
@@ -276,14 +275,14 @@ one with the numbers. We’ll use a pipe so we can ignore the data argument.</p>
 format? For that, we use <code>gather</code> to sweep up a set of columns into one
 key-value pair. We give it the arguments of a new key and value column name, and
 then we specify which columns we either want or do not want gathered up. So, to
-go backwards from <code>trafficstops_ma_wide</code>, and exclude <code>plot_id</code> from the gathering,
+go backwards from <code>trafficstops_ma_wide</code>, and exclude <code>county_name</code> from the gathering,
 we would do the following:</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_long &lt;-<span class="st"> </span>trafficstops_ma_wide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">gather</span>(gender, mean_age, <span class="op">-</span>county_name)
 
 <span class="kw">head</span>(trafficstops_ma_long)</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
-#&gt; # Groups:   county_name [6]
+#&gt; # Groups:   county_name [82]
 #&gt;   county_name    gender mean_age
 #&gt;   &lt;fct&gt;          &lt;chr&gt;     &lt;dbl&gt;
 #&gt; 1 Adams County   female     36.7
@@ -295,12 +294,12 @@ we would do the following:</p>
 <p>We could also have used a specification for what columns to include. This can be
 useful if you have a large number of identifying columns, and it’s easier to
 specify what to gather than what to leave alone. And if the columns are in a
-row, we don’t even need to list them all out – just use the <code>:</code> operator!</p>
+row, we don’t even need to list them all out – we can use the <code>:</code> operator!</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops_ma_wide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">gather</span>(gender, mean_age, female<span class="op">:</span>male) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">head</span>()</code></pre>
 <pre><code>#&gt; # A tibble: 6 x 3
-#&gt; # Groups:   county_name [6]
+#&gt; # Groups:   county_name [82]
 #&gt;   county_name    gender mean_age
 #&gt;   &lt;fct&gt;          &lt;chr&gt;     &lt;dbl&gt;
 #&gt; 1 Adams County   female     36.7
@@ -322,55 +321,10 @@ Challenge
 <!---
   
 --->
-<p>Now that you have those commands under your belt, let’s go back to our table from before and reshape it so we can easily calculate the percentage of black and white. To clean things up a little, we remove rows where driver race is unknown.</p>
-<p>We then make sure that we count our <code>NA</code>s as <code>0</code>. We know from earlier that in Tunica County all reported stops are for black drivers (Check again with: <code>trafficstops %&gt;% filter(county_name == "Tunica County")</code>). By default spread would set the value for white stops to NA. Sometimes it is fine to leave those as NA. Sometimes we want to fill them as zeros, in which case we would add the argument <code>fill = 0</code>. In our case we prefer to count this a 0.</p>
-<p>Lastly, we introduce a separator (<code>sep</code>) as parameter to the spread command. If <code>sep</code> is not <code>NULL</code>, the column names will be given by <code>"&lt;key_name&gt;&lt;sep&gt;&lt;key_value&gt;"</code> and make them more explicit, easier for you to interpret, and for anyone who might use your data.</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">count</span>(county_name, county_fips, driver_race) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">spread</span>(driver_race, n, <span class="dt">fill =</span> <span class="dv">0</span>, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">head</span>()</code></pre>
-<p>Now we can pipe this into our left join and calculate the percentages:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make sure you this table loaded:</span>
-MS_bw_pop &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)
-
-trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">count</span>(county_name, county_fips, driver_race) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">spread</span>(driver_race, n, <span class="dt">fill =</span> <span class="dv">0</span>, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span>
-<span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct_black_stopped =</span> driver_race_Black<span class="op">/</span>black_pop,
-         <span class="dt">pct_white_stopped =</span> driver_race_White<span class="op">/</span>white_pop) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">print</span>(<span class="dt">n=</span><span class="dv">5</span>, <span class="dt">width=</span><span class="ot">Inf</span>)</code></pre>
-<pre><code>#&gt; # A tibble: 82 x 10
-#&gt;   county_name   county_fips driver_race_Black driver_race_White
-#&gt;   &lt;fct&gt;               &lt;int&gt;             &lt;dbl&gt;             &lt;dbl&gt;
-#&gt; 1 Adams County        28001               583               359
-#&gt; 2 Alcorn County       28003               468              2877
-#&gt; 3 Amite County        28005              1589              1331
-#&gt; 4 Attala County       28007              2096              2107
-#&gt; 5 Benton County       28009               121                93
-#&gt;   County        black_pop white_pop bw_pop pct_black_stopped
-#&gt;   &lt;fct&gt;             &lt;int&gt;     &lt;int&gt;  &lt;int&gt;             &lt;dbl&gt;
-#&gt; 1 Adams County      17757     12856  30613            0.0328
-#&gt; 2 Alcorn County      4281     31563  35844            0.109 
-#&gt; 3 Amite County       5416      7395  12811            0.293 
-#&gt; 4 Attala County      8194     10649  18843            0.256 
-#&gt; 5 Benton County      3078      5166   8244            0.0393
-#&gt;   pct_white_stopped
-#&gt;               &lt;dbl&gt;
-#&gt; 1            0.0279
-#&gt; 2            0.0912
-#&gt; 3            0.180 
-#&gt; 4            0.198 
-#&gt; 5            0.0180
-#&gt; # … with 77 more rows</code></pre>
-<p>Terrific.</p>
-<p>Now let’s use some visualization to help us understand our data. Before we do this though, let’s save this table out.</p>
 </div>
 <div id="exporting-data" class="section level2">
 <h2><span class="header-section-number">2.4</span> Exporting data</h2>
-<p>Instead of printing the above output to the screen we will pipe it into another command. Similar to the <code>read.csv()</code> function used for reading CSV files into R, there is a <code>write.csv()</code> function that generates CSV files from data frames.</p>
+<p>Similar to the <code>read.csv()</code> function used for reading CSV files into R, there is a <code>write.csv()</code> function that generates CSV files from data frames.</p>
 <p>Before using <code>write.csv()</code>, we are going to create a new folder, <code>data_output</code>,
 in our working directory that will store this generated dataset. We don’t want
 to write generated datasets in the same directory as our raw data. It’s good
@@ -379,18 +333,11 @@ unaltered data, and should be left alone to make sure we don’t delete or modif
 it. In contrast, our script will generate the contents of the <code>data_output</code>
 directory, so even if the files it contains are deleted, we can always
 re-generate them.</p>
-<p>We can save the table generated by the join as a CSV file in our <code>data_output</code>
+<p>We can save the table generated above in our <code>data_output</code>
 folder. By default, <code>write.csv()</code> includes a column with row names (in our case
-the names are just the row numbers), so we need to add <code>row.names = FALSE</code> so
+these names are the row numbers), so we need to add <code>row.names = FALSE</code> so
 they are not included:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">count</span>(county_name, county_fips, driver_race) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">spread</span>(driver_race, n, <span class="dt">fill =</span> <span class="dv">0</span>, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span>
-<span class="st">  </span><span class="kw">left_join</span>(MS_bw_pop, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_fips&quot;</span> =<span class="st"> &quot;FIPS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct_black_stopped =</span> driver_race_Black<span class="op">/</span>black_pop,
-         <span class="dt">pct_white_stopped =</span> driver_race_White<span class="op">/</span>white_pop) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">write.csv</span>(<span class="dt">file =</span> <span class="st">&quot;data_output/MS_demographic.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(trafficstops_ma_wide, <span class="st">&quot;data_output/MS_county_stops.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
 
 </div>
 </div>

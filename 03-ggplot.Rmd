@@ -296,7 +296,7 @@ ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
 
 To make things a little easer we first convert the `stop_date` column we plan to use to Date format and use the `wday` function to extract and add a new column with the weekday for each of these dates. For better understanding we will label the weekdays.
 
-```{r eval=FALSE}
+```{r add-weekday-col, purl=FALSE}
 library(lubridate)
 trafficstops <- trafficstops %>% 
   mutate(stop_date = ymd(stop_date),
@@ -305,7 +305,7 @@ trafficstops <- trafficstops %>%
 
 Let's calculate number of violation per weekday. We will use `count` for this, like this:
 
-```{r, purl=FALSE}
+```{r, count-weekly-violations, purl=FALSE}
 trafficstops %>%
   count(wk_day, violation) 
 ```

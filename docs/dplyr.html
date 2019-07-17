@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 1 Data Manipulation using dplyr | Data Wrangling with R</title>
-  <meta name="description" content="Workshop materials for Data Wrangling with R">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="Workshop materials for Data Wrangling with R" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 1 Data Manipulation using dplyr | Data Wrangling with R" />
   <meta property="og:type" content="book" />
@@ -22,13 +21,13 @@
   <meta name="twitter:description" content="Workshop materials for Data Wrangling with R" />
   
 
-<meta name="author" content="Claudia A Engel">
+<meta name="author" content="Claudia A Engel" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
 <link rel="prev" href="index.html">
@@ -396,28 +395,36 @@ trafficstops %>%
 <div id="add-new-columns" class="section level2">
 <h2><span class="header-section-number">1.4</span> Add new columns</h2>
 <p>Frequently you’ll want to create new columns based on the values in existing columns. For this we’ll use <code>mutate()</code>.</p>
-<p>To create a new column with the year the driver was born we will use the lubridate library, which is installed with <code>tidyverse</code>. We use <code>ymd()</code> to convert the date column into a date object and then use <code>year()</code> to extract the year only.</p>
+<p>To create a new column with the year the driver was born we can extract the first 4 elements of the string that represents the <code>driver_birthdate</code> and add it to the data frame like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">substring</span>(driver_birthdate, <span class="dv">1</span>, <span class="dv">4</span>))</code></pre>
+<p>The new and edited columns will not permanently be added to the existing data frame – unless we explicitly save the output.</p>
+<p>We can als use <code>mutate</code> to reassign values to an existing column. So here is an alternative to do the same as above, but here we first will use the <code>lubridate</code> library, which is installed with <code>tidyverse</code> to convert our string to an actual date format. We will then use the <code>year()</code> function to extract the year. All of this can happen in the same call to <code>mutate()</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
 
 trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)))</code></pre>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_date =</span> <span class="kw">ymd</span>(driver_birthdate),
+         <span class="dt">birth_year =</span> <span class="kw">year</span>(driver_birthdate))</code></pre>
 <p>If this runs off your screen and you just want to see the first few rows, you
 can use a pipe to view the <code>head()</code> of the data. (Pipes work with non-<strong><code>dplyr</code></strong>
 functions, too, as long as the <strong><code>dplyr</code></strong> or <code>magrittr</code> package is loaded). When piping into a function with no additional arguments, you can call the
 function with or without parentheses (e.g. <code>head</code> or <code>head()</code>). (I like to add the parentheses to remind myself that it is a function and not a variable.)</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_date =</span> <span class="kw">ymd</span>(driver_birthdate),
+         <span class="dt">birth_year =</span> <span class="kw">year</span>(driver_birthdate)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">head</span>()</code></pre>
-<p>You can also create a second new column based on the first new column within the same call of <code>mutate()</code>:</p>
+<p>We can keep adding columns like this:</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
-           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">head</span>()</code></pre>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_date =</span> <span class="kw">ymd</span>(driver_birthdate),
+         <span class="dt">birth_year =</span> <span class="kw">year</span>(driver_birthdate),
+         <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">head</span>()</code></pre>
 <p>We are beginning to see the power of piping. Here is a slightly expanded example, where we select the column <code>birth_cohort</code> that we have created and send it to plot:</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">birth_year =</span> <span class="kw">year</span>(<span class="kw">ymd</span>(driver_birthdate)),
-           <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>,
-           <span class="dt">birth_cohort =</span> <span class="kw">factor</span>(birth_cohort)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">birth_date =</span> <span class="kw">ymd</span>(driver_birthdate),
+         <span class="dt">birth_year =</span> <span class="kw">year</span>(driver_birthdate),
+         <span class="dt">birth_cohort =</span> <span class="kw">round</span>(birth_year<span class="op">/</span><span class="dv">10</span>)<span class="op">*</span><span class="dv">10</span>,
+         <span class="dt">birth_cohort =</span> <span class="kw">factor</span>(birth_cohort)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">select</span>(birth_cohort) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">plot</span>()</code></pre>
 <div class="figure"><span id="fig:driver-birth-cohorts"></span>
@@ -467,57 +474,88 @@ to calculate the summary statistics. So to view the mean age for black and white
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(driver_race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
+<pre><code>#&gt; Warning: Factor `driver_race` contains implicit NA, consider using
+#&gt; `forcats::fct_explicit_na`</code></pre>
 <pre><code>#&gt; # A tibble: 3 x 2
 #&gt;   driver_race mean_age
 #&gt;   &lt;fct&gt;          &lt;dbl&gt;
 #&gt; 1 Black           34.2
 #&gt; 2 White           36.2
 #&gt; 3 &lt;NA&gt;            34.5</code></pre>
+<p>So, back to the beginning of teh chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(county_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
+<p>You can also group by multiple columns:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(county_name, driver_race) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
+<pre><code>#&gt; Warning: Factor `driver_race` contains implicit NA, consider using
+#&gt; `forcats::fct_explicit_na`</code></pre>
+<pre><code>#&gt; # A tibble: 178 x 3
+#&gt; # Groups:   county_name [82]
+#&gt;    county_name   driver_race mean_age
+#&gt;    &lt;fct&gt;         &lt;fct&gt;          &lt;dbl&gt;
+#&gt;  1 Adams County  Black           36.2
+#&gt;  2 Adams County  White           40.0
+#&gt;  3 Alcorn County Black           34.6
+#&gt;  4 Alcorn County White           33.6
+#&gt;  5 Amite County  Black           37.5
+#&gt;  6 Amite County  White           42.1
+#&gt;  7 Amite County  &lt;NA&gt;            24  
+#&gt;  8 Attala County Black           36.4
+#&gt;  9 Attala County White           38.6
+#&gt; 10 Benton County Black           34.7
+#&gt; # … with 168 more rows</code></pre>
 <p>If we wanted to remove the line with <code>NA</code> we could insert a <code>filter()</code> in the chain:</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(county_name, driver_race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
-<pre><code>#&gt; # A tibble: 2 x 2
-#&gt;   driver_race mean_age
-#&gt;   &lt;fct&gt;          &lt;dbl&gt;
-#&gt; 1 Black           34.2
-#&gt; 2 White           36.2</code></pre>
+<pre><code>#&gt; # A tibble: 163 x 3
+#&gt; # Groups:   county_name [82]
+#&gt;    county_name   driver_race mean_age
+#&gt;    &lt;fct&gt;         &lt;fct&gt;          &lt;dbl&gt;
+#&gt;  1 Adams County  Black           36.2
+#&gt;  2 Adams County  White           40.0
+#&gt;  3 Alcorn County Black           34.6
+#&gt;  4 Alcorn County White           33.6
+#&gt;  5 Amite County  Black           37.5
+#&gt;  6 Amite County  White           42.1
+#&gt;  7 Attala County Black           36.4
+#&gt;  8 Attala County White           38.6
+#&gt;  9 Benton County Black           34.7
+#&gt; 10 Benton County White           32.0
+#&gt; # … with 153 more rows</code></pre>
 <p>Recall that <code>is.na()</code> is a function that determines whether something is an <code>NA</code>. The <code>!</code> symbol negates the result, so we’re asking for everything that is <em>not</em> an <code>NA</code>.</p>
 <p>You may have noticed that the output from these calls looks a little different. That’s because <strong><code>dplyr</code></strong> has changed our <code>data.frame</code> object
 to an object of class <code>tbl_df</code>, also known as a “tibble”. Tibble’s data
 structure is very similar to a data frame. For our purposes the only differences
 are that (1) columns of class <code>character</code> are never converted into
 factors, and (2) in addition to displaying the data type of each column under its name, it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the <code>width</code> parameter to <code>Inf</code>. To print the first 6 rows for example we would do this: <code>print(my_tibble, n=6, width=Inf)</code>.</p>
-<p>You can also group by multiple columns:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
-<pre><code>#&gt; # A tibble: 4 x 3
-#&gt; # Groups:   driver_race [?]
-#&gt;   driver_race driver_gender mean_age
-#&gt;   &lt;fct&gt;       &lt;fct&gt;            &lt;dbl&gt;
-#&gt; 1 Black       female            33.1
-#&gt; 2 Black       male              35.2
-#&gt; 3 White       female            35.7
-#&gt; 4 White       male              36.5</code></pre>
 <p>Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
 column indicating the minimum age:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(driver_race)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(driver_race, driver_gender) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(county_name, driver_race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
             <span class="dt">min_age =</span> <span class="kw">min</span>(driver_age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre>
-<pre><code>#&gt; # A tibble: 4 x 4
-#&gt; # Groups:   driver_race [?]
-#&gt;   driver_race driver_gender mean_age min_age
-#&gt;   &lt;fct&gt;       &lt;fct&gt;            &lt;dbl&gt;   &lt;dbl&gt;
-#&gt; 1 Black       female            33.1      16
-#&gt; 2 Black       male              35.2       7
-#&gt; 3 White       female            35.7      15
-#&gt; 4 White       male              36.5      15</code></pre>
+<pre><code>#&gt; # A tibble: 163 x 4
+#&gt; # Groups:   county_name [82]
+#&gt;    county_name   driver_race mean_age min_age
+#&gt;    &lt;fct&gt;         &lt;fct&gt;          &lt;dbl&gt;   &lt;int&gt;
+#&gt;  1 Adams County  Black           36.2      16
+#&gt;  2 Adams County  White           40.0      16
+#&gt;  3 Alcorn County Black           34.6      17
+#&gt;  4 Alcorn County White           33.6      15
+#&gt;  5 Amite County  Black           37.5      17
+#&gt;  6 Amite County  White           42.1      15
+#&gt;  7 Attala County Black           36.4       8
+#&gt;  8 Attala County White           38.6      15
+#&gt;  9 Benton County Black           34.7      18
+#&gt; 10 Benton County White           32.0      18
+#&gt; # … with 153 more rows</code></pre>
 </div>
 <div id="tallying" class="section level2">
 <h2><span class="header-section-number">1.6</span> Tallying</h2>
@@ -527,18 +565,21 @@ provides <code>tally()</code>. For example, if we wanted to see how many traffic
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tally</span>()</code></pre>
-<p>Here, <code>tally()</code> is the action applied to the groups created by <code>group_by()</code> and counts the total number of records for each category.</p>
-<p>Alternatives:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(officer_id) <span class="co"># count() calls group_by automatically, then tallies</span>
-
-trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="co"># n() is useful when count is needed for a calculation</span></code></pre>
 <p>We can optionally sort the results in descending order by adding <code>sort=TRUE</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tally</span>(<span class="dt">sort=</span><span class="ot">TRUE</span>)</code></pre>
+<p>Here, <code>tally()</code> is the action applied to the groups created by <code>group_by()</code> and counts the total number of records for each category.</p>
+<p>Alternatives:</p>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(officer_id) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="co"># n() is useful when count is needed for a calculation</span></code></pre>
+<pre><code>#&gt; Warning: Factor `officer_id` contains implicit NA, consider using
+#&gt; `forcats::fct_explicit_na`</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">count</span>(officer_id) <span class="co"># count() calls group_by automatically, then tallies</span></code></pre>
+<pre><code>#&gt; Warning: Factor `officer_id` contains implicit NA, consider using
+#&gt; `forcats::fct_explicit_na`</code></pre>
 <blockquote>
 <h3>
 Challenge
@@ -552,7 +593,7 @@ Hint: use the year() function from lubridate.</p>
 </div>
 <div id="joining-two-tables" class="section level2">
 <h2><span class="header-section-number">1.7</span> Joining two tables</h2>
-<p>It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this wexample we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):</p>
+<p>It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):</p>
 <pre class="sourceCode r"><code class="sourceCode r">MS_bw_pop &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)
 <span class="kw">head</span>(MS_bw_pop)</code></pre>
 <pre><code>#&gt;              County  FIPS black_pop white_pop bw_pop
@@ -564,19 +605,23 @@ Hint: use the year() function from lubridate.</p>
 #&gt; 6    Jackson County 28059     30704    101686 132390</code></pre>
 <p>In a first step we will use a prevous <code>dplyr</code> command to count all the trafficstops per county.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(county_fips) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_stops =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</code></pre>
-<pre><code>#&gt; # A tibble: 6 x 2
-#&gt;   county_fips n_stops
-#&gt;         &lt;int&gt;   &lt;int&gt;
-#&gt; 1       28001     942
-#&gt; 2       28003    3345
-#&gt; 3       28005    2921
-#&gt; 4       28007    4203
-#&gt; 5       28009     214
-#&gt; 6       28011    4526</code></pre>
-<p>We will then pipe this into our next operation.</p>
-<p><code>dplyr</code> can help us to bring the two tables together. We will use <code>left_join</code>, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the County Names.</p>
+<span class="st">  </span><span class="kw">group_by</span>(county_name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_stops =</span> <span class="kw">n</span>())</code></pre>
+<pre><code>#&gt; # A tibble: 82 x 2
+#&gt;    county_name      n_stops
+#&gt;    &lt;fct&gt;              &lt;int&gt;
+#&gt;  1 Adams County         942
+#&gt;  2 Alcorn County       3345
+#&gt;  3 Amite County        2921
+#&gt;  4 Attala County       4203
+#&gt;  5 Benton County        214
+#&gt;  6 Bolivar County      4526
+#&gt;  7 Calhoun County      1658
+#&gt;  8 Carroll County      1788
+#&gt;  9 Chickasaw County    3869
+#&gt; 10 Choctaw County       613
+#&gt; # … with 72 more rows</code></pre>
+<p>We will then pipe this into our next operation where we bring the two tables together. We will use <code>left_join</code>, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the County Names.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(county_name) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_stops =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
