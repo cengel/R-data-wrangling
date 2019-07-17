@@ -322,83 +322,71 @@ ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
 
 ## Plotting time series data
 
-To make things a little easer we first convert the date column we plan to use to Date format.
+To make things a little easer we first convert the `stop_date` column we plan to use to Date format and use the `wday` function to extract and add a new column with the weekday for each of these dates. For better understanding we will label the weekdays.
 
 ```{r eval=FALSE}
 library(lubridate)
-class(trafficstops$stop_date)
-trafficstops$stop_date <- ymd(trafficstops$stop_date)
-class(trafficstops$stop_date)
+trafficstops <- trafficstops %>% 
+  mutate(stop_date = ymd(stop_date),
+         wk_day = wday(stop_date, label = TRUE))
 ```
 
-Let's calculate number of violation per weekday. For better understanding we will label the weekdays. First we need to group the data and count records within each group:
+Let's calculate number of violation per weekday. We will use `count` for this, like this:
+
 ```{r, purl=FALSE}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, violation) %>%
-  tally
+trafficstops %>%
+  count(wk_day, violation) 
 ```
 
 Timelapse data can be visualized as a line plot (with -- you guessed it -- `geom_line()`) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:
 
 ```{r first-time-series, purl=FALSE}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, violation) %>%
-  tally %>% 
-  ggplot(aes(x = wk_day, y = n)) +
-     geom_line()
+trafficstops %>%
+  count(wk_day, violation) %>% 
+  ggplot(aes(wk_day, n)) +
+    geom_line()
 ```
 
-Unfortunately, this does not work because we plotted data for all the violations together. So what ggplot displays is the range of all values for each year in a vertial line. We need to tell ggplot to draw a line for each violation by modifying the aesthetic function to include `group = violation`:
+Oops. What happende here? We plotted data for all the violations together! So what ggplot displays is the range of all values for each year in a vertial line. We need to tell ggplot to draw a separate line for each violation by modifying the aesthetic function to include `group = violation`:
 
 ```{r time-series-by-violation, purl=FALSE, out.width='70%'}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, violation) %>%
-  tally %>% 
-  ggplot(aes(x = wk_day, y = n, group = violation)) +
-     geom_line()
+trafficstops %>%
+  count(wk_day, violation) %>% 
+  ggplot(aes(wk_day, n, group = violation)) +
+    geom_line()
 ```
 
 We will be able to distinguish violations in the plot if we add colors. (Colors groups automatically if the variable is numeric).  
 
 ```{r time-series-with-colors, purl=FALSE, out.width='70%'}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, violation) %>%
-  tally %>% 
-  ggplot(aes(x = wk_day, y = n, group = violation, color = violation)) +
-     geom_line()
+trafficstops %>%
+  count(wk_day, violation) %>% 
+  ggplot(aes(wk_day, n, group = violation, color = violation)) +
+    geom_line()
 ```
 
 
 ## Faceting
 
 ggplot has a special technique called *faceting* that allows to split one plot
-into multiple plots based on a factor included in the dataset. We will use it to
-make a time series plot for each violation:
+into multiple plots based on a factor included in the dataset. So instead of using coloring to separate out different violations, we can make a time series plot for each violation:
 
 ```{r first-facet, purl=FALSE, out.width='70%'}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label = TRUE)) %>%  
-  group_by(wk_day, violation) %>%
-  tally %>% 
-  ggplot(aes(x = wk_day, y = n, group = violation)) +
-     geom_line() +
+trafficstops %>%
+  count(wk_day, violation) %>% 
+  ggplot(aes(wk_day, n, group = violation)) +
+    geom_line() +
      facet_wrap(~ violation)
 ```
 
-Now we would like to split the line in each plot by the race of the driver. To do that we need to make counts in the data frame grouped by `day`, `violation`, and `driver_race`. We then make the faceted plot by splitting further by race using `color` and `group` (within a single plot):
+Now we would like to split the line in each plot by the race of the driver. To do that we count in the data frame grouped by `wk_day`, `violation`, **and** `driver_race`. We then create the faceted plot by splitting further by race using `color` and `group` (within a single plot):
 
 ```{r, facet-by-violation-and-race, purl=FALSE}
-trafficstops %>% 
-  mutate(wk_day = wday(stop_date, label=TRUE)) %>% 
-  group_by(wk_day, violation, driver_race) %>%
-  tally %>% 
-  ggplot(aes(x = wk_day, y = n, color = driver_race, group = driver_race)) +
-  geom_line() + 
-  facet_wrap(~ violation)
+trafficstops %>%
+  count(wk_day, violation, driver_race) %>% # add driver race here
+  ggplot(aes(wk_day, n, color = driver_race, group=driver_race)) +
+    geom_line() +
+     facet_wrap(~ violation)
 ```
 
 
