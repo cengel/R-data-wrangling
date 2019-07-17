@@ -220,13 +220,24 @@ trafficstops %>%
 
 Frequently you'll want to create new columns based on the values in existing columns. For this we'll use `mutate()`.
 
-To create a new column with the year the driver was born we will use the lubridate library, which is installed with `tidyverse`. We use `ymd()` to convert the date column into a date object and then use `year()` to extract the year only.
+To create a new column with the year the driver was born we can extract the first 4 elements of the string that represents the `driver_birthdate` and add it to the data frame like this:
+
+
+```{r, eval=F, purl = FALSE}
+trafficstops %>% 
+  mutate(birth_year = substring(driver_birthdate, 1, 4))
+```
+
+The new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
+
+We can als use `mutate` to reassign values to an existing column. So here is an alternative to do the same as above, but here we first will use the `lubridate` library, which is installed with `tidyverse` to convert our string to an actual date format. We will then use the `year()` function to extract the year. All of this can happen in the same call to `mutate()`.
 
 ```{r, eval=F, purl = FALSE}
 library(lubridate)
 
 trafficstops %>% 
-  mutate(birth_year = year(ymd(driver_birthdate)))
+  mutate(birth_date = ymd(driver_birthdate),
+         birth_year = year(driver_birthdate))
 ```
 
 If this runs off your screen and you just want to see the first few rows, you
@@ -234,31 +245,33 @@ can use a pipe to view the `head()` of the data. (Pipes work with non-**`dplyr`*
 functions, too, as long as the **`dplyr`** or `magrittr` package is loaded). When piping into a function with no additional arguments, you can call the
 function with or without parentheses (e.g. `head` or `head()`). (I like to add the parentheses to remind myself that it is a function and not a variable.)
 
-
-
 ```{r, eval=F, purl = FALSE}
 trafficstops %>% 
-  mutate(birth_year = year(ymd(driver_birthdate))) %>% 
+  mutate(birth_date = ymd(driver_birthdate),
+         birth_year = year(driver_birthdate)) %>% 
   head()
 ```
 
-
-You can also create a second new column based on the first new column within the same call of `mutate()`:
+We can keep adding columns like this:
 
 ```{r, eval=F, purl = FALSE}
+
 trafficstops %>% 
-    mutate(birth_year = year(ymd(driver_birthdate)),
-           birth_cohort = round(birth_year/10)*10) %>% 
-    head()
+  mutate(birth_date = ymd(driver_birthdate),
+         birth_year = year(driver_birthdate),
+         birth_cohort = round(birth_year/10)*10) %>% 
+  head()
+
 ```
 
 We are beginning to see the power of piping. Here is a slightly expanded example, where we select the column `birth_cohort` that we have created and send it to plot:
 
 ```{r driver-birth-cohorts, results='show', purl = FALSE, fig.cap='Driver Birth Cohorts'}
 trafficstops %>% 
-    mutate(birth_year = year(ymd(driver_birthdate)),
-           birth_cohort = round(birth_year/10)*10,
-           birth_cohort = factor(birth_cohort)) %>%
+  mutate(birth_date = ymd(driver_birthdate),
+         birth_year = year(driver_birthdate),
+         birth_cohort = round(birth_year/10)*10,
+         birth_cohort = factor(birth_cohort)) %>%
     select(birth_cohort) %>% 
     plot()
 ```
@@ -316,12 +329,30 @@ trafficstops %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
+
+So, back to the beginning of teh chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
+
+```{r, results='show', purl = FALSE, eval=FALSE}
+trafficstops %>%
+  group_by(county_name) %>%
+  summarize(mean_age = mean(driver_age, na.rm=TRUE))
+```
+
+You can also group by multiple columns:
+
+```{r, results='show', purl = FALSE}
+trafficstops %>% 
+  group_by(county_name, driver_race) %>%
+  summarize(mean_age = mean(driver_age, na.rm=TRUE))
+```
+
+
 If we wanted to remove the line with `NA` we could insert a `filter()` in the chain:
 
 ```{r, results='show', purl = FALSE}
 trafficstops %>%
   filter(!is.na(driver_race)) %>% 
-  group_by(driver_race) %>%
+  group_by(county_name, driver_race) %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
@@ -333,24 +364,15 @@ structure is very similar to a data frame. For our purposes the only differences
 are that (1) columns of class `character` are never converted into
 factors, and (2) in addition to displaying the data type of each column under its name, it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
 
-You can also group by multiple columns:
-
-```{r, results='show', purl = FALSE}
-trafficstops %>% 
-  filter(!is.na(driver_race)) %>% 
-  group_by(driver_race, driver_gender) %>%
-  summarize(mean_age = mean(driver_age, na.rm=TRUE))
-```
-
 
 Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
 column indicating the minimum age:
 
 ```{r, results='show', purl = FALSE}
-trafficstops %>% 
+trafficstops %>%
   filter(!is.na(driver_race)) %>% 
-  group_by(driver_race, driver_gender) %>%
+  group_by(county_name, driver_race) %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE),
             min_age = min(driver_age, na.rm=TRUE))
 ```
@@ -368,18 +390,6 @@ trafficstops %>%
   tally()
 ```
 
-Here, `tally()` is the action applied to the groups created by `group_by()` and counts the total number of records for each category.
-
-Alternatives:
-```{r}
-trafficstops %>%
-  count(officer_id) # count() calls group_by automatically, then tallies
-
-trafficstops %>%
-  group_by(officer_id) %>%
-  summarize(n = n()) # n() is useful when count is needed for a calculation
-```
-
 We can optionally sort the results in descending order by adding `sort=TRUE`:
 
 ```{r, eval=F, purl = FALSE}
@@ -388,7 +398,19 @@ trafficstops %>%
   tally(sort=TRUE)
 ```
 
-  
+Here, `tally()` is the action applied to the groups created by `group_by()` and counts the total number of records for each category.
+
+Alternatives:
+```{r}
+trafficstops %>%
+  group_by(officer_id) %>%
+  summarize(n = n()) # n() is useful when count is needed for a calculation
+
+trafficstops %>%
+  count(officer_id) # count() calls group_by automatically, then tallies
+```
+
+
 > <h3>Challenge</h3>
 > 
 > Which 5 counties were the ones with the most stops in 2013?
@@ -414,25 +436,22 @@ trafficstops %>%
 
 ## Joining two tables
 
-It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this wexample we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
+It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 
 ```{r, results='show'}
 MS_bw_pop <- read.csv("data/MS_acs2015_bw.csv")
 head(MS_bw_pop)
 ```
 
-
 In a first step we will use a prevous `dplyr` command to count all the trafficstops per county.
 
 ```{r, results='show'}
 trafficstops %>% 
-  group_by(county_fips) %>% 
-  summarise(n_stops = n()) %>% head()
+  group_by(county_name) %>% 
+  summarise(n_stops = n())
 ```
 
-We will then pipe this into our next operation.
-
-`dplyr` can help us to bring the two tables together. We will use `left_join`, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the County Names. 
+We will then pipe this into our next operation where we bring the two tables together. We will use `left_join`, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the County Names. 
 
 ```{r, results='show'}
 trafficstops %>% 
@@ -459,8 +478,7 @@ trafficstops %>%
   summarise(n_stops = n()) %>% 
   left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
   mutate(pct_stopped = n_stops/bw_pop * 100) %>% 
-  arrange(pct_stopped) %>% 
-  slice(c(1, n()))
+  filter(pct_stopped %in% range(pc_stopped))
 ```
 --->
 
