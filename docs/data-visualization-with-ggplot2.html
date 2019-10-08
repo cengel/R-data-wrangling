@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 3 Data Visualization with ggplot2 | Data Wrangling with R</title>
   <meta name="description" content="Workshop materials for Data Wrangling with R" />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 3 Data Visualization with ggplot2 | Data Wrangling with R" />
   <meta property="og:type" content="book" />
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="tidyr.html">
+<link rel="prev" href="tidyr.html"/>
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -39,6 +39,9 @@
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -54,7 +57,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -143,8 +145,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Data Manipulation using <strong><code>tidyr</code></strong></a><ul>
 <li class="chapter" data-level="2.1" data-path="tidyr.html"><a href="tidyr.html#about-long-and-wide-table-format"><i class="fa fa-check"></i><b>2.1</b> About long and wide table format</a></li>
-<li class="chapter" data-level="2.2" data-path="tidyr.html"><a href="tidyr.html#long-to-wide-with-spread"><i class="fa fa-check"></i><b>2.2</b> Long to Wide with <code>spread</code></a></li>
-<li class="chapter" data-level="2.3" data-path="tidyr.html"><a href="tidyr.html#wide-to-long-with-gather"><i class="fa fa-check"></i><b>2.3</b> Wide to long with <code>gather</code></a></li>
+<li class="chapter" data-level="2.2" data-path="tidyr.html"><a href="tidyr.html#long-to-wide-with-pivot_wider"><i class="fa fa-check"></i><b>2.2</b> Long to Wide with <code>pivot_wider</code></a></li>
+<li class="chapter" data-level="2.3" data-path="tidyr.html"><a href="tidyr.html#wide-to-long-with-pivot_longer"><i class="fa fa-check"></i><b>2.3</b> Wide to long with <code>pivot_longer</code></a></li>
 <li class="chapter" data-level="2.4" data-path="tidyr.html"><a href="tidyr.html#exporting-data"><i class="fa fa-check"></i><b>2.4</b> Exporting data</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html"><i class="fa fa-check"></i><b>3</b> Data Visualization with <code id="ggplot">ggplot2</code></a><ul>
@@ -196,10 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <hr />
 <p>We start by loading the required packages. <strong><code>ggplot2</code></strong> is included in the <strong><code>tidyverse</code></strong> package.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
 <p>First, load the data we saved in the previous lesson.</p>
-<pre class="sourceCode r"><code class="sourceCode r">MS_county_stops &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;data_output/MS_county_stops.csv&#39;</span>)</code></pre>
-<p>(If you need to, you can also download the data from here: <a href="https://github.com/cengel/R-data-wrangling/raw/master/data_output/MS_county_stops.csv" class="uri">https://github.com/cengel/R-data-wrangling/raw/master/data_output/MS_county_stops.csv</a>)</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">MS_county_stops &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;data_output/MS_county_stops.csv&#39;</span>)</a></code></pre></div>
+<p>(If you need to, you can also download the data from here: <a href="http://bit.ly/MS_county_stops" class="uri">http://bit.ly/MS_county_stops</a>. Create a folder <code>data_output</code> in your working directory then download with <code>download.file('http://bit.ly/MS_county_stops', 'data_output/MS_county_stops.csv</code>)</p>
 <div id="plotting-with-ggplot2" class="section level2">
 <h2><span class="header-section-number">3.1</span> Plotting with <strong><code>ggplot2</code></strong></h2>
 <p><strong><code>ggplot2</code></strong> is a plotting package that makes it simple to create complex plots
@@ -213,30 +215,30 @@ publication quality plots with minimal amounts of adjustments and tweaking.</p>
 <ul>
 <li>bind the plot to a specific data frame using the <code>data</code> argument</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops)</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops)</a></code></pre></div>
 <ul>
 <li>define aesthetics (<code>aes</code>), by selecting the variables to be plotted and the variables to define the presentation such as plotting size, shape color, etc.</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male))</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male))</a></code></pre></div>
 <ul>
 <li>add “geoms” – a graphical representation of the data in the plot (points, lines, bars). To add a geom to the plot use <code>+</code> operator</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/first-ggplot-1.png" width="70%" /></p>
 <p>The <code>+</code> in the <strong><code>ggplot2</code></strong> package is particularly useful because it allows you
 to modify existing <code>ggplot</code> objects. This means you can easily set up plot
 “templates” and conveniently explore different types of plots, so the above
 plot can also be generated with code like this:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Assign plot to a variable</span>
-MS_plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()
-<span class="co"># Draw the plot</span>
-MS_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="co"># Assign plot to a variable</span></a>
+<a class="sourceLine" id="cb70-2" title="2">MS_plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male))</a>
+<a class="sourceLine" id="cb70-3" title="3"></a>
+<a class="sourceLine" id="cb70-4" title="4"><span class="co"># Draw the plot</span></a>
+<a class="sourceLine" id="cb70-5" title="5">MS_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</a></code></pre></div>
 <p>Also, conveniently, <code>ggplot</code> works with pipes. The code below does the same thing as above:</p>
-<pre class="sourceCode r"><code class="sourceCode r">MS_county_stops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>() </code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1">MS_county_stops <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb71-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb71-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>() </a></code></pre></div>
 <p>We pipe the content of the table into <code>ggplot()</code>, so we can omit the first (<code>data =</code> argument).</p>
 <p>Notes:</p>
 <ul>
@@ -248,30 +250,30 @@ that you add (i.e., these are universal plot settings). This includes the x and 
 a layer. If, instead, the <code>+</code> sign is added in the line before the other layer,
 <strong><code>ggplot2</code></strong> will not add the new layer and will return an error message.</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># this is the correct syntax for adding layers</span>
-MS_plot <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()
-
-<span class="co"># this will not add the new layer and will return an error message</span>
-MS_plot
-  <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1"><span class="co"># this is the correct syntax for adding layers</span></a>
+<a class="sourceLine" id="cb72-2" title="2">MS_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb72-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>()</a>
+<a class="sourceLine" id="cb72-4" title="4"></a>
+<a class="sourceLine" id="cb72-5" title="5"><span class="co"># this will not add the new layer and will return an error message</span></a>
+<a class="sourceLine" id="cb72-6" title="6">MS_plot</a>
+<a class="sourceLine" id="cb72-7" title="7">  <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</a></code></pre></div>
 <p>To learn more about <strong><code>ggplot</code></strong> after the workshop, you may want to check out this <a href="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf">cheatsheet about <strong><code>ggplot</code></strong></a>.</p>
 </div>
 <div id="building-your-plots-iteratively" class="section level2">
 <h2><span class="header-section-number">3.2</span> Building your plots iteratively</h2>
 <p>Building plots with ggplot can be of great help when you engage in exploratory data analysis. It is typically an iterative process, where you go back and forth between your data and their graphical representation, which helps you in the process of getting to know your data better.</p>
 <p>We can start modifying this plot to extract more information from it. For instance, we can add transparency (<code>alpha</code>) to avoid overplotting:</p>
-<pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>)</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1">  <span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/adding-transparency-1.png" width="70%" /></p>
 <p>We can also add a color for all the points:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>, <span class="dt">color=</span> <span class="st">&quot;blue&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1"><span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>, <span class="dt">color=</span> <span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/adding-color-1.png" width="70%" /></p>
 <p>We can add another layer to the plot with <code>+</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>, <span class="dt">color=</span> <span class="st">&quot;blue&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">0</span>)</code></pre>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" title="1"><span class="kw">ggplot</span>(MS_county_stops, <span class="kw">aes</span>(<span class="dt">x =</span> female, <span class="dt">y =</span> male)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb75-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>, <span class="dt">color=</span> <span class="st">&quot;blue&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-3" title="3"><span class="st">  </span><span class="kw">geom_abline</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/add-abline-1.png" width="70%" /></p>
 <blockquote>
 <h3>
@@ -284,74 +286,79 @@ Challenge
 <h2><span class="header-section-number">3.3</span> Barplot</h2>
 <p>There are two types of bar charts in ggplot, <code>geom_bar</code> and <code>geom_col</code>. <code>geom_bar</code> makes the height of the bar proportional to the number of cases in each group and counts the number of cases at each x position.</p>
 <p>Let’s go back go our trafficstops dataframe. If we wanted to see how many violations we have of each type could say:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_bar</span>()</code></pre>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb76-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/simple-bar-1.png" width="70%" /></p>
 <p>As we have seen we could color the bars, but instead of <code>color</code> we use <code>fill</code>. (What happens when you use <code>color</code>?)</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">fill =</span> <span class="st">&quot;green&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" title="1"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb77-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">fill =</span> <span class="st">&quot;green&quot;</span>)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/color-bar-simple-1.png" width="70%" /></p>
 <p>Instead of coloring everything the same we could also color by another category, say gender. For this we have to set the parameter within the <code>aes()</code> function, which takes care of mapping the values to different colors:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender))</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb78-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender))</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/color-bar-gender-1.png" width="70%" /></p>
 <p>If we wanted to see the proportions within each category we can tell ggplot to stretch the bars between 0 and 1, we can set the position parameter to ‘fill’:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender), <span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" title="1"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb79-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender), <span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/color-bar-stretch-1.png" width="70%" /></p>
+<p>To make this more readable we add anoter function to flip the coordinates.</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" title="1"><span class="kw">ggplot</span>(trafficstops, <span class="kw">aes</span>(violation)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb80-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> driver_gender), <span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb80-3" title="3"><span class="st">  </span><span class="kw">coord_flip</span>()</a></code></pre></div>
+<p><img src="R-data-wrangling_files/figure-html/color-bar-stretch-flip-1.png" width="70%" /></p>
 <p>The other type of barchart, <code>geom_col</code>, is used if you want the heights of the bars to represent the actual data values. In this example, we first generate a summary statistics, and then pipe it into ggplot to visualize the values we have calculated.</p>
-<p>To make this more readable we add anoter function to flip the coordinates. We also reorder the barplots, so we can see them in descending order.</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(violation) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(violation, mean_age), <span class="dt">y =</span> mean_age)) <span class="op">+</span><span class="st"> </span><span class="co"># reorder</span>
-<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span><span class="co"># flip the two axes</span>
-<span class="st">    </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" title="1">trafficstops <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb81-2" title="2"><span class="st">    </span><span class="kw">group_by</span>(violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb81-3" title="3"><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb81-4" title="4"><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> mean_age)) <span class="op">+</span><span class="st"> </span><span class="co"># reorder</span></a>
+<a class="sourceLine" id="cb81-5" title="5"><span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb81-6" title="6"><span class="st">    </span><span class="kw">coord_flip</span>() <span class="co"># flip the two axes</span></a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/demograph-colplot-1.png" width="672" /></p>
+<p>We can also reorder the barplots, so we can see them in descending order.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" title="1">trafficstops <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_age =</span> <span class="kw">mean</span>(driver_age, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb82-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(violation, mean_age), <span class="dt">y =</span> mean_age)) <span class="op">+</span><span class="st"> </span><span class="co"># reorder</span></a>
+<a class="sourceLine" id="cb82-5" title="5"><span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-6" title="6"><span class="st">    </span><span class="kw">coord_flip</span>() <span class="co"># flip the two axes</span></a></code></pre></div>
+<p><img src="R-data-wrangling_files/figure-html/demograph-colplot-reorder-1.png" width="672" /></p>
 <blockquote>
 <h3>
 Challenge
 </h3>
-<p>Make a barplot that shows for each race the proportion of stops for male and female drivers. How could you get rid of the NAs?</p>
+<p>Make a barplot that shows the proportion of stops per race for within each gender category. How could you get rid of the NAs?</p>
 </blockquote>
 </div>
 <div id="boxplot" class="section level2">
 <h2><span class="header-section-number">3.4</span> Boxplot</h2>
-<p>For this segment let’s extract and work with the stops for Yazoo County only.</p>
-<pre class="sourceCode r"><code class="sourceCode r">Yazoo_stops &lt;-<span class="st"> </span><span class="kw">filter</span>(trafficstops, county_name <span class="op">==</span><span class="st"> &quot;Yazoo County&quot;</span>)</code></pre>
+<p>For this segment let’s extract and work with the stops for Yazoo County only. We will also remove some NAs here.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" title="1">Yazoo_stops &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb83-2" title="2"><span class="st">  </span><span class="kw">filter</span>(county_name <span class="op">==</span><span class="st"> &quot;Yazoo County&quot;</span>,</a>
+<a class="sourceLine" id="cb83-3" title="3">         <span class="op">!</span><span class="kw">is.na</span>(driver_age))</a></code></pre></div>
 <p>We can use boxplots to visualize the distribution of driver age within each violation:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_boxplot</span>()</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" title="1"><span class="kw">ggplot</span>(Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb84-2" title="2"><span class="st">    </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/boxplot-1.png" width="70%" /></p>
 <p>By adding points to boxplot, we can have a better idea of the number of
 measurements and of their distribution.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_jitter</span>()</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-2" title="2"><span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-3" title="3"><span class="st">    </span><span class="kw">geom_jitter</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/boxplot-with-jitter-1.png" width="70%" /></p>
 <p>That looks quite messy. Let’s clean it up by using the <code>alpha</code> parameter to make the dots more transparent and also change their color:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>)</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-2" title="2"><span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-3" title="3"><span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/boxplot-with-jitter-transparent-1.png" width="70%" /></p>
 <p>Notice how the boxplot layer is behind the jitter layer. We will change the plotting order to keep the boxplot visible.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_boxplot</span>()</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb87-2" title="2"><span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb87-3" title="3"><span class="st">    </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/boxplot-with-jitter-reordered-1.png" width="70%" /></p>
 <p>And finally we will change the transparency of the box plot so it does not cover the points:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="dv">0</span>)  </code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-2" title="2"><span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="dt">color =</span> <span class="st">&quot;tomato&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-3" title="3"><span class="st">    </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="dv">0</span>)  </a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/boxplot-with-jitter-clean-1.png" width="70%" /></p>
 <blockquote>
 <h3>
@@ -373,49 +380,63 @@ new plot to explore the distribution of age for another variable:</p>
 </div>
 <div id="plotting-time-series-data" class="section level2">
 <h2><span class="header-section-number">3.5</span> Plotting time series data</h2>
-<p>To make things a little easer we first convert the <code>stop_date</code> column we plan to use to Date format and use the <code>wday</code> function to extract and add a new column with the weekday for each of these dates. For better understanding we will label the weekdays.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
-trafficstops &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">stop_date =</span> <span class="kw">ymd</span>(stop_date),
-         <span class="dt">wk_day =</span> <span class="kw">wday</span>(stop_date, <span class="dt">label =</span> <span class="ot">TRUE</span>))</code></pre>
+<p>To make things a little easer we first convert the <code>stop_date</code> column we plan to use to Date format and use the <code>wday</code> function to extract and add a new column to our <code>trafficstops</code> data called <code>wk_day</code> with the weekday for each of these dates. For better understanding we will label the weekdays.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb89-2" title="2">trafficstops &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb89-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">stop_date =</span> <span class="kw">ymd</span>(stop_date),</a>
+<a class="sourceLine" id="cb89-4" title="4">         <span class="dt">wk_day =</span> <span class="kw">wday</span>(stop_date, <span class="dt">label =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <p>Let’s calculate number of violation per weekday. We will use <code>count</code> for this, like this:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation) </code></pre>
-<p>Timelapse data can be visualized as a line plot (with – you guessed it – <code>geom_line()</code>) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>()</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb90-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation) </a></code></pre></div>
+<pre><code>#&gt; # A tibble: 42 x 3
+#&gt;    wk_day violation                    n
+#&gt;    &lt;ord&gt;  &lt;fct&gt;                    &lt;int&gt;
+#&gt;  1 Sun    Breaks-Lights-etc          363
+#&gt;  2 Sun    Careless driving           804
+#&gt;  3 Sun    License-Permit-Insurance  4177
+#&gt;  4 Sun    Other or unknown          1588
+#&gt;  5 Sun    Seat belt                 2313
+#&gt;  6 Sun    Speeding                 16522
+#&gt;  7 Mon    Breaks-Lights-etc          337
+#&gt;  8 Mon    Careless driving           830
+#&gt;  9 Mon    License-Permit-Insurance  4086
+#&gt; 10 Mon    Other or unknown          1572
+#&gt; # … with 32 more rows</code></pre>
+<p>We visualize thise data as a line plot (with – you guessed it – <code>geom_line()</code>) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb92-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb92-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/first-time-series-1.png" width="672" /></p>
 <p>Oops. What happende here? We plotted data for all the violations together! So what ggplot displays is the range of all values for each year in a vertial line. We need to tell ggplot to draw a separate line for each violation by modifying the aesthetic function to include <code>group = violation</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>()</code></pre>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb93-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb93-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb93-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/time-series-by-violation-1.png" width="70%" /></p>
 <p>We will be able to distinguish violations in the plot if we add colors. (Colors groups automatically if the variable is numeric).</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation, <span class="dt">color =</span> violation)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>()</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb94-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb94-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation, <span class="dt">color =</span> violation)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb94-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/time-series-with-colors-1.png" width="70%" /></p>
 </div>
 <div id="faceting" class="section level2">
 <h2><span class="header-section-number">3.6</span> Faceting</h2>
 <p>ggplot has a special technique called <em>faceting</em> that allows to split one plot
 into multiple plots based on a factor included in the dataset. So instead of using coloring to separate out different violations, we can make a time series plot for each violation:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</code></pre>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb95-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb95-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">group =</span> violation)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-5" title="5"><span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/first-facet-1.png" width="70%" /></p>
 <p>Now we would like to split the line in each plot by the race of the driver. To do that we count in the data frame grouped by <code>wk_day</code>, <code>violation</code>, <strong>and</strong> <code>driver_race</code>. We then create the faceted plot by splitting further by race using <code>color</code> and <code>group</code> (within a single plot):</p>
-<pre class="sourceCode r"><code class="sourceCode r">trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation, driver_race) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add driver race here</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">color =</span> driver_race, <span class="dt">group =</span> driver_race)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</code></pre>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" title="1">trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation, driver_race) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add driver race here</span></a>
+<a class="sourceLine" id="cb96-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">color =</span> driver_race, <span class="dt">group =</span> driver_race)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb96-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb96-5" title="5"><span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</a></code></pre></div>
 <pre><code>#&gt; Warning: Factor `driver_race` contains implicit NA, consider using
 #&gt; `forcats::fct_explicit_na`</code></pre>
 <p><img src="R-data-wrangling_files/figure-html/facet-by-violation-and-race-1.png" width="672" /></p>
@@ -440,16 +461,16 @@ How would you split your plot into one per each violation type?</p>
 <h2><span class="header-section-number">3.7</span> <strong><code>ggplot2</code></strong> themes</h2>
 <p><strong><code>ggplot2</code></strong>
 comes with several other themes which can be useful to quickly change the look of your visualization. Before we do that we will assign our plot above to a variable.</p>
-<pre class="sourceCode r"><code class="sourceCode r">stops_facet_plot &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">count</span>(wk_day, violation, driver_race) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add driver race here</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">color =</span> driver_race, <span class="dt">group =</span> driver_race)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</code></pre>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" title="1">stops_facet_plot &lt;-<span class="st"> </span>trafficstops <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb98-2" title="2"><span class="st">  </span><span class="kw">count</span>(wk_day, violation, driver_race) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># add driver race here</span></a>
+<a class="sourceLine" id="cb98-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wk_day, n, <span class="dt">color =</span> driver_race, <span class="dt">group =</span> driver_race)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-5" title="5"><span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>violation)</a></code></pre></div>
 <pre><code>#&gt; Warning: Factor `driver_race` contains implicit NA, consider using
 #&gt; `forcats::fct_explicit_na`</code></pre>
 <p>Now we can add another theme, <code>theme_bw()</code> to change the plot background to white:</p>
-<pre class="sourceCode r"><code class="sourceCode r">stops_facet_plot <span class="op">+</span>
-<span class="st">     </span><span class="kw">theme_bw</span>()</code></pre>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" title="1">stops_facet_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb100-2" title="2"><span class="st">     </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/facet-theming-1.png" width="672" /></p>
 <p>The complete list of themes is available
 at <a href="http://docs.ggplot2.org/current/ggtheme.html" class="uri">http://docs.ggplot2.org/current/ggtheme.html</a>. <code>theme_minimal()</code> and <code>theme_light()</code> are popular, and <code>theme_void()</code> can be useful as a starting point to create a new hand-crafted theme.</p>
@@ -461,40 +482,42 @@ of packages that extend the capabilities of <strong><code>ggplot2</code></strong
 <div id="customization" class="section level2">
 <h2><span class="header-section-number">3.8</span> Customization</h2>
 <p>There are endless possibilities to customize your plot, particularly when you are ready for publication or presentation. For example, let’s change names of axes to something more informative than ‘wk_day’ and ‘n’ and add a title to the figure:</p>
-<pre class="sourceCode r"><code class="sourceCode r">stops_facet_plot <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,
-         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,
-         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" title="1">stops_facet_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-2" title="2"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,</a>
+<a class="sourceLine" id="cb101-3" title="3">         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,</a>
+<a class="sourceLine" id="cb101-4" title="4">         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/improved-labels-1.png" width="672" /></p>
 <p>The axes have more informative names, but their readability can be improved by
 increasing the font size:</p>
-<pre class="sourceCode r"><code class="sourceCode r">stops_facet_plot <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,
-         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,
-         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</code></pre>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" title="1">stops_facet_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb102-2" title="2"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,</a>
+<a class="sourceLine" id="cb102-3" title="3">         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,</a>
+<a class="sourceLine" id="cb102-4" title="4">         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb102-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb102-6" title="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/improved-font-size-1.png" width="672" /></p>
 <p>After our manipulations, you may notice that the values on the x-axis are still not properly readable. Let’s change the orientation of the labels and adjust them vertically and horizontally so they don’t overlap. You can use a 90 degree angle, or experiment to find the appropriate angle for diagonally oriented labels:</p>
-<pre class="sourceCode r"><code class="sourceCode r">stops_facet_plot <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,
-         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,
-         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),
-        <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>),
-        <span class="dt">strip.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),
-        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</code></pre>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" title="1">stops_facet_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb103-2" title="2"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,</a>
+<a class="sourceLine" id="cb103-3" title="3">         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,</a>
+<a class="sourceLine" id="cb103-4" title="4">         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb103-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb103-6" title="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb103-7" title="7">        <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>),</a>
+<a class="sourceLine" id="cb103-8" title="8">        <span class="dt">strip.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),</a>
+<a class="sourceLine" id="cb103-9" title="9">        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/tilted-xlabels-1.png" width="672" /></p>
 <p>If you like the changes you created better than the default theme, you can save them as an object to be able to easily apply them to other plots you may create:</p>
-<pre class="sourceCode r"><code class="sourceCode r">grey_theme &lt;-<span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),
-                   <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>), <span class="dt">text=</span><span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))
-
-<span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span>grey_theme</code></pre>
-<pre><code>#&gt; Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" title="1">grey_theme &lt;-<span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, </a>
+<a class="sourceLine" id="cb104-2" title="2">                                               <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, </a>
+<a class="sourceLine" id="cb104-3" title="3">                                               <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb104-4" title="4">                   <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>),</a>
+<a class="sourceLine" id="cb104-5" title="5">                   <span class="dt">text=</span><span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</a>
+<a class="sourceLine" id="cb104-6" title="6"></a>
+<a class="sourceLine" id="cb104-7" title="7"><span class="kw">ggplot</span>(<span class="dt">data =</span> Yazoo_stops, <span class="kw">aes</span>(<span class="dt">x =</span> violation, <span class="dt">y =</span> driver_age)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-8" title="8"><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb104-9" title="9"><span class="st">  </span>grey_theme</a></code></pre></div>
 <p><img src="R-data-wrangling_files/figure-html/save-reapply-theme-1.png" width="672" /></p>
 <p>Note that it is also possible to change the fonts of your plots. If you are on Windows, you may have to install the <a href="https://github.com/wch/extrafont"><strong>extrafont</strong> package</a>, and follow the instructions included in the README for this package.</p>
 <blockquote>
@@ -517,17 +540,17 @@ inspiration.</p>
 </ul>
 </blockquote>
 <p>After creating your plot, you can save it out to a file in your prefered format. You can change the dimension (and resolution) of your plot by adjusting the appropriate arguments (<code>width</code>, <code>height</code> and <code>dpi</code>):</p>
-<pre class="sourceCode r"><code class="sourceCode r">my_plot &lt;-<span class="st"> </span>stops_facet_plot <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,
-         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,
-         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),
-        <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>),
-        <span class="dt">strip.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),
-        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))
-
-<span class="kw">ggsave</span>(<span class="st">&quot;MS_weekday_stops_facets.png&quot;</span>, my_plot, <span class="dt">width=</span><span class="dv">15</span>, <span class="dt">height=</span><span class="dv">10</span>)</code></pre>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" title="1">my_plot &lt;-<span class="st"> </span>stops_facet_plot <span class="op">+</span></a>
+<a class="sourceLine" id="cb105-2" title="2"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Observed violations per day of week&#39;</span>,</a>
+<a class="sourceLine" id="cb105-3" title="3">         <span class="dt">x =</span> <span class="st">&#39;Weekday of observation&#39;</span>,</a>
+<a class="sourceLine" id="cb105-4" title="4">         <span class="dt">y =</span> <span class="st">&#39;Number of violations&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb105-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb105-6" title="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>, <span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span>.<span class="dv">5</span>, <span class="dt">vjust=</span>.<span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb105-7" title="7">        <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">colour=</span><span class="st">&quot;grey40&quot;</span>, <span class="dt">size=</span><span class="dv">12</span>),</a>
+<a class="sourceLine" id="cb105-8" title="8">        <span class="dt">strip.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),</a>
+<a class="sourceLine" id="cb105-9" title="9">        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">16</span>))</a>
+<a class="sourceLine" id="cb105-10" title="10"></a>
+<a class="sourceLine" id="cb105-11" title="11"><span class="kw">ggsave</span>(<span class="st">&quot;MS_weekday_stops_facets.png&quot;</span>, my_plot, <span class="dt">width=</span><span class="dv">15</span>, <span class="dt">height=</span><span class="dv">10</span>)</a></code></pre></div>
 <p>Note: The parameters <code>width</code> and <code>height</code> also determine the font size in the saved plot.</p>
 
 </div>
@@ -543,11 +566,13 @@ inspiration.</p>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({

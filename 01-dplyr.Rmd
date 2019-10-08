@@ -30,11 +30,14 @@ Manipulation of dataframes is a common task when you start exploring your data. 
 If we were interested in the mean age of the driver in different counties we can do this using the normal base R operations:
 
 ```{r, results='show'}
-mean(trafficstops[trafficstops$county_name == "Clay County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Clay County", "driver_age"], 
+     na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Lee County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Lee County", "driver_age"], 
+     na.rm = TRUE)
 
-mean(trafficstops[trafficstops$county_name == "Yazoo County", "driver_age"], na.rm = TRUE)
+mean(trafficstops[trafficstops$county_name == "Yazoo County", "driver_age"], 
+     na.rm = TRUE)
 ```
 
 
@@ -136,7 +139,7 @@ trafficstops %>%
 
 ## Pipes
 
-What if you wanted to filter **and** select on the same data? There are three ways to do this: use intermediate steps, nested functions, or pipes.
+What if you wanted to filter **and** select on the same data? For example, lets find drivers over 85 years and only keep the violation and gender columns. There are three ways to do this: use intermediate steps, nested functions, or pipes.
 
 * Intermediate steps:
 
@@ -146,7 +149,7 @@ of objects.
 
 ```{r, eval=FALSE}
 tmp_df <- filter(trafficstops, driver_age > 85)
-select(tmp_df, violation_raw, driver_gender, driver_race)
+select(tmp_df, violation_raw, driver_gender)
 ```
 
 * Nested functions
@@ -155,7 +158,7 @@ You can also nest functions (i.e. one function inside of another).
 This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.
 
 ```{r, eval=FALSE}
-select(filter(trafficstops, driver_age > 85), violation_raw, driver_gender, driver_race)
+select(filter(trafficstops, driver_age > 85), violation_raw, driver_gender)
 ```
 
 * Pipes!
@@ -171,7 +174,7 @@ with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
 ```{r, eval=FALSE, purl = FALSE}
 trafficstops %>%
   filter(driver_age > 85) %>%
-  select(violation_raw, driver_gender, driver_race)
+  select(violation_raw, driver_gender)
 ```
 
 
@@ -330,7 +333,7 @@ trafficstops %>%
 ```
 
 
-So, back to the beginning of teh chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
+So, back to the beginning of the chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
 
 ```{r, results='show', purl = FALSE, eval=FALSE}
 trafficstops %>%
@@ -367,7 +370,7 @@ factors, and (2) in addition to displaying the data type of each column under it
 
 Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
-column indicating the minimum age:
+column indicating the minimum age in each group (i.e. county):
 
 ```{r, results='show', purl = FALSE}
 trafficstops %>%

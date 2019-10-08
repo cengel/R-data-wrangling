@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Data Wrangling with R</title>
   <meta name="description" content="Workshop materials for Data Wrangling with R" />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Data Wrangling with R" />
   <meta property="og:type" content="book" />
@@ -31,7 +31,7 @@
   
   
 
-<link rel="next" href="dplyr.html">
+<link rel="next" href="dplyr.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -39,6 +39,9 @@
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -54,7 +57,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -143,8 +145,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Data Manipulation using <strong><code>tidyr</code></strong></a><ul>
 <li class="chapter" data-level="2.1" data-path="tidyr.html"><a href="tidyr.html#about-long-and-wide-table-format"><i class="fa fa-check"></i><b>2.1</b> About long and wide table format</a></li>
-<li class="chapter" data-level="2.2" data-path="tidyr.html"><a href="tidyr.html#long-to-wide-with-spread"><i class="fa fa-check"></i><b>2.2</b> Long to Wide with <code>spread</code></a></li>
-<li class="chapter" data-level="2.3" data-path="tidyr.html"><a href="tidyr.html#wide-to-long-with-gather"><i class="fa fa-check"></i><b>2.3</b> Wide to long with <code>gather</code></a></li>
+<li class="chapter" data-level="2.2" data-path="tidyr.html"><a href="tidyr.html#long-to-wide-with-pivot_wider"><i class="fa fa-check"></i><b>2.2</b> Long to Wide with <code>pivot_wider</code></a></li>
+<li class="chapter" data-level="2.3" data-path="tidyr.html"><a href="tidyr.html#wide-to-long-with-pivot_longer"><i class="fa fa-check"></i><b>2.3</b> Wide to long with <code>pivot_longer</code></a></li>
 <li class="chapter" data-level="2.4" data-path="tidyr.html"><a href="tidyr.html#exporting-data"><i class="fa fa-check"></i><b>2.4</b> Exporting data</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-visualization-with-ggplot2.html"><a href="data-visualization-with-ggplot2.html"><i class="fa fa-check"></i><b>3</b> Data Visualization with <code id="ggplot">ggplot2</code></a><ul>
@@ -180,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Data Wrangling with R</h1>
 <p class="author"><em>Claudia A Engel</em></p>
-<p class="date"><em>Last updated: July 17, 2019</em></p>
+<p class="date"><em>Last updated: October 08, 2019</em></p>
 </div>
 <div id="prerequisites-and-preparations" class="section level1 unnumbered">
 <h1>Prerequisites and Preparations</h1>
@@ -189,19 +191,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Have a recent version of <a href="https://cran.r-project.org/">R</a> and <a href="https://www.rstudio.com/">RStudio</a> installed.</li>
 <li>Install and load the <code>tidyverse</code> package.</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>)  
-<span class="kw">library</span>(tidyverse)</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>)  </a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
 <ul>
 <li>Create a new RStudio project <code>R-data-ws</code> in a new folder <code>R-data-ws</code>. Download both CSV files into a subdirectory called <code>data</code> like this:</li>
 <li>Download <code>MS_trafficstops_bw_age.csv</code>:</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">download.file</span>(<span class="st">&quot;http://bit.ly/MS_trafficstops_bw_age&quot;</span>,
-              <span class="st">&quot;data/MS_trafficstops_bw_age.csv&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">download.file</span>(<span class="st">&quot;http://bit.ly/MS_trafficstops_bw_age&quot;</span>,</a>
+<a class="sourceLine" id="cb2-2" title="2">              <span class="st">&quot;data/MS_trafficstops_bw_age.csv&quot;</span>)</a></code></pre></div>
 <ul>
 <li>Download <code>MS_acs2015_bw.csv</code>:</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">download.file</span>(<span class="st">&quot;http://bit.ly/MS_acs_2015_bw&quot;</span>,
-              <span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">download.file</span>(<span class="st">&quot;http://bit.ly/MS_acs_2015_bw&quot;</span>,</a>
+<a class="sourceLine" id="cb3-2" title="2">              <span class="st">&quot;data/MS_acs2015_bw.csv&quot;</span>)</a></code></pre></div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <p>Boehmke, Bradley C. (2016) Data Wrangling with R
@@ -226,11 +228,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({

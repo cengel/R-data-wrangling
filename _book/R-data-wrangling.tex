@@ -124,7 +124,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Last updated: July 17, 2019}
+    \date{Last updated: October 08, 2019}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -249,7 +249,8 @@ If we were interested in the mean age of the driver in different counties we can
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Clay County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Clay County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }
+     \DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -259,7 +260,8 @@ If we were interested in the mean age of the driver in different counties we can
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Lee County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Lee County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }
+     \DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -269,7 +271,8 @@ If we were interested in the mean age of the driver in different counties we can
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Yazoo County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{mean}\NormalTok{(trafficstops[trafficstops}\OperatorTok{$}\NormalTok{county_name }\OperatorTok{==}\StringTok{ "Yazoo County"}\NormalTok{, }\StringTok{"driver_age"}\NormalTok{], }
+     \DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -462,7 +465,7 @@ To sort rows by variables use the \texttt{arrange} function: \texttt{arrange(tra
 \hypertarget{pipes}{%
 \section{Pipes}\label{pipes}}
 
-What if you wanted to filter \textbf{and} select on the same data? There are three ways to do this: use intermediate steps, nested functions, or pipes.
+What if you wanted to filter \textbf{and} select on the same data? For example, lets find drivers over 85 years and only keep the violation and gender columns. There are three ways to do this: use intermediate steps, nested functions, or pipes.
 
 \begin{itemize}
 \tightlist
@@ -477,7 +480,7 @@ of objects.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{tmp_df <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(trafficstops, driver_age }\OperatorTok{>}\StringTok{ }\DecValTok{85}\NormalTok{)}
-\KeywordTok{select}\NormalTok{(tmp_df, violation_raw, driver_gender, driver_race)}
+\KeywordTok{select}\NormalTok{(tmp_df, violation_raw, driver_gender)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -492,7 +495,7 @@ This is handy, but can be difficult to read if too many functions are nested as 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{select}\NormalTok{(}\KeywordTok{filter}\NormalTok{(trafficstops, driver_age }\OperatorTok{>}\StringTok{ }\DecValTok{85}\NormalTok{), violation_raw, driver_gender, driver_race)}
+\KeywordTok{select}\NormalTok{(}\KeywordTok{filter}\NormalTok{(trafficstops, driver_age }\OperatorTok{>}\StringTok{ }\DecValTok{85}\NormalTok{), violation_raw, driver_gender)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -514,7 +517,7 @@ Shift + M if you have a Mac.
 \begin{Highlighting}[]
 \NormalTok{trafficstops }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{filter}\NormalTok{(driver_age }\OperatorTok{>}\StringTok{ }\DecValTok{85}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{select}\NormalTok{(violation_raw, driver_gender, driver_race)}
+\StringTok{  }\KeywordTok{select}\NormalTok{(violation_raw, driver_gender)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -682,7 +685,7 @@ to calculate the summary statistics. So to view the mean age for black and white
 #> 3 <NA>            34.5
 \end{verbatim}
 
-So, back to the beginning of teh chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
+So, back to the beginning of the chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -764,7 +767,7 @@ factors, and (2) in addition to displaying the data type of each column under it
 
 Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
-column indicating the minimum age:
+column indicating the minimum age in each group (i.e.~county):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -858,7 +861,11 @@ Hint: use the year() function from lubridate.
 \hypertarget{joining-two-tables}{%
 \section{Joining two tables}\label{joining-two-tables}}
 
+\textless\textless\textless\textless\textless\textless\textless{} HEAD
 It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
+=======
+It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of trafficstops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
+\textgreater\textgreater\textgreater\textgreater\textgreater\textgreater\textgreater{} 1aab4b954ad0f82372da78447cb5bc64fdc759fe
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -969,7 +976,7 @@ Learning Objectives
 \item
   Understand what key-value pairs are.
 \item
-  Reshape a data frame from long to wide format and back with the \texttt{spread} and \texttt{gather} commands from the \textbf{\texttt{tidyr}} package.
+  Reshape a data frame from long to wide format and back with the \texttt{pivot\_wider} and \texttt{pivot\_longer} commands from the \textbf{\texttt{tidyr}} package.
 \item
   Export a data frame to a .csv file.
 \end{itemize}
@@ -1031,8 +1038,8 @@ Challenge 1
 Is trafficstops in a long or wide format?
 \end{quote}
 
-\hypertarget{long-to-wide-with-spread}{%
-\section{\texorpdfstring{Long to Wide with \texttt{spread}}{Long to Wide with spread}}\label{long-to-wide-with-spread}}
+\hypertarget{long-to-wide-with-pivot_wider}{%
+\section{\texorpdfstring{Long to Wide with \texttt{pivot\_wider}}{Long to Wide with pivot\_wider}}\label{long-to-wide-with-pivot_wider}}
 
 Now let's see this in action. First, using \textbf{\texttt{dplyr}}, let's create a data frame
 with the mean age of each driver by gender and county:
@@ -1044,48 +1051,56 @@ with the mean age of each driver by gender and county:
 \StringTok{    }\KeywordTok{group_by}\NormalTok{(county_name, driver_gender) }\OperatorTok{%>%}
 \StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mean_age =} \KeywordTok{mean}\NormalTok{(driver_age, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{))}
 
-\KeywordTok{head}\NormalTok{(trafficstops_ma)}
+\NormalTok{trafficstops_ma}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> # A tibble: 6 x 3
-#> # Groups:   county_name [3]
-#>   county_name   driver_gender mean_age
-#>   <fct>         <fct>            <dbl>
-#> 1 Adams County  female            36.7
-#> 2 Adams County  male              38.4
-#> 3 Alcorn County female            33.3
-#> 4 Alcorn County male              34.1
-#> 5 Amite County  female            38.3
-#> 6 Amite County  male              40.3
+#> # A tibble: 164 x 3
+#> # Groups:   county_name [82]
+#>    county_name   driver_gender mean_age
+#>    <fct>         <fct>            <dbl>
+#>  1 Adams County  female            36.7
+#>  2 Adams County  male              38.4
+#>  3 Alcorn County female            33.3
+#>  4 Alcorn County male              34.1
+#>  5 Amite County  female            38.3
+#>  6 Amite County  male              40.3
+#>  7 Attala County female            36.7
+#>  8 Attala County male              38.1
+#>  9 Benton County female            32.1
+#> 10 Benton County male              34.4
+#> # ... with 154 more rows
 \end{verbatim}
 
-Now, to make this long data wide, we use \texttt{spread} from \texttt{tidyr} to spread out the
-driver gender into columns. \texttt{spread} takes three arguments - the data, the
-\emph{key} column, or column with identifying information, the \emph{values} column - the
-one with the numbers. We'll use a pipe so we can ignore the data argument.
+Now, to make this long data wide, we use \texttt{pivot\_wider} from \texttt{tidyr} to turn the driver gender into columns. In addition to our data table we provide \texttt{pivot\_wider} with two arguments: \texttt{names\_from} describes which column to use for name of the output column, and \texttt{values\_from} tells it from column to get the cell values. We'll use a pipe so we can ignore the data argument.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{trafficstops_ma_wide <-}\StringTok{ }\NormalTok{trafficstops_ma }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{spread}\NormalTok{(driver_gender, mean_age) }
+\StringTok{  }\KeywordTok{pivot_wider}\NormalTok{(}\DataTypeTok{names_from =}\NormalTok{ driver_gender, }
+              \DataTypeTok{values_from =}\NormalTok{ mean_age) }
 
-\KeywordTok{head}\NormalTok{(trafficstops_ma_wide)}
+\NormalTok{trafficstops_ma_wide}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> # A tibble: 6 x 3
+#> # A tibble: 82 x 3
 #> # Groups:   county_name [82]
-#>   county_name    female  male
-#>   <fct>           <dbl> <dbl>
-#> 1 Adams County     36.7  38.4
-#> 2 Alcorn County    33.3  34.1
-#> 3 Amite County     38.3  40.3
-#> 4 Attala County    36.7  38.1
-#> 5 Benton County    32.1  34.4
-#> 6 Bolivar County   33.2  36.3
+#>    county_name      female  male
+#>    <fct>             <dbl> <dbl>
+#>  1 Adams County       36.7  38.4
+#>  2 Alcorn County      33.3  34.1
+#>  3 Amite County       38.3  40.3
+#>  4 Attala County      36.7  38.1
+#>  5 Benton County      32.1  34.4
+#>  6 Bolivar County     33.2  36.3
+#>  7 Calhoun County     33.3  34.8
+#>  8 Carroll County     33.8  36.0
+#>  9 Chickasaw County   33.2  34.6
+#> 10 Choctaw County     35.8  36.8
+#> # ... with 72 more rows
 \end{verbatim}
 
 We can now do things like compare the mean age of men against women drivers. As example we use the age difference to find the counties with the largest and with the smallest number. (A negative number means that female drivers are on average older than male drivers, a positive number means that male drivers are on average older than women drivers.)
@@ -1107,77 +1122,114 @@ We can now do things like compare the mean age of men against women drivers. As 
 #> 2 Yalobusha County   33.4  39.4    5.99
 \end{verbatim}
 
-Note that \texttt{trafficstops\_ma\_wide} is derived from \texttt{trafficstops\_ma}, and is a ``grouped'' data frame, which was created with the \texttt{group\_by} function above. (Check \texttt{class(trafficstops\_ma)} and \texttt{class(trafficstops\_ma\_wide)}). That means that any instruction that follows will operate on each group (in this case county) separately. That may be ok for some instances (like \texttt{mutate}), but if we are interested in retreiveing the max and the min age difference over all counties we need to \texttt{ungroup} the tibble to have the \texttt{filter} command operate on the entire dataset.
+Note that \texttt{trafficstops\_ma\_wide} is derived from \texttt{trafficstops\_ma}, and is a ``grouped'' data frame, which was created with the \texttt{group\_by} function above. (Check \texttt{class(trafficstops\_ma)} and \texttt{class(trafficstops\_ma\_wide)}). That means that any instruction that follows will operate on each group (in this case county) separately. That may be ok for some instances (like \texttt{mutate}), but if we are interested in retrieving the maximum and the minumim age difference over \emph{all} counties we need to \texttt{ungroup} the tibble to have the \texttt{filter} command operate on the entire dataset instead of each group (i.e.~county).
 
-\hypertarget{wide-to-long-with-gather}{%
-\section{\texorpdfstring{Wide to long with \texttt{gather}}{Wide to long with gather}}\label{wide-to-long-with-gather}}
+\hypertarget{wide-to-long-with-pivot_longer}{%
+\section{\texorpdfstring{Wide to long with \texttt{pivot\_longer}}{Wide to long with pivot\_longer}}\label{wide-to-long-with-pivot_longer}}
 
 What if we had the opposite problem, and wanted to go from a wide to long
-format? For that, we use \texttt{gather} to sweep up a set of columns into one
-key-value pair. We give it the arguments of a new key and value column name, and
-then we specify which columns we either want or do not want gathered up. So, to
-go backwards from \texttt{trafficstops\_ma\_wide}, and exclude \texttt{county\_name} from the gathering,
-we would do the following:
+format? For that, we use \texttt{pivot\_longer}, which will increase the number of rows and decrease the number of columns. We provide the functino with thee arguments: \texttt{cols} which are the columns we want to pivot into the long format, \texttt{names\_to}, which is a string specifying the name of the column to create from the data stored in the column names, and \texttt{values\_to}, which is also a string, specifying the name of the column to create from the data stored in cell values.
+So, to go backwards from \texttt{trafficstops\_ma\_wide}, and exclude \texttt{county\_name} from the long, we would do the following:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{trafficstops_ma_long <-}\StringTok{ }\NormalTok{trafficstops_ma_wide }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{gather}\NormalTok{(gender, mean_age, }\OperatorTok{-}\NormalTok{county_name)}
+\StringTok{  }\KeywordTok{pivot_longer}\NormalTok{(}\DataTypeTok{cols =} \OperatorTok{-}\NormalTok{county_name, }
+               \DataTypeTok{names_to =} \StringTok{"driver_gender"}\NormalTok{, }\CommentTok{# name is a string!}
+               \DataTypeTok{values_to =} \StringTok{"mean_age"}\NormalTok{)     }\CommentTok{# also a string}
 
-\KeywordTok{head}\NormalTok{(trafficstops_ma_long)}
+\NormalTok{trafficstops_ma_long}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> # A tibble: 6 x 3
+#> # A tibble: 164 x 3
 #> # Groups:   county_name [82]
-#>   county_name    gender mean_age
-#>   <fct>          <chr>     <dbl>
-#> 1 Adams County   female     36.7
-#> 2 Alcorn County  female     33.3
-#> 3 Amite County   female     38.3
-#> 4 Attala County  female     36.7
-#> 5 Benton County  female     32.1
-#> 6 Bolivar County female     33.2
+#>    county_name   driver_gender mean_age
+#>    <fct>         <chr>            <dbl>
+#>  1 Adams County  female            36.7
+#>  2 Adams County  male              38.4
+#>  3 Alcorn County female            33.3
+#>  4 Alcorn County male              34.1
+#>  5 Amite County  female            38.3
+#>  6 Amite County  male              40.3
+#>  7 Attala County female            36.7
+#>  8 Attala County male              38.1
+#>  9 Benton County female            32.1
+#> 10 Benton County male              34.4
+#> # ... with 154 more rows
 \end{verbatim}
 
 We could also have used a specification for what columns to include. This can be
 useful if you have a large number of identifying columns, and it's easier to
-specify what to gather than what to leave alone. And if the columns are in a
-row, we don't even need to list them all out -- we can use the \texttt{:} operator!
+specify what to gather than what to leave alone. And if the columns are adjacent to each other, we don't even need to list them all out -- we can use the \texttt{:} operator!
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{trafficstops_ma_wide }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{gather}\NormalTok{(gender, mean_age, female}\OperatorTok{:}\NormalTok{male) }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{head}\NormalTok{()}
+\StringTok{  }\KeywordTok{pivot_longer}\NormalTok{(}\DataTypeTok{cols =}\NormalTok{ male}\OperatorTok{:}\NormalTok{female,      }\CommentTok{# this also works}
+               \DataTypeTok{names_to =} \StringTok{"driver_gender"}\NormalTok{, }
+               \DataTypeTok{values_to =} \StringTok{"mean_age"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> # A tibble: 6 x 3
+#> # A tibble: 164 x 3
 #> # Groups:   county_name [82]
-#>   county_name    gender mean_age
-#>   <fct>          <chr>     <dbl>
-#> 1 Adams County   female     36.7
-#> 2 Alcorn County  female     33.3
-#> 3 Amite County   female     38.3
-#> 4 Attala County  female     36.7
-#> 5 Benton County  female     32.1
-#> 6 Bolivar County female     33.2
+#>    county_name   driver_gender mean_age
+#>    <fct>         <chr>            <dbl>
+#>  1 Adams County  male              38.4
+#>  2 Adams County  female            36.7
+#>  3 Alcorn County male              34.1
+#>  4 Alcorn County female            33.3
+#>  5 Amite County  male              40.3
+#>  6 Amite County  female            38.3
+#>  7 Attala County male              38.1
+#>  8 Attala County female            36.7
+#>  9 Benton County male              34.4
+#> 10 Benton County female            32.1
+#> # ... with 154 more rows
 \end{verbatim}
+
+There are many powerful operations you can do with the \texttt{pivot\_*} functions. To learn more review the vignette:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{vignette}\NormalTok{(}\StringTok{"pivot"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{quote}
 Challenge
 
+1.From the trafficstops dataframe create a wide data frame \texttt{tr\_wide} with
+``year'' as columns, each row is a different violation (``violation\_raw''),
+and the values are the
+number of traffic stops per each violation, roughly like this:
+
+\texttt{violation\_raw\ \ \textbar{}\ 2013\ \textbar{}\ 2014\ \textbar{}\ 2015\ ...}
+\texttt{Improper\ turn\ \ \textbar{}\ \ \ 65\ \textbar{}\ \ \ \ 54\textbar{}\ \ \ 67\ ...}
+\texttt{Speeding\ \ \ \ \ \ \ \textbar{}\ \ 713\ \textbar{}\ \ \ 948\textbar{}\ \ 978\ ...}
+\texttt{...}
+
+Use \texttt{year()} from the lubridate package. Hint: You will need to summarize
+and count the traffic stops before reshaping the table.
+\end{quote}
+
+\begin{quote}
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
 \item
-  Make a wide data frame with \texttt{year} as columns, \texttt{violation\_raw} as rows, and the values are the number of traffic stops per each violation. Use year() from the lubridate package. You will need to summarize before reshaping
-\item
-  Now take that data frame, and make it long again, so each row is a unique
-  \texttt{violation\_raw} \texttt{year} combination.
+  Now take the data frame, and make it long again, so each row is a
+  unique violation\_raw - year combination, like this:
 \end{enumerate}
+
+\texttt{violation\_raw\ \textbar{}\ year\ \textbar{}\ n\ of\ stops}
+\texttt{Improper\ turn\ \textbar{}\ 2013\ \textbar{}\ 65}
+\texttt{Improper\ turn\ \textbar{}\ 2014\ \textbar{}\ 54}
+\texttt{...\ etc}
 \end{quote}
 
 \hypertarget{exporting-data}{%
@@ -1201,7 +1253,7 @@ they are not included:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{write.csv}\NormalTok{(trafficstops_ma_wide, }\StringTok{"data_output/MS_county_stops.csv"}\NormalTok{, }\DataTypeTok{row.names =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{write.csv}\NormalTok{(trafficstops_ma_wide, }\StringTok{"data_output/MS_county_stops.csv"}\NormalTok{, }\DataTypeTok{row.names =}\NormalTok{ F)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1254,7 +1306,7 @@ First, load the data we saved in the previous lesson.
 \end{Highlighting}
 \end{Shaded}
 
-(If you need to, you can also download the data from here: \url{https://github.com/cengel/R-data-wrangling/raw/master/data_output/MS_county_stops.csv})
+(If you need to, you can also download the data from here: \url{http://bit.ly/MS_county_stops}. Create a folder \texttt{data\_output} in your working directory then download with \texttt{download.file(\textquotesingle{}http://bit.ly/MS\_county\_stops\textquotesingle{},\ \textquotesingle{}data\_output/MS\_county\_stops.csv})
 
 \hypertarget{plotting-with-ggplot2}{%
 \section{\texorpdfstring{Plotting with \textbf{\texttt{ggplot2}}}{Plotting with ggplot2}}\label{plotting-with-ggplot2}}
@@ -1317,8 +1369,8 @@ plot can also be generated with code like this:
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# Assign plot to a variable}
-\NormalTok{MS_plot <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MS_county_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ female, }\DataTypeTok{y =}\NormalTok{ male)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}
+\NormalTok{MS_plot <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MS_county_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ female, }\DataTypeTok{y =}\NormalTok{ male))}
+
 \CommentTok{# Draw the plot}
 \NormalTok{MS_plot }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{()}
 \end{Highlighting}
@@ -1400,7 +1452,7 @@ We can add another layer to the plot with \texttt{+}:
 \begin{Highlighting}[]
 \KeywordTok{ggplot}\NormalTok{(MS_county_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ female, }\DataTypeTok{y =}\NormalTok{ male)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.3}\NormalTok{, }\DataTypeTok{color=} \StringTok{"blue"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =} \DecValTok{0}\NormalTok{)}
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1461,9 +1513,34 @@ If we wanted to see the proportions within each category we can tell ggplot to s
 
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/color-bar-stretch-1}
 
+To make this more readable we add anoter function to flip the coordinates.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(trafficstops, }\KeywordTok{aes}\NormalTok{(violation)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ driver_gender), }\DataTypeTok{position =} \StringTok{"fill"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/color-bar-stretch-flip-1}
+
 The other type of barchart, \texttt{geom\_col}, is used if you want the heights of the bars to represent the actual data values. In this example, we first generate a summary statistics, and then pipe it into ggplot to visualize the values we have calculated.
 
-To make this more readable we add anoter function to flip the coordinates. We also reorder the barplots, so we can see them in descending order.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{trafficstops }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(violation) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mean_age =} \KeywordTok{mean}\NormalTok{(driver_age, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ violation, }\DataTypeTok{y =}\NormalTok{ mean_age)) }\OperatorTok{+}\StringTok{ }\CommentTok{# reorder}
+\StringTok{    }\KeywordTok{geom_col}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{coord_flip}\NormalTok{() }\CommentTok{# flip the two axes}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{R-data-wrangling_files/figure-latex/demograph-colplot-1.pdf}
+
+We can also reorder the barplots, so we can see them in descending order.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1471,27 +1548,29 @@ To make this more readable we add anoter function to flip the coordinates. We al
 \StringTok{  }\KeywordTok{group_by}\NormalTok{(violation) }\OperatorTok{%>%}\StringTok{ }
 \StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mean_age =} \KeywordTok{mean}\NormalTok{(driver_age, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{reorder}\NormalTok{(violation, mean_age), }\DataTypeTok{y =}\NormalTok{ mean_age)) }\OperatorTok{+}\StringTok{ }\CommentTok{# reorder}
-\StringTok{    }\KeywordTok{geom_col}\NormalTok{() }\OperatorTok{+}\StringTok{ }\CommentTok{# flip the two axes}
-\StringTok{    }\KeywordTok{coord_flip}\NormalTok{()}
+\StringTok{    }\KeywordTok{geom_col}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{coord_flip}\NormalTok{() }\CommentTok{# flip the two axes}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{R-data-wrangling_files/figure-latex/demograph-colplot-1.pdf}
+\includegraphics{R-data-wrangling_files/figure-latex/demograph-colplot-reorder-1.pdf}
 
 \begin{quote}
 Challenge
 
-Make a barplot that shows for each race the proportion of stops for male and female drivers. How could you get rid of the NAs?
+Make a barplot that shows the proportion of stops per race for within each gender category. How could you get rid of the NAs?
 \end{quote}
 
 \hypertarget{boxplot}{%
 \section{Boxplot}\label{boxplot}}
 
-For this segment let's extract and work with the stops for Yazoo County only.
+For this segment let's extract and work with the stops for Yazoo County only. We will also remove some NAs here.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Yazoo_stops <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(trafficstops, county_name }\OperatorTok{==}\StringTok{ "Yazoo County"}\NormalTok{)}
+\NormalTok{Yazoo_stops <-}\StringTok{ }\NormalTok{trafficstops }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(county_name }\OperatorTok{==}\StringTok{ "Yazoo County"}\NormalTok{,}
+         \OperatorTok{!}\KeywordTok{is.na}\NormalTok{(driver_age))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1499,14 +1578,10 @@ We can use boxplots to visualize the distribution of driver age within each viol
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ Yazoo_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ violation, }\DataTypeTok{y =}\NormalTok{ driver_age)) }\OperatorTok{+}
+\KeywordTok{ggplot}\NormalTok{(Yazoo_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ violation, }\DataTypeTok{y =}\NormalTok{ driver_age)) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{geom_boxplot}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
 
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/boxplot-1}
 
@@ -1521,14 +1596,6 @@ measurements and of their distribution.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing missing values (geom_point).
-\end{verbatim}
-
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/boxplot-with-jitter-1}
 
 That looks quite messy. Let's clean it up by using the \texttt{alpha} parameter to make the dots more transparent and also change their color:
@@ -1540,14 +1607,6 @@ That looks quite messy. Let's clean it up by using the \texttt{alpha} parameter 
 \StringTok{    }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{color =} \StringTok{"tomato"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing missing values (geom_point).
-\end{verbatim}
 
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/boxplot-with-jitter-transparent-1}
 
@@ -1561,14 +1620,6 @@ Notice how the boxplot layer is behind the jitter layer. We will change the plot
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing missing values (geom_point).
-\end{verbatim}
-
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/boxplot-with-jitter-reordered-1}
 
 And finally we will change the transparency of the box plot so it does not cover the points:
@@ -1580,14 +1631,6 @@ And finally we will change the transparency of the box plot so it does not cover
 \StringTok{    }\KeywordTok{geom_boxplot}\NormalTok{(}\DataTypeTok{alpha =} \DecValTok{0}\NormalTok{)  }
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing missing values (geom_point).
-\end{verbatim}
 
 \includegraphics[width=0.7\linewidth]{R-data-wrangling_files/figure-latex/boxplot-with-jitter-clean-1}
 
@@ -1618,7 +1661,7 @@ new plot to explore the distribution of age for another variable:
 \hypertarget{plotting-time-series-data}{%
 \section{Plotting time series data}\label{plotting-time-series-data}}
 
-To make things a little easer we first convert the \texttt{stop\_date} column we plan to use to Date format and use the \texttt{wday} function to extract and add a new column with the weekday for each of these dates. For better understanding we will label the weekdays.
+To make things a little easer we first convert the \texttt{stop\_date} column we plan to use to Date format and use the \texttt{wday} function to extract and add a new column to our \texttt{trafficstops} data called \texttt{wk\_day} with the weekday for each of these dates. For better understanding we will label the weekdays.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1638,7 +1681,24 @@ Let's calculate number of violation per weekday. We will use \texttt{count} for 
 \end{Highlighting}
 \end{Shaded}
 
-Timelapse data can be visualized as a line plot (with -- you guessed it -- \texttt{geom\_line()}) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:
+\begin{verbatim}
+#> # A tibble: 42 x 3
+#>    wk_day violation                    n
+#>    <ord>  <fct>                    <int>
+#>  1 Sun    Breaks-Lights-etc          363
+#>  2 Sun    Careless driving           804
+#>  3 Sun    License-Permit-Insurance  4177
+#>  4 Sun    Other or unknown          1588
+#>  5 Sun    Seat belt                 2313
+#>  6 Sun    Speeding                 16522
+#>  7 Mon    Breaks-Lights-etc          337
+#>  8 Mon    Careless driving           830
+#>  9 Mon    License-Permit-Insurance  4086
+#> 10 Mon    Other or unknown          1572
+#> # ... with 32 more rows
+\end{verbatim}
+
+We visualize thise data as a line plot (with -- you guessed it -- \texttt{geom\_line()}) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1823,18 +1883,17 @@ If you like the changes you created better than the default theme, you can save 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{grey_theme <-}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{colour=}\StringTok{"grey40"}\NormalTok{, }\DataTypeTok{size=}\DecValTok{12}\NormalTok{, }\DataTypeTok{angle=}\DecValTok{90}\NormalTok{, }\DataTypeTok{hjust=}\NormalTok{.}\DecValTok{5}\NormalTok{, }\DataTypeTok{vjust=}\NormalTok{.}\DecValTok{5}\NormalTok{),}
-                   \DataTypeTok{axis.text.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{colour=}\StringTok{"grey40"}\NormalTok{, }\DataTypeTok{size=}\DecValTok{12}\NormalTok{), }\DataTypeTok{text=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{16}\NormalTok{))}
+\NormalTok{grey_theme <-}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{colour=}\StringTok{"grey40"}\NormalTok{, }
+                                               \DataTypeTok{size=}\DecValTok{12}\NormalTok{, }\DataTypeTok{angle=}\DecValTok{90}\NormalTok{, }
+                                               \DataTypeTok{hjust=}\NormalTok{.}\DecValTok{5}\NormalTok{, }\DataTypeTok{vjust=}\NormalTok{.}\DecValTok{5}\NormalTok{),}
+                   \DataTypeTok{axis.text.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{colour=}\StringTok{"grey40"}\NormalTok{, }\DataTypeTok{size=}\DecValTok{12}\NormalTok{),}
+                   \DataTypeTok{text=}\KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{16}\NormalTok{))}
 
 \KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ Yazoo_stops, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ violation, }\DataTypeTok{y =}\NormalTok{ driver_age)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\NormalTok{grey_theme}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> Warning: Removed 3 rows containing non-finite values (stat_boxplot).
-\end{verbatim}
 
 \includegraphics{R-data-wrangling_files/figure-latex/save-reapply-theme-1.pdf}
 

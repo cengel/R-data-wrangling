@@ -34,7 +34,7 @@ First, load the data we saved in the previous lesson.
 MS_county_stops <- read.csv('data_output/MS_county_stops.csv')
 ```
 
-(If you need to, you can also download the data from here: https://github.com/cengel/R-data-wrangling/raw/master/data_output/MS_county_stops.csv)
+(If you need to, you can also download the data from here: http://bit.ly/MS_county_stops. Create a folder `data_output` in your working directory then download with  `download.file('http://bit.ly/MS_county_stops', 'data_output/MS_county_stops.csv`)
 
 ## Plotting with **`ggplot2`**
 
@@ -75,8 +75,8 @@ plot can also be generated with code like this:
 
 ```{r, first-ggplot-with-plus, eval=FALSE, purl=FALSE}
 # Assign plot to a variable
-MS_plot <- ggplot(data = MS_county_stops, aes(x = female, y = male)) +
-  geom_point()
+MS_plot <- ggplot(data = MS_county_stops, aes(x = female, y = male))
+
 # Draw the plot
 MS_plot + geom_point()
 ```
@@ -138,7 +138,7 @@ We can add another layer to the plot with `+`:
 ```{r add-abline, results='show', purl=FALSE, out.width='70%'}
 ggplot(MS_county_stops, aes(x = female, y = male)) + 
   geom_point(alpha = 0.3, color= "blue") +
-  geom_abline(intercept = 0)
+  geom_abline()
 ```
 
 
@@ -186,27 +186,46 @@ ggplot(trafficstops, aes(violation)) +
   geom_bar(aes(fill = driver_gender), position = "fill")
 ```
 
-The other type of barchart, `geom_col`, is used if you want the heights of the bars to represent the actual data values. In this example, we first generate a summary statistics, and then pipe it into ggplot to visualize the values we have calculated.
+To make this more readable we add anoter function to flip the coordinates. 
 
-To make this more readable we add anoter function to flip the coordinates. We also reorder the barplots, so we can see them in descending order.
+```{r color-bar-stretch-flip, results='show', purl=FALSE, out.width='70%'}
+ggplot(trafficstops, aes(violation)) + 
+  geom_bar(aes(fill = driver_gender), position = "fill") +
+  coord_flip()
+```
+
+
+The other type of barchart, `geom_col`, is used if you want the heights of the bars to represent the actual data values. In this example, we first generate a summary statistics, and then pipe it into ggplot to visualize the values we have calculated.
 
 
 ```{r demograph-colplot, results='show', purl=FALSE}
 trafficstops %>% 
+    group_by(violation) %>% 
+    summarize(mean_age = mean(driver_age, na.rm = TRUE)) %>%
+    ggplot(aes(x = violation, y = mean_age)) + # reorder
+    geom_col() + 
+    coord_flip() # flip the two axes
+ 
+```
+
+We can also reorder the barplots, so we can see them in descending order.
+
+```{r demograph-colplot-reorder, results='show', purl=FALSE}
+trafficstops %>% 
   group_by(violation) %>% 
   summarize(mean_age = mean(driver_age, na.rm = TRUE)) %>%
   ggplot(aes(x = reorder(violation, mean_age), y = mean_age)) + # reorder
-    geom_col() + # flip the two axes
-    coord_flip()
+    geom_col() + 
+    coord_flip() # flip the two axes
 ```
 
 
 > <h3>Challenge</h3>
 >
-> Make a barplot that shows for each race the proportion of stops for male and female drivers. How could you get rid of the NAs?
+> Make a barplot that shows the proportion of stops per race for within each gender category. How could you get rid of the NAs?
 
 ```{r, echo=FALSE, eval=FALSE, purl=TRUE}
-## Challenge: make a barplot that shows the proportion of stops per race for each gender. How could you get rid of the NAs?
+## Challenge: Make a barplot that shows the proportion of stops per race for within each gender category. How could you get rid of the NAs?
 
 trafficstops %>% 
   filter(!is.na(driver_gender) & !is.na(driver_race)) %>% 
@@ -217,16 +236,18 @@ trafficstops %>%
 
 ## Boxplot
 
-For this segment let's extract and work with the stops for Yazoo County only.
+For this segment let's extract and work with the stops for Yazoo County only. We will also remove some NAs here.
 
 ```{r yazoo-extract}
-Yazoo_stops <- filter(trafficstops, county_name == "Yazoo County")
+Yazoo_stops <- trafficstops %>% 
+  filter(county_name == "Yazoo County",
+         !is.na(driver_age))
 ```
 
 We can use boxplots to visualize the distribution of driver age within each violation:
 
 ```{r boxplot, purl=FALSE, out.width='70%'}
-ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
+ggplot(Yazoo_stops, aes(x = violation, y = driver_age)) +
     geom_boxplot()
 ```
 
@@ -294,7 +315,7 @@ ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
 
 ## Plotting time series data
 
-To make things a little easer we first convert the `stop_date` column we plan to use to Date format and use the `wday` function to extract and add a new column with the weekday for each of these dates. For better understanding we will label the weekdays.
+To make things a little easer we first convert the `stop_date` column we plan to use to Date format and use the `wday` function to extract and add a new column to our `trafficstops` data called `wk_day` with the weekday for each of these dates. For better understanding we will label the weekdays.
 
 ```{r add-weekday-col, purl=FALSE}
 library(lubridate)
@@ -305,12 +326,12 @@ trafficstops <- trafficstops %>%
 
 Let's calculate number of violation per weekday. We will use `count` for this, like this:
 
-```{r, count-weekly-violations, purl=FALSE}
+```{r, count-weekly-violations, results='show', purl=FALSE}
 trafficstops %>%
   count(wk_day, violation) 
 ```
 
-Timelapse data can be visualized as a line plot (with -- you guessed it -- `geom_line()`) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:
+We visualize thise data as a line plot (with -- you guessed it -- `geom_line()`) mapping the days to the x axis and counts to the y axis. So we pipe the output from above into ggplot like this:
 
 ```{r first-time-series, purl=FALSE}
 trafficstops %>%
@@ -472,8 +493,11 @@ stops_facet_plot +
 If you like the changes you created better than the default theme, you can save them as an object to be able to easily apply them to other plots you may create:
 
 ```{r save-reapply-theme, purl=FALSE}
-grey_theme <- theme(axis.text.x = element_text(colour="grey40", size=12, angle=90, hjust=.5, vjust=.5),
-                   axis.text.y = element_text(colour="grey40", size=12), text=element_text(size=16))
+grey_theme <- theme(axis.text.x = element_text(colour="grey40", 
+                                               size=12, angle=90, 
+                                               hjust=.5, vjust=.5),
+                   axis.text.y = element_text(colour="grey40", size=12),
+                   text=element_text(size=16))
 
 ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) +
   geom_boxplot() + 
