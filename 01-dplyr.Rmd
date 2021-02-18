@@ -93,30 +93,25 @@ select(stops, starts_with("driver"))
 Check out the [tidyselect reference](https://tidyselect.r-lib.org/reference/language.html) for more.
 
 
-To choose rows based on specific criteria, use `filter()`:
+To subset rows based on specific criteria, we use `filter()`:
 
-```{r, eval=FALSE, purl = FALSE}
+```{r, results='show', purl = FALSE, echo=FALSE}
 filter(stops, county_name == "Yazoo")
 ```
 
-```{r, results='show', purl = FALSE, echo=FALSE}
-filter(stops, county_name == "Yazoo") %>% head()
-```
+Here are some other ways to subset rows:
 
-Here are some other ways to select rows:
-
-- select certain rows by row number: `slice(stops, 1:3) # rows 1-3`
-- select rows with highest or lowest values of a variable: 
+- by row number: `slice(stops, 1:3) # rows 1-3`
+- rows with highest or lowest values of a variable: 
     - `slice_min(stops, driver_age) # likewise slice_max()`
-- select random rows: 
+- random rows: 
     - `slice_sample(stops, n = 5) # number of rows to select`
     - `slice_sample(stops, prop = .0001) # fraction of rows to select`
 
-To sort rows by variables use the `arrange` function: `arrange(stops, county_name, stop_date)`
+To sort rows by variables use the `arrange` function:
 
-```{r, results='show', echo=FALSE}
-stops %>% 
-  arrange(county_name, stop_date)
+```{r, results='show'}
+arrange(stops, county_name, stop_date)
 ```
 
 
@@ -137,7 +132,7 @@ select(tmp_df, violation, driver_gender)
 
 * Nested functions
 
-You can also nest functions (i.e. one function inside of another).
+You can also nest functions (i.e. placce one function inside of another).
 This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.
 
 ```{r, eval=FALSE}
@@ -146,11 +141,10 @@ select(filter(stops, driver_age > 85), violation, driver_gender)
 
 * Pipes!
 
-The last option, pipes, are a fairly recent addition to R. Pipes let you take
+The last option, called "pipes", is the most recent addition to R. Pipes let you take
 the output of one function and send it directly to the next, which is useful
 when you need to do many things to the same dataset.  Pipes in R look like
-`%>%` and are made available via the `magrittr` package, installed automatically
-with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
+`%>%` and are made available via the `magrittr` package, which is installed automatically with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
 + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a PC or <kbd>Cmd</kbd> + 
 <kbd>Shift</kbd> + <kbd>M</kbd> if you have a Mac.
 
@@ -183,7 +177,7 @@ Note that the final data frame is the leftmost part of this expression.
 
 > <h3>Challenge</h3>
 >
->  Using pipes, subset the `stops` data to include stops in Tunica only and retain the columns `stop_date`, `driver_age`, and `violation`. Bonus: sort the table by driver age.
+>  Using pipes, subset the `stops` data to include stops in Tunica county only and retain the columns `stop_date`, `driver_age`, and `violation`. Bonus: sort the table by driver age.
 
 <!---
 ```{r, eval=FALSE, purl=FALSE}
@@ -198,55 +192,33 @@ stops %>%
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Pipes Challenge:
 ##  Using pipes, subset the `stops` data to include stops in 
-## Tunica only and retain the columns `stop_date`, `driver_age`,
+## Tunica county only and retain the columns `stop_date`, `driver_age`,
 ## and `violation`. Bonus: sort the table by driver age.
 ```
 
 ## Add new columns
 
-Frequently you'll want to create new columns based on the values in existing columns. For this we'll use `mutate()`.
+Frequently you'll want to create new columns based on the values in existing columns or. For this we'll use `mutate()`. We can also reassign values to an existing column with that function. 
 
-To create a new column with the year the driver was born we can extract the first 4 elements of the string that represents the `driver_birthdate` and add it to the data frame like this:
+Be aware that new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
 
-
-```{r, eval=F, purl = FALSE}
-stops %>% 
-  mutate(birth_year = substring(driver_birthdate, 1, 4))
-```
-
-The new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
-
-We can als use `mutate` to reassign values to an existing column. So here is an alternative to do the same as above, but here we first will use the `lubridate` library, which is installed with `tidyverse` to convert our string to an actual date format. We will then use the `year()` function to extract the year. All of this can happen in the same call to `mutate()`.
+So here is an example using the `year()` function from the lubrudate package to extract the year of the drivers' birthdate:
 
 ```{r, eval=F, purl = FALSE}
 library(lubridate)
 
 stops %>% 
-  mutate(birth_date = ymd(driver_birthdate),
-         birth_year = year(driver_birthdate))
+  mutate(birth_year = year(driver_birthdate))
 ```
 
-If this runs off your screen and you just want to see the first few rows, you
-can use a pipe to view the `head()` of the data. (Pipes work with non-**`dplyr`**
-functions, too, as long as the **`dplyr`** or `magrittr` package is loaded). When piping into a function with no additional arguments, you can call the
-function with or without parentheses (e.g. `head` or `head()`). (I like to add the parentheses to remind myself that it is a function and not a variable.)
-
-```{r, eval=F, purl = FALSE}
-stops %>% 
-  mutate(birth_date = ymd(driver_birthdate),
-         birth_year = year(driver_birthdate)) %>% 
-  head()
-```
 
 We can keep adding columns like this:
 
 ```{r, eval=F, purl = FALSE}
 
 stops %>% 
-  mutate(birth_date = ymd(driver_birthdate),
-         birth_year = year(driver_birthdate),
-         birth_cohort = round(birth_year/10)*10) %>% 
-  head()
+  mutate(birth_year = year(driver_birthdate),
+         birth_cohort = round(birth_year/10)*10) 
 
 ```
 
@@ -254,8 +226,7 @@ We are beginning to see the power of piping. Here is a slightly expanded example
 
 ```{r driver-birth-cohorts, results='show', purl = FALSE, fig.cap='Driver Birth Cohorts'}
 stops %>% 
-  mutate(birth_date = ymd(driver_birthdate),
-         birth_year = year(driver_birthdate),
+  mutate(birth_year = year(driver_birthdate),
          birth_cohort = round(birth_year/10)*10,
          birth_cohort = factor(birth_cohort)) %>%
     select(birth_cohort) %>% 
