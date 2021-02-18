@@ -7,7 +7,7 @@ Data from https://openpolicing.stanford.edu
 For the purpose of this tutorial I made the following changes:
 
 - Selected Black, White, and unknown (empty string: "") "driver_race" only.
-- Kept only the following columns "id", "state", "stop_date", "county_name", "county_fips", "police_department", "driver_gender", "driver_age_raw", "driver_race",  "violation_raw", "officer_id"
+- Kept only the following columns "id", "stop_date", "county_name", "county_fips", "police_department", "driver_gender", "driver_age_raw", "driver_race",  "violation_raw", "officer_id"
 - Renamed "driver_age_raw" to "driver_birthdate"
 - Set all empty strings "" to NA for:
     - "driver_gender"
@@ -16,8 +16,9 @@ For the purpose of this tutorial I made the following changes:
     - "officer_id"
 - Set "driver_birthdate" to NA if it is later or equal than "stop_date"
 - Calculated age of driver at the time stopped and added a column with driver_age (in years)
+- Removed `County` from "county_name"
 - "driver_gender": Renamed M and F to male and female
-- added violations, recoded, based on violations_raw:
+- added violations, recoded, based on violations_raw and dropped violations_raw:
 [1] Seat belt not used properly as required >> Seat belt
 [2] Careless driving >> Carless driving
 [3] Speeding - Regulated or posted speed limit and actual speed >> Speeding
