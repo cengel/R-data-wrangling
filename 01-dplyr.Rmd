@@ -133,7 +133,7 @@ of objects.
 
 ```{r, eval=FALSE}
 tmp_df <- filter(stops, driver_age > 85)
-select(tmp_df, violation_raw, driver_gender)
+select(tmp_df, violation, driver_gender)
 ```
 
 * Nested functions
@@ -142,7 +142,7 @@ You can also nest functions (i.e. one function inside of another).
 This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.
 
 ```{r, eval=FALSE}
-select(filter(stops, driver_age > 85), violation_raw, driver_gender)
+select(filter(stops, driver_age > 85), violation, driver_gender)
 ```
 
 * Pipes!
@@ -158,11 +158,11 @@ with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
 ```{r, eval=FALSE, purl = FALSE}
 stops %>%
   filter(driver_age > 85) %>%
-  select(violation_raw, driver_gender)
+  select(violation, driver_gender)
 ```
 
 
-In the above, we use the pipe to send the `stops` dataset first through
+In the above, we use the pipe to send the `stops` data first through
 `filter()` to keep rows where `driver_race` is Black, then through `select()`
 to keep only the `officer_id` and `stop_date` columns. Since `%>%` takes
 the object on its left and passes it as the first argument to the function on
@@ -175,7 +175,7 @@ could do so by assigning it a new name:
 ```{r, results='show', purl = FALSE}
 senior_drivers <- stops %>%
   filter(driver_age > 85) %>%
-  select(violation_raw, driver_gender, driver_race)
+  select(violation, driver_gender, driver_race)
 
 senior_drivers
 ```
@@ -184,7 +184,7 @@ Note that the final data frame is the leftmost part of this expression.
 
 > <h3>Challenge</h3>
 >
->  Using pipes, subset the `stops` data to include stops in Tunica only and retain the columns `stop_date`, `driver_age`, and `violation_raw`. Bonus: sort the table by driver age.
+>  Using pipes, subset the `stops` data to include stops in Tunica only and retain the columns `stop_date`, `driver_age`, and `violation`. Bonus: sort the table by driver age.
 
 <!---
 ```{r, eval=FALSE, purl=FALSE}
@@ -200,7 +200,7 @@ stops %>%
 ## Pipes Challenge:
 ##  Using pipes, subset the `stops` data to include stops in 
 ## Tunica only and retain the columns `stop_date`, `driver_age`,
-## and `violation_raw`. Bonus: sort the table by driver age.
+## and `violation`. Bonus: sort the table by driver age.
 ```
 
 ## Add new columns
@@ -267,7 +267,7 @@ stops %>%
 > <h3>Challenge</h3>
 >
 >  Create a new data frame from the `stops` data that meets the following
->  criteria: contains only the `violation_raw` column for female drivers of age 50 that were stopped on a Sunday. For this add a new column to your data frame called
+>  criteria: contains only the `violation` column for female drivers of age 50 that were stopped on a Sunday. For this add a new column to your data frame called
 >  `weekday_of_stop` containing the number of the weekday when the stop occurred. Use the `wday()` function from `lubridate` (Sunday = 1).
 > 
 > Think about how the commands should be ordered to produce this data frame!
@@ -275,7 +275,7 @@ stops %>%
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Mutate Challenge:
 ## Create a new data frame from the `stops` data that meets the following
-## criteria: contains only the `violation_raw` column for female drivers of age 50 that were stopped on a Sunday. For this add a new column to your data frame called
+## criteria: contains only the `violation` column for female drivers of age 50 that were stopped on a Sunday. For this add a new column to your data frame called
 ## `weekday_of_stop` containing the number of the weekday when the stop occurred. Use the `wday()` function from `lubridate` (Sunday = 1).
 ## Think about how the commands should be ordered to produce this data frame!
 ```
@@ -286,7 +286,7 @@ stops %>%
 stops %>% 
   filter(driver_age == 50 & driver_gender == "female") %>% 
   mutate(wds = wday(ymd(stop_date))) %>% 
-  select(violation_raw, wds) %>% 
+  select(violation, wds) %>% 
   filter(wds == 1)
 ```
 --->
