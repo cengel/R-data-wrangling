@@ -70,7 +70,18 @@ We will be working a small subset of the data from the [Stanford Open Policing P
 
 ```{r}
 stops <- read_csv("data/MS_trafficstops_bw_age.csv")
+stops
 ```
+
+You may have noticed that by using `read_csv` we have generated an object
+of class `tbl_df`, also known as a "tibble". Tibble's data
+structure is very similar to a data frame. For our purposes the only differences
+are that 
+* (1) columns of class `character` are never converted into factors,  
+* (2) it tries to recognize and `date` types
+* (3) the output displays the data type of each column under its name, and 
+* (4) it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
+
 
 To select columns of a
 data frame with `dplyr`, use `select()`. The first argument to this function is the data
@@ -272,8 +283,7 @@ knitr::include_graphics('img/split-apply-combine.png')
 ```
 
 
-**`dplyr`** makes this very easy through the use of the
-`group_by()` function.
+**`dplyr`** makes this possible through the use of the `group_by()` function.
 
 `group_by()` is often used together with `summarize()`, which collapses each
 group into a single-row summary of that group. `group_by()` takes as arguments
@@ -283,15 +293,6 @@ to calculate the summary statistics. So to view the mean age for black and white
 ```{r, results='show', purl = FALSE}
 stops %>%
   group_by(driver_race) %>%
-  summarize(mean_age = mean(driver_age, na.rm=TRUE))
-```
-
-
-So, back to the beginning of the chapter, where we tried to calculate the mean age of the driver for different counties, how would we do this? Like this:
-
-```{r, results='show', purl = FALSE, eval=FALSE}
-stops %>%
-  group_by(county_name) %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
@@ -314,12 +315,6 @@ stops %>%
 ```
 
 Recall that `is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we’re asking for everything that is _not_ an `NA`.
-
-You may have noticed that the output from these calls looks a little different. That's because **`dplyr`** has changed our `data.frame` object
-to an object of class `tbl_df`, also known as a "tibble". Tibble's data
-structure is very similar to a data frame. For our purposes the only differences
-are that (1) columns of class `character` are never converted into
-factors, and (2) in addition to displaying the data type of each column under its name, it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
 
 
 Once the data are grouped, you can also summarize multiple variables at the same
