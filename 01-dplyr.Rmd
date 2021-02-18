@@ -333,33 +333,33 @@ stops %>%
 ## Tallying
 
 When working with data, it is also common to want to know the number of
-observations found for each factor or combination of factors. For this, **`dplyr`**
-provides `tally()`. For example, if we wanted to see how many traffic stops each officer recorded we would do:
+observations found for categorical variables. For this, **`dplyr`**
+provides `count()`. For example, if we wanted to see how many traffic stops each officer recorded:
 
 ```{r, eval=F, purl = FALSE}
 stops %>%
-  group_by(officer_id) %>%
-  tally()
+  count(officer_id)
 ```
 
 We can optionally sort the results in descending order by adding `sort=TRUE`:
 
-```{r, eval=F, purl = FALSE}
-stops %>%
-  group_by(officer_id) %>%
-  tally(sort=TRUE)
-```
-
-Here, `tally()` is the action applied to the groups created by `group_by()` and counts the total number of records for each category.
-
-Alternatives:
 ```{r}
 stops %>%
-  group_by(officer_id) %>%
-  summarize(n = n()) # n() is useful when count is needed for a calculation
+  count(officer_id, sort = TRUE)
+```
+
+`count()` calls `group_by()` transparently before counting the total number of records for each category.
+
+Alternatives:
+```{r, eval=F, purl = FALSE}
+stops %>%
+  group_by(officer_id) %>% 
+  tally(sort = TRUE) # tally() requires group_by before counting
 
 stops %>%
-  count(officer_id) # count() calls group_by automatically, then tallies
+  group_by(officer_id) %>%
+  summarize(n = n()) %>% # n() is useful when the count is needed within a calculation
+  arrange(desc(n))
 ```
 
 
@@ -373,7 +373,7 @@ stops %>%
 ## Answer 1
 library(lubridate)
 stops %>% 
-   mutate (stopyear = year(ymd(stop_date))) %>% 
+   mutate (stopyear = year(stop_date)) %>% 
    filter(stopyear == 2013) %>% 
    count(county_name, sort=TRUE) %>% 
    head(5)
@@ -388,9 +388,9 @@ stops %>%
 
 ## Joining two tables
 
-<<<<<<< HEAD
+
 It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of stops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
-=======
+
 It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of stops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 >>>>>>> 1aab4b954ad0f82372da78447cb5bc64fdc759fe
 
