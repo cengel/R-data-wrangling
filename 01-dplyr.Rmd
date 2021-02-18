@@ -84,15 +84,14 @@ select(stops, police_department, officer_id, driver_race)
 select(stops, police_department, officer_id, driver_race) %>% head()
 ```
 
-It is worth knowing that `dplyr` comes with a number of ["select helpers"](https://www.rdocumentation.org/packages/dplyr/versions/0.7.2/topics/select_helpers), which are functions that allow you to select columns based on their names. For example:
+It is worth knowing that `dplyr` is backed by another package with a number of helper functions, which provide convenient functions to select columns based on their names. For example:
 
-```{r, eval=FALSE, purl = FALSE}
+```{r, results = 'show', purl = FALSE, echo=FALSE}
 select(stops, starts_with("driver"))
 ```
 
-```{r, results = 'show', purl = FALSE, echo=FALSE}
-select(stops, starts_with("driver")) %>% head()
-```
+Check out the [tidyselect reference](https://tidyselect.r-lib.org/reference/language.html) for more.
+
 
 To choose rows based on specific criteria, use `filter()`:
 
