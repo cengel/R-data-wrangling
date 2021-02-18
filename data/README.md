@@ -61,4 +61,6 @@ white_pop <- get_acs(geography = "county", variable = "B02001_002E", state="MS")
 
 MS_pop <- data.frame(FIPS = as.numeric(black_pop$GEOID), black_pop = black_pop$estimate, white_pop = white_pop$estimate, total_pop = total_pop$estimate)
 
-write.csv(MS_bw, "data/MS_acs2015_bw.csv", row.names = F)`
+MS_pop %>% 
+  mutate(County = str_remove(County, " County")) %>% # remove "County"
+  write_csv("data/MS_acs2015_bw.csv")`
