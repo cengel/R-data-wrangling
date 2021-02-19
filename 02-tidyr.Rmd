@@ -209,6 +209,6 @@ write_csv(violation_wide, "data_output/county_violations.csv")
 ```{r, purl=FALSE, echo=FALSE}
 if (!file.exists("data_output")) dir.create("data_output")
 
-write_csv(violation_wide, "data_output/county_violations.csv")
+write_csv(violations_wide, "data_output/county_violations.csv")
 ```
 
