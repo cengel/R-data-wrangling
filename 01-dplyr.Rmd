@@ -374,7 +374,13 @@ stops %>%
   count(officer_id, name = "n_stops", sort = TRUE)
 ```
 
-`count()` calls `group_by()` transparently before counting the total number of records for each category.
+`count()` calls `group_by()` transparently before counting the total number of records for each category. Similarly, we can count subgroups within groups:
+
+```{r}
+stops %>%
+  count(officer_id, violation, name = "n_stops")
+```
+
 
 Alternatives:
 ```{r, eval=F, purl = FALSE}
