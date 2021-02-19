@@ -172,17 +172,15 @@ vignette("pivot")
 ## Answer 1
 library(lubridate)
 tr_wide <- stops %>%
-  mutate(stop_date = ymd(stop_date),
-         year = year(stop_date)) %>% 
-  group_by(violation_raw, year) %>%
-  summarize(n_stops = n()) %>%
-  pivot_wider(names_from = year, values_from = n_stops)
+  mutate(year = year(stop_date)) %>% 
+  count(violation, year) %>%
+  pivot_wider(names_from = year, values_from = n)
 
-head(tr_wide)
+tr_wide
 
 ## Answer 2
 tr_wide %>%
-  pivot_longer(cols = -violation_raw, names_to = "year", values_to = "n_stops")
+  pivot_longer(cols = -violation, names_to = "year", values_to = "n_stops")
 
 ```
 --->
