@@ -13,7 +13,9 @@ knitr::opts_chunk$set(results='hide', comment = "#>", purl = FALSE)
 > * Direct the output of one **`dplyr`** function to the input of another function with the 'pipe' operator `%>%`.
 > * Add new columns to a data frame that are functions of existing columns with `mutate`.
 > * Understand the split-apply-combine concept for data analysis.
-> * Use `summarize`, `group_by`, and `tally` to split a data frame into groups of observations, apply a summary statistics for each group, and then combine the results.
+> * Use `summarize`, `group_by`, and `count` to split a data frame into groups of observations, apply a summary statistics for each group, and then combine the results.
+> * Join two tables by a common variable.
+
 
 ------------
 
@@ -244,6 +246,23 @@ stops %>%
     plot()
 ```
 
+Mutate can also be used in conjunction with logical conditions. For example, we could create a new column, where we assign everyone born after the year 2000 to a group "millenial" and overyone before to "pre-millenial".
+
+In order to do this we take advantage of the `ifelse` function:
+
+`ifelse(a_logical_condition, if_true_return_this, if_false_return_this)`
+
+In conjunction with mutate, this works like this:
+
+
+```{r ifelse, results='show', purl = FALSE}
+stops %>% 
+  mutate(cohort = ifelse(year(driver_birthdate) < 2000, "pre-millenial", "millenial")) %>% 
+  count(cohort)
+```
+
+More advanced conditional recoding can be done with [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html). 
+
 
 > <h3>Challenge</h3>
 >
@@ -336,16 +355,23 @@ When working with data, it is also common to want to know the number of
 observations found for categorical variables. For this, **`dplyr`**
 provides `count()`. For example, if we wanted to see how many traffic stops each officer recorded:
 
-```{r, eval=F, purl = FALSE}
+```{r}
 stops %>%
   count(officer_id)
+```
+
+Bu default, count will name the column with the counts `n`. We can change this by explicitly providing a value for the `name` argument:
+
+```{r, eval=F, purl = FALSE}
+stops %>%
+  count(officer_id, name = "n_stops")
 ```
 
 We can optionally sort the results in descending order by adding `sort=TRUE`:
 
 ```{r}
 stops %>%
-  count(officer_id, sort = TRUE)
+  count(officer_id, name = "n_stops", sort = TRUE)
 ```
 
 `count()` calls `group_by()` transparently before counting the total number of records for each category.
@@ -391,38 +417,32 @@ stops %>%
 
 It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of stops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 
-It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of stops for black and white drivers per county together with the numbers of the black and white total population for these counties. Toe population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
->>>>>>> 1aab4b954ad0f82372da78447cb5bc64fdc759fe
-
 ```{r, results='show'}
-MS_bw_pop <- read.csv("data/MS_acs2015_bw.csv")
-head(MS_bw_pop)
+acs <- read_csv("data/MS_acs2015_bw.csv")
+acs
 ```
 
-In a first step we will use a prevous `dplyr` command to count all the stops per county.
+In a first step we count all the stops per county. 
 
 ```{r, results='show'}
 stops %>% 
-  group_by(county_name) %>% 
-  summarise(n_stops = n())
+  count(county_name, name = "n_stops") 
 ```
 
-We will then pipe this into our next operation where we bring the two tables together. We will use `left_join`, which returns all rows from the left table, and all columns from the left and the right table. As unique ID, which uniquely identifies the corresponding records in each table we use the Names. 
+We will then pipe this into our next operation where we bring the two tables together. We will use `left_join`, which returns all rows from the left table, and all columns from the left and the right table. As ID, which uniquely identifies the corresponding records in each table we use the County names. 
 
 ```{r, results='show'}
 stops %>% 
-  group_by(county_name) %>% 
-  summarise(n_stops = n()) %>% 
-  left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
-  head()
+  count(county_name, name = "n_stops") %>% 
+  left_join(acs, by = c("county_name" = "County")) 
 ```
 
 
-Now we can, for example calculate the percentage of the population that gets stopped in each county.
+Now we can, for example calculate the stop rate, i.e. the proportion of the population that gets stopped in each county.
 
 > <h3>Challenge</h3>
 > 
-> Which county has the highest (lowest) percentage of stopped drivers?
+> Which county has the highest and which one the lowest stop rate?
 > Use the snippet from above and pipe into the additional operations
 > to do this.
 
@@ -430,11 +450,10 @@ Now we can, for example calculate the percentage of the population that gets sto
 ```{r, eval=F, echo=FALSE, purl=FALSE}
 ## Answer 
 stops %>% 
-  group_by(county_name) %>% 
-  summarise(n_stops = n()) %>% 
-  left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
-  mutate(pct_stopped = n_stops/bw_pop * 100) %>% 
-  filter(pct_stopped %in% range(pc_stopped))
+  count(county_name, name = "n_stops") %>% 
+  left_join(acs, by = c("county_name" = "County")) %>% 
+  mutate(stop_rate = n_stops/bw_pop) %>% 
+  filter(stop_rate %in% range(stop_rate))
 ```
 --->
 
@@ -446,12 +465,12 @@ stops %>%
 ```
 
 
-`dplyr` join functions are generally equivalent `merge` from the base command, but there are a few advantages: 
+`dplyr` join functions are generally equivalent to `merge` from the base command, but there are a few advantages: 
 
 * rows are kept in existing order
-* much faster
-* tells you what keys you're merging by (if you don't supply)
-* also work with database tables.
+* it runs faster
+* tells you what keys you're merging by (if you don't supply them)
+* also works with database tables.
 
 https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ
 
