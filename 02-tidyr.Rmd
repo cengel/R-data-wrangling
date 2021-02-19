@@ -4,7 +4,7 @@ library(xtable)
 options(xtable.comment = FALSE)
 
 knitr::opts_chunk$set(results='hide', comment = "#>", purl = FALSE)
-trafficstops <- read.csv("data/MS_trafficstops_bw_age.csv")
+stops <- read.csv("data/MS_trafficstops_bw_age.csv")
 ```
 
 # Data Manipulation using **`tidyr`**{#tidyr}
@@ -36,7 +36,7 @@ In the 'long' format, you usually have 1 column for the observed variable and
 the other columns are ID variables.
 
 
-For the 'wide' format a row, for example could be a reserach subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:
+For the 'wide' format a row, for example could be a reserarch subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:
 
 ```{r wide-exmpl, results='asis', echo=FALSE}
 exmpl_obs <- data.frame(subject_ID = LETTERS[1:3], 
@@ -61,58 +61,44 @@ The choice of data format affects readability. For humans, the wide format is of
 
 > Challenge 1
 >
-> Is trafficstops in a long or wide format?
+> Is stops in a long or wide format?
 >
 
 ## Long to Wide with `pivot_wider`
 
-Now let's see this in action. First, using **`dplyr`**, let's create a data frame
-with the mean age of each driver by gender and county:
+Now let's see this in action. First, using **`dplyr`**, let's create a data frame with the counts of different violations for each county:
 
 ```{r, results='show', purl=FALSE}
-trafficstops_ma <- trafficstops %>%
-    filter(!is.na(driver_gender)) %>%
-    group_by(county_name, driver_gender) %>%
-    summarize(mean_age = mean(driver_age, na.rm = TRUE))
+violations <- stops %>%
+  count(county_name, violation)
 
-trafficstops_ma
+violations
 ```
 
 Now, to make this long data wide, we use `pivot_wider` from `tidyr` to turn the driver gender into columns. In addition to our data table we provide `pivot_wider` with two arguments: `names_from` describes which column to use for name of the output column, and `values_from` tells it from column to get the cell values. We'll use a pipe so we can ignore the data argument.
 
 ```{r, results='show', purl=FALSE}
-trafficstops_ma_wide <- trafficstops_ma %>%
-  pivot_wider(names_from = driver_gender, 
-              values_from = mean_age) 
+violations_wide <- violations %>%
+  pivot_wider(names_from = violation, 
+              values_from = n) 
 
-trafficstops_ma_wide
+violations_wide
 ```
-
-We can now do things like compare the mean age of men against women drivers. As example we use the age difference to find the counties with the largest and with the smallest number. (A negative number means that female drivers are on average older than male drivers, a positive number means that male drivers are on average older than women drivers.)
-
-```{r, results='show', purl=FALSE}
-trafficstops_ma_wide %>% 
-  mutate(agediff = male - female) %>% 
-  ungroup() %>%
-  filter(agediff %in% range(agediff))
-```
-
-Note that `trafficstops_ma_wide` is derived from `trafficstops_ma`, and is a "grouped" data frame, which was created with the `group_by` function above. (Check `class(trafficstops_ma)` and `class(trafficstops_ma_wide)`). That means that any instruction that follows will operate on each group (in this case county) separately. That may be ok for some instances (like `mutate`), but if we are interested in retrieving the maximum and the minumim age difference over *all* counties we need to `ungroup` the tibble to have the `filter` command operate on the entire dataset instead of each group (i.e. county). 
 
 
 ## Wide to long with `pivot_longer`
 
 What if we had the opposite problem, and wanted to go from a wide to long
 format? For that, we use `pivot_longer`, which will increase the number of rows and decrease the number of columns. We provide the functino with thee arguments: `cols` which are the columns we want to pivot into the long format, `names_to`, which is a string specifying the name of the column to create from the data stored in the column names, and `values_to`, which is also a string, specifying the name of the column to create from the data stored in cell values.
-So, to go backwards from `trafficstops_ma_wide`, and exclude `county_name` from the long, we would do the following:
+So, to go backwards from `violations_wide`, and exclude `county_name` from the long format, we would do the following:
 
 ```{r, results='show', purl=FALSE}
-trafficstops_ma_long <- trafficstops_ma_wide %>%
-  pivot_longer(cols = -county_name, 
-               names_to = "driver_gender", # name is a string!
-               values_to = "mean_age")     # also a string
+violations_long <- violations_wide %>%
+  pivot_longer(cols = -county_name,        # exclude column with county name
+               names_to = "violation",     # name is a string!
+               values_to = "n")            # also a string
 
-trafficstops_ma_long
+violations_long
 ```
 
 We could also have used a specification for what columns to include. This can be
@@ -120,10 +106,10 @@ useful if you have a large number of identifying columns, and it's easier to
 specify what to gather than what to leave alone. And if the columns are adjacent to each other, we don't even need to list them all out -- we can use the `:` operator!
 
 ```{r, results='show', purl=FALSE}
-trafficstops_ma_wide %>%
-  pivot_longer(cols = male:female,      # this also works
-               names_to = "driver_gender", 
-               values_to = "mean_age")
+violations_long <- violations_wide %>%
+  pivot_wider(cols = Break-Lights-etc:Speeding,      # this also works
+               names_to = "violation", 
+               values_to = "n")
 ```
 
 There are many powerful operations you can do with the `pivot_*` functions. To learn more review the vignette:
@@ -134,13 +120,13 @@ vignette("pivot")
 
 > <h3>Challenge</h3>
 >
-> 1.From the trafficstops dataframe create a wide data frame `tr_wide` with 
-> "year" as columns, each row is a different violation ("violation_raw"), 
+> 1.From the stops dataframe create a wide data frame `tr_wide` with 
+> "year" as columns, each row is a different violation, 
 > and the values are the 
 > number of traffic stops per each violation, roughly like this:
 > 
->` violation_raw  | 2013 | 2014 | 2015 ...`
-> `Improper turn  |   65 |    54|   67 ...`
+>` violation      | 2013 | 2014 | 2015 ...`
+> `Break-Lights   |   65 |    54|   67 ...`
 > `Speeding       |  713 |   948|  978 ...`
 > `...`
 >
@@ -148,23 +134,23 @@ vignette("pivot")
 > and count the traffic stops before reshaping the table.
 
 > 2. Now take the data frame, and make it long again, so each row is a 
-> unique violation_raw - year combination, like this:
+> unique violation - year combination, like this:
 > 
-> `violation_raw | year | n of stops`
-> `Improper turn | 2013 | 65`
-> `Improper turn | 2014 | 54`
+> `violation  | year | n of stops`
+> `Speeding   | 2013 | 65`
+> `Speeding   | 2014 | 54`
 > `... etc`
 
 ```{r, eval=FALSE, purl=TRUE, echo=FALSE}
 ## Reshaping challenges
 
-## From the trafficstops dataframe create a wide data frame `tr_wide` 
-## with "year" as columns, with "violation_raw" as rows, 
+## From the stops dataframe create a wide data frame `tr_wide` 
+## with "year" as columns, with "violation" as rows, 
 ## and the values are the number of traffic stops per each violation,
 ## roughly like this:
 
-## violation_raw  | 2013 | 2014 | 2015 ...
-## Improper turn  |   65 |    54|   67 ...
+## violation      | 2013 | 2014 | 2015 ...
+## Break-Lights   |   65 |    54|   67 ...
 ## Speeding       |  713 |   948|  978 ...
 ## ...
 
@@ -172,11 +158,11 @@ vignette("pivot")
 ## and count the traffic stops before reshaping the table.
 
 ## Now take the data frame, and make it long again, so each row is a 
-## unique violation_raw - year combination, like this:
+## unique violation - year combination, like this:
 
-## violation_raw | year | n of stops
-## Improper turn | 2013 | 65
-## Improper turn | 2014 | 54
+## violation  | year | n of stops
+## Speeding   | 2013 | 65
+## Speeding   | 2014 | 54
 ## ... etc
 
 ```
@@ -185,7 +171,7 @@ vignette("pivot")
   ```{r, echo=FALSE, purl=FALSE}
 ## Answer 1
 library(lubridate)
-tr_wide <- trafficstops %>%
+tr_wide <- stops %>%
   mutate(stop_date = ymd(stop_date),
          year = year(stop_date)) %>% 
   group_by(violation_raw, year) %>%
@@ -221,12 +207,12 @@ these names are the row numbers), so we need to add `row.names = FALSE` so
 they are not included:
 
 ```{r, purl=FALSE, eval=FALSE}
-write.csv(trafficstops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
+write.csv(stops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
 ```
 
 ```{r, purl=FALSE, echo=FALSE}
 if (!file.exists("data_output")) dir.create("data_output")
 
-write.csv(trafficstops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
+write.csv(stops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
 ```
 
