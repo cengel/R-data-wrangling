@@ -106,8 +106,8 @@ useful if you have a large number of identifying columns, and it's easier to
 specify what to gather than what to leave alone. And if the columns are adjacent to each other, we don't even need to list them all out -- we can use the `:` operator!
 
 ```{r, results='show', purl=FALSE}
-violations_long <- violations_wide %>%
-  pivot_wider(cols = Break-Lights-etc:Speeding,      # this also works
+violations_wide %>%
+  pivot_wider(cols = `Breaks-Lights-etc`:Speeding,      # this also works
                names_to = "violation", 
                values_to = "n")
 ```
