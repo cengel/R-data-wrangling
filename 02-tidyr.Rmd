@@ -107,7 +107,7 @@ specify what to gather than what to leave alone. And if the columns are adjacent
 
 ```{r, results='show', purl=FALSE}
 violations_wide %>%
-  pivot_wider(cols = `Breaks-Lights-etc`:Speeding,      # this also works
+  pivot_longer(cols = `Breaks-Lights-etc`:Speeding,      # this also works
                names_to = "violation", 
                values_to = "n")
 ```
