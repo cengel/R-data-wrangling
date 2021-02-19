@@ -190,9 +190,9 @@ tr_wide %>%
 
 ## Exporting data 
 
-Similar to the `read.csv()` function used for reading CSV files into R, there is a `write.csv()` function that generates CSV files from data frames.
+Similar to the `read_csv()` function used for reading CSV files into R, there is a `write_csv()` function that generates CSV files from data frames.
 
-Before using `write.csv()`, we are going to create a new folder, `data_output`,
+Before using `write_csv()`, we are going to create a new folder, `data_output`,
 in our working directory that will store this generated dataset. We don't want
 to write generated datasets in the same directory as our raw data. It's good
 practice to keep them separate. The `data` folder should only contain the raw,
@@ -201,18 +201,16 @@ it. In contrast, our script will generate the contents of the `data_output`
 directory, so even if the files it contains are deleted, we can always
 re-generate them.
 
-We can save the table generated above  in our `data_output`
-folder. By default, `write.csv()` includes a column with row names (in our case
-these names are the row numbers), so we need to add `row.names = FALSE` so
-they are not included:
+We can now save the table generated above  in our `data_output`
+folder:
 
 ```{r, purl=FALSE, eval=FALSE}
-write.csv(stops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
+write_csv(violation_wide, "data_output/county_violations.csv")
 ```
 
 ```{r, purl=FALSE, echo=FALSE}
 if (!file.exists("data_output")) dir.create("data_output")
 
-write.csv(stops_ma_wide, "data_output/MS_county_stops.csv", row.names = F)
+write_csv(violation_wide, "data_output/county_violations.csv")
 ```
 
