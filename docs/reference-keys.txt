@@ -1,0 +1,16 @@
+fig:driver-birth-cohorts
+fig:split-apply-combine
+fig:wide-vs-long
+dplyr
+what-is-dplyr
+subsetting-columns-and-rows
+pipes
+add-new-columns
+what-is-split-apply-combine
+tallying
+joining-two-tables
+tidyr
+about-long-and-wide-table-format
+long-to-wide-with-pivot_wider
+wide-to-long-with-pivot_longer
+exporting-data
