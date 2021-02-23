@@ -68,11 +68,15 @@ The choice of data format affects readability. For humans, the wide format is of
 
 Now let's see this in action. First, using **`dplyr`**, let's create a data frame with the counts of different violations for each county:
 
-```{r, results='show', purl=FALSE}
+```{r, purl=FALSE}
 violations <- stops %>%
   count(county_name, violation)
 
 violations
+```
+
+```{r, results='show', echo = FALSE, purl=FALSE}
+head(violations)
 ```
 
 Now, to make this long data wide, we use `pivot_wider` from `tidyr` to turn the driver gender into columns. In addition to our data table we provide `pivot_wider` with two arguments: `names_from` describes which column to use for name of the output column, and `values_from` tells it from column to get the cell values. We'll use a pipe so we can ignore the data argument.
