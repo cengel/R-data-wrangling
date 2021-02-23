@@ -70,7 +70,7 @@ Let's begin with loading our sample data into a data frame.
 
 We will be working a small subset of the data from the [Stanford Open Policing Project](https://openpolicing.stanford.edu). It contains information about traffic stops for blacks and whites in the state of Mississippi during January 2013 to mid-July of 2016. 
 
-```{r}
+```{r results='show'}
 stops <- read_csv("data/MS_trafficstops_bw_age.csv")
 stops
 ```
@@ -79,27 +79,29 @@ You may have noticed that by using `read_csv` we have generated an object
 of class `tbl_df`, also known as a "tibble". Tibble's data
 structure is very similar to a data frame. For our purposes the only differences
 are that 
-* (1) columns of class `character` are never converted into factors,  
-* (2) it tries to recognize and `date` types
-* (3) the output displays the data type of each column under its name, and 
-* (4) it only prints the first few rows of data and only as many columns as fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
 
+* (1) columns of class `character` are never converted into factors[^1],  
+
+* (2) it tries to recognize and `date` types
+
+* (3) the output displays the data type of each column under its name, and 
+
+* (4) it only prints the first few rows of data and only as many columns as
+fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
+
+[^1]: This is now also true for the base `read.csv` starting with R version 4. 
 
 To select columns of a
 data frame with `dplyr`, use `select()`. The first argument to this function is the data
 frame (`stops`), and the subsequent arguments are the columns to keep.
 
-```{r, eval=FALSE, purl = FALSE}
+```{r, results = 'show', purl = FALSE}
 select(stops, police_department, officer_id, driver_race)
-```
-
-```{r, results = 'show', purl = FALSE, echo=FALSE}
-select(stops, police_department, officer_id, driver_race) %>% head()
 ```
 
 It is worth knowing that `dplyr` is backed by another package with a number of helper functions, which provide convenient functions to select columns based on their names. For example:
 
-```{r, results = 'show', purl = FALSE, echo=FALSE}
+```{r, results = 'show', purl = FALSE}
 select(stops, starts_with("driver"))
 ```
 
@@ -108,7 +110,7 @@ Check out the [tidyselect reference](https://tidyselect.r-lib.org/reference/lang
 
 To subset rows based on specific criteria, we use `filter()`:
 
-```{r, results='show', purl = FALSE, echo=FALSE}
+```{r, results='show', purl = FALSE}
 filter(stops, county_name == "Yazoo")
 ```
 
@@ -154,7 +156,7 @@ select(filter(stops, driver_age > 85), violation, driver_gender)
 
 * Pipes!
 
-The last option, called "pipes", is the most recent addition to R. Pipes let you take
+The last option, called "pipes". Pipes let you take
 the output of one function and send it directly to the next, which is useful
 when you need to do many things to the same dataset.  Pipes in R look like
 `%>%` and are made available via the `magrittr` package, which is installed automatically with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
@@ -215,7 +217,7 @@ Frequently you'll want to create new columns based on the values in existing col
 
 Be aware that new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
 
-So here is an example using the `year()` function from the lubrudate package to extract the year of the drivers' birthdate:
+So here is an example using the `year()` function from the lubridate package to extract the year of the drivers' birthdate:
 
 ```{r, eval=F, purl = FALSE}
 library(lubridate)
@@ -231,7 +233,7 @@ We can keep adding columns like this:
 
 stops %>% 
   mutate(birth_year = year(driver_birthdate),
-         birth_cohort = round(birth_year/10)*10) 
+         birth_cohort = floor(birth_year/10)*10) 
 
 ```
 
@@ -240,7 +242,7 @@ We are beginning to see the power of piping. Here is a slightly expanded example
 ```{r driver-birth-cohorts, results='show', purl = FALSE, fig.cap='Driver Birth Cohorts'}
 stops %>% 
   mutate(birth_year = year(driver_birthdate),
-         birth_cohort = round(birth_year/10)*10,
+         birth_cohort = floor(birth_year/10)*10,
          birth_cohort = factor(birth_cohort)) %>%
     select(birth_cohort) %>% 
     plot()
@@ -258,7 +260,7 @@ In conjunction with mutate, this works like this:
 ```{r ifelse, results='show', purl = FALSE}
 stops %>% 
   mutate(cohort = ifelse(year(driver_birthdate) < 2000, "pre-millenial", "millenial")) %>% 
-  count(cohort)
+  select(driver_birthdate, cohort)
 ```
 
 More advanced conditional recoding can be done with [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html). 
@@ -315,25 +317,25 @@ stops %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
-You can also group by multiple columns:
-
-```{r, results='show', purl = FALSE}
-stops %>% 
-  group_by(county_name, driver_race) %>%
-  summarize(mean_age = mean(driver_age, na.rm=TRUE))
-```
-
-
 If we wanted to remove the line with `NA` we could insert a `filter()` in the chain:
 
 ```{r, results='show', purl = FALSE}
 stops %>%
   filter(!is.na(driver_race)) %>% 
-  group_by(county_name, driver_race) %>%
+  group_by(driver_race) %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
 Recall that `is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we’re asking for everything that is _not_ an `NA`.
+
+You can also group by multiple columns:
+
+```{r, results='show', purl = FALSE}
+stops %>% 
+  filter(!is.na(driver_race)) %>%
+  group_by(county_name, driver_race) %>%
+  summarize(mean_age = mean(driver_age, na.rm=TRUE))
+```
 
 
 Once the data are grouped, you can also summarize multiple variables at the same
@@ -444,7 +446,7 @@ stops %>%
 ```
 
 
-Now we can, for example calculate the stop rate, i.e. the proportion of the population that gets stopped in each county.
+Now we can, for example calculate the stop rate, i.e. the number of stops per population in each county.
 
 > <h3>Challenge</h3>
 > 
@@ -455,11 +457,12 @@ Now we can, for example calculate the stop rate, i.e. the proportion of the popu
 <!---
 ```{r, eval=F, echo=FALSE, purl=FALSE}
 ## Answer 
-stops %>% 
-  count(county_name, name = "n_stops") %>% 
-  left_join(acs, by = c("county_name" = "County")) %>% 
-  mutate(stop_rate = n_stops/bw_pop) %>% 
-  filter(stop_rate %in% range(stop_rate))
+## Answer 
+trafficstops %>% 
+  count(county_name, name = n_stops) %>% 
+  left_join(MS_bw_pop, by = c("county_name" = "County")) %>% 
+  mutate(stoprate = n_stops/bw_pop) %>% 
+  filter(stoprate %in% range(stoprate))
 ```
 --->
 
