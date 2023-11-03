@@ -3,7 +3,7 @@ fig:split-apply-combine
 fig:wide-vs-long
 dplyr
 what-is-dplyr
-subsetting-columns-and-rows
+selecting-columns-and-filtering-rows
 pipes
 add-new-columns
 what-is-split-apply-combine

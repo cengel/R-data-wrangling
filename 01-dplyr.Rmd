@@ -1,6 +1,11 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 ```{r, echo=FALSE, purl=FALSE, message = FALSE}
 library(lubridate)
-knitr::opts_chunk$set(results='hide', comment = "#>", purl = FALSE)
+knitr::opts_chunk$set(results='hide', comment = "#>", purl = FALSE, message = FALSE)
 ```
 
 
@@ -47,28 +52,14 @@ If you need to use functions from `tidyverse` packages other than the core packa
 with data in tidy data formats. "Tidy datasets are easy to manipulate, model and visualise, and have a specific structure: each variable is a column, each observation is a row, and each type of observational unit is a table." (From Wickham, H. (2014): Tidy Data https://www.jstatsoft.org/article/view/v059i10)
 
 
-The package **`dplyr`** provides convenient tools for the most common data manipulation
-tasks. It is built to work directly with data frames, with many common tasks
-optimized by being written in a compiled language (C++). An additional feature is the
-ability to work directly with data stored in an external database. The benefits of
-doing this are that the data can be managed natively in a relational database,
-queries can be conducted on that database, and only the results of the query are
-returned.
+The package **`dplyr`** provides convenient tools for the most common data manipulation tasks. It is built to work directly with data frames, which is one of the most common data formats to work with. 
 
-This addresses a common problem with R in that all operations are conducted
-in-memory and thus the amount of data you can work with is limited by available
-memory. The database connections essentially remove that limitation in that you
-can have a database of many 100s GB, conduct queries on it directly, and pull
-back into R only what you need for analysis.
+To learn more about **`dplyr`** after the workshop, you may want to check out the [handy data transformation with **`dplyr`** cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf).
 
-To learn more about **`dplyr`** after the workshop, you may want to check out the [handy data transformation with **`dplyr`** cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).
-
-
-## Subsetting columns and rows
 
 Let's begin with loading our sample data into a data frame.
 
-We will be working a small subset of the data from the [Stanford Open Policing Project](https://openpolicing.stanford.edu). It contains information about traffic stops for blacks and whites in the state of Mississippi during January 2013 to mid-July of 2016. 
+We will be working a small subset of the data from the [Stanford Open Policing Project](https://openpolicing.stanford.edu). It contains information about traffic stops in the state of Mississippi during January 2013 to mid-July of 2016. 
 
 ```{r results='show'}
 stops <- read_csv("data/MS_trafficstops_bw_age.csv")
@@ -77,27 +68,42 @@ stops
 
 You may have noticed that by using `read_csv` we have generated an object
 of class `tbl_df`, also known as a "tibble". Tibble's data
-structure is very similar to a data frame. For our purposes the only differences
+structure is very similar to a data frame. For our purposes the relevant differences
 are that 
 
-* (1) columns of class `character` are never converted into factors[^1],  
+* (1) it tries to recognize and `date` types
 
-* (2) it tries to recognize and `date` types
+* (2) the output displays the data type of each column under its name, and 
 
-* (3) the output displays the data type of each column under its name, and 
-
-* (4) it only prints the first few rows of data and only as many columns as
+* (3) it only prints the first few rows of data and only as many columns as
 fit on one screen. If we wanted to print all columns we can use the print command, and set the `width` parameter to `Inf`. To print the first 6 rows for example we would do this: `print(my_tibble, n=6, width=Inf)`.
 
-[^1]: This is now also true for the base `read.csv` starting with R version 4. 
+We are going to learn some of the most common dplyr functions:
 
-To select columns of a
-data frame with `dplyr`, use `select()`. The first argument to this function is the data
-frame (`stops`), and the subsequent arguments are the columns to keep.
+* `select()`: subset columns
+* `filter()`: subset rows on conditions
+* `mutate()`: create new columns by using information from other columns
+* `group_by()` and `summarize()`: create summary statistics on grouped data
+* `arrange()`: sort results
+* `count()`: count discrete values
+
+## Selecting columns and filtering rows
+
+To select columns of a data frame with `dplyr`, use `select()`. The first argument to this function is the data frame (`stops`), and the subsequent arguments are the columns to keep. You may have done something similar in the past using subsetting. select() is essentially doing the same thing as subsetting, using a package (dplyr) instead of R’s base functions.
+
+```{r, results = 'show', purl = FALSE, eval=FALSE}
+select(stops, county_name, driver_gender, driver_birthdate, driver_race)
+
+# this is the same as subsetting in base R:
+stops[c("county_name", "driver_gender", "driver_birthdate","driver_race")]
+```
+
+Alternatively, if you are selecting columns adjacent to each other, you can use a : to select a range of columns, read as "select columns from ___ to ___." 
 
 ```{r, results = 'show', purl = FALSE}
-select(stops, police_department, officer_id, driver_race)
+select(stops, county_name, driver_gender:driver_race)
 ```
+
 
 It is worth knowing that `dplyr` is backed by another package with a number of helper functions, which provide convenient functions to select columns based on their names. For example:
 
@@ -105,13 +111,36 @@ It is worth knowing that `dplyr` is backed by another package with a number of h
 select(stops, starts_with("driver"))
 ```
 
-Check out the [tidyselect reference](https://tidyselect.r-lib.org/reference/language.html) for more.
+Other examles are: `ends_with()`, `contains()`, `last_col()` and more. Check out the [tidyselect reference](https://tidyselect.r-lib.org/reference/language.html) for more.
 
-
-To subset rows based on specific criteria, we use `filter()`:
+To choose rows based on specific criteria, we can use the `filter()` function. The argument after the dataframe is the condition we want our resulting data frame to adhere to.
 
 ```{r, results='show', purl = FALSE}
 filter(stops, county_name == "Yazoo")
+```
+
+We can also specify multiple conditions within the `filter()` function. We can combine conditions using either "and" or "or" statements. In an "and"  statement, an observation (row) must meet **all conditions** in order to be included in the resulting dataframe. To form "and" statements within `dplyr`, we can pass our desired conditions as arguments in the `filter()` function, separated by commas:
+
+
+```{r, results='show', purl = FALSE}
+filter(stops, county_name == "Yazoo", 
+       driver_age > 65,
+       violation == "Careless driving")
+```
+
+We can also form "and" statements with the & operator instead of commas:
+
+```{r, results='show', purl = FALSE}
+filter(stops, county_name == "Yazoo" & 
+       driver_age > 65 &
+       violation == "Careless driving")
+```
+
+
+In an "or" statement, observations must meet **at least one** of the specified conditions. To form "or" statements we use the logical operator for "or", which is the vertical bar (|):
+
+```{r, results='show', purl = FALSE}
+filter(stops, county_name == "Yazoo" | county_name == "Adams")
 ```
 
 Here are some other ways to subset rows:
@@ -123,7 +152,7 @@ Here are some other ways to subset rows:
     - `slice_sample(stops, n = 5) # number of rows to select`
     - `slice_sample(stops, prop = .0001) # fraction of rows to select`
 
-To sort rows by variables use the `arrange` function:
+To sort rows by variables use the `arrange()` function:
 
 ```{r, results='show'}
 arrange(stops, county_name, stop_date)
@@ -136,36 +165,57 @@ What if you wanted to filter **and** select on the same data? For example, lets 
 
 * Intermediate steps:
 
-With intermediate steps, you essentially create a temporary data frame and use
-that as input to the next function. This can clutter up your workspace with lots
-of objects. 
+With intermediate steps, you create a temporary data frame and use
+that as input to the next function. 
 
 ```{r, eval=FALSE}
 tmp_df <- filter(stops, driver_age > 85)
 select(tmp_df, violation, driver_gender)
 ```
 
+This is readable, but can clutter up your workspace with lots of objects that you have to name individually. With multiple steps, that can be hard to keep track of.
+
+
+
 * Nested functions
 
-You can also nest functions (i.e. placce one function inside of another).
-This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.
+You can also nest functions (i.e. place one function inside of another).
 
 ```{r, eval=FALSE}
 select(filter(stops, driver_age > 85), violation, driver_gender)
 ```
 
+This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out (in this case, filtering, then selecting).
+
 * Pipes!
 
 The last option, called "pipes". Pipes let you take
 the output of one function and send it directly to the next, which is useful
-when you need to do many things to the same dataset.  Pipes in R look like
-`%>%` and are made available via the `magrittr` package, which is installed automatically with **`dplyr`**. If you use RStudio, you can type the pipe with <kbd>Ctrl</kbd>
+when you need to do many things to the same dataset.  
+
+There are now two Pipes in R: 
+
+1) `%>%` (called magrittr pipe; made available via the `magrittr` package, installed automatically with `dplyr`) or 
+
+2) `|>` (called native R pipe and it comes preinstalled with R v4.1.0 onwards). 
+
+Both the pipes, by and large, function similarly with a few differences (For more information, check: https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/). The choice of which pipe to be used can be changed in the Global settings in R studio and once that is done, you can type the pipe with: <kbd>Ctrl</kbd>
 + <kbd>Shift</kbd> + <kbd>M</kbd> if you have a PC or <kbd>Cmd</kbd> + 
 <kbd>Shift</kbd> + <kbd>M</kbd> if you have a Mac.
+
+The following example is run using the magrittr pipe, which I will use for the rest of the tutorial.
 
 ```{r, eval=FALSE, purl = FALSE}
 stops %>%
   filter(driver_age > 85) %>%
+  select(violation, driver_gender)
+```
+
+However, the output will be same with the native pipe so you can feel free to use this pipe as well.
+
+```{r, eval=FALSE, purl = FALSE}
+stops |>
+  filter(driver_age > 85) |>
   select(violation, driver_gender)
 ```
 
@@ -189,6 +239,9 @@ senior_drivers
 ```
 
 Note that the final data frame is the leftmost part of this expression.
+
+Some may find it helpful to read the pipe like the word "then". For instance, in the above example, we take the dataframe `stops`, then we filter for rows with `driver_age > 85`, then we select columns `violation`, `driver_gender` and `driver_race`. The `dplyr` functions by themselves are somewhat simple, but by combining them into linear workflows with the pipe, we can accomplish more complex data wrangling operations.
+
 
 > <h3>Challenge</h3>
 >
@@ -215,19 +268,17 @@ stops %>%
 
 Frequently you'll want to create new columns based on the values in existing columns or. For this we'll use `mutate()`. We can also reassign values to an existing column with that function. 
 
-Be aware that new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
+Be aware that new and edited columns will not permanently be added to the existing data frame, munless we explicitly save the output.
 
-So here is an example using the `year()` function from the lubridate package to extract the year of the drivers' birthdate:
+So here is an example using the `year()` function (from the `lubridate` package, which is part of the `tidyverse`) to extract the year of the drivers' birth:
 
 ```{r, eval=F, purl = FALSE}
-library(lubridate)
-
 stops %>% 
   mutate(birth_year = year(driver_birthdate))
 ```
 
 
-We can keep adding columns like this:
+We can keep adding columns like this, for example, the decade of the birth year:
 
 ```{r, eval=F, purl = FALSE}
 
@@ -248,7 +299,7 @@ stops %>%
     plot()
 ```
 
-Mutate can also be used in conjunction with logical conditions. For example, we could create a new column, where we assign everyone born after the year 2000 to a group "millenial" and overyone before to "pre-millenial".
+Mutate can also be used in conjunction with logical conditions. For example, we could create a new column, where we assign everyone born after the year 2000 to a group "millenial" and everyone before to "pre-millenial".
 
 In order to do this we take advantage of the `ifelse` function:
 
@@ -296,15 +347,18 @@ stops %>%
 ## What is split-apply-combine?
 
 Many data analysis tasks can be approached using the *split-apply-combine*
-paradigm: split the data into groups, apply some analysis to each group, and
-then combine the results. 
+paradigm: 
+
+* **split** the data into groups, 
+* **apply** some analysis to each group, and
+* **combine** the results. 
 
 ```{r split-apply-combine, echo=FALSE, results='asis', out.width='\\textwidth', fig.cap='Split - Apply - Combine'}
 knitr::include_graphics('img/split-apply-combine.png')
 ```
 
 
-**`dplyr`** makes this possible through the use of the `group_by()` function.
+`dplyr` makes this possible through the use of the `group_by()` function.
 
 `group_by()` is often used together with `summarize()`, which collapses each
 group into a single-row summary of that group. `group_by()` takes as arguments
@@ -313,11 +367,11 @@ to calculate the summary statistics. So to view the mean age for black and white
 
 ```{r, results='show', purl = FALSE}
 stops %>%
-  group_by(driver_race) %>%
+  group_by(driver_race) %>% # needs a dategorical variable to group by
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
-If we wanted to remove the line with `NA` we could insert a `filter()` in the chain:
+If we wanted to remove the line where driver_race is `NA` we could insert a `filter()` in the chain:
 
 ```{r, results='show', purl = FALSE}
 stops %>%
@@ -326,7 +380,7 @@ stops %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
-Recall that `is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we’re asking for everything that is _not_ an `NA`.
+Recall that `is.na()` is a function that determines whether something is an `NA`. The `!` symbol negates the result, so we're asking for everything that is _not_ an `NA`.
 
 You can also group by multiple columns:
 
@@ -337,24 +391,47 @@ stops %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE))
 ```
 
+Note that the output is a "grouped" tibble, grouped by `county_name`. What it means is that the tibble "remembers" the grouping of the counties, so for any operation you would do after that it will take that grouping into account.
+
+To obtain an "ungrouped" tibble, you can use the `ungroup` function^[There are currently some experimental features implemented for the `summary` function tthat might change how grouping and ungrouping are handled in the future]:
+
+```{r, results='show', purl = FALSE}
+stops %>% 
+  filter(!is.na(driver_race)) %>%
+  group_by(county_name, driver_race) %>%
+  summarize(mean_age = mean(driver_age, na.rm=TRUE)) %>% 
+  ungroup()
+```
+
 
 Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
-column indicating the minimum age in each group (i.e. county):
+column indicating the standard deviation for the age in each group:
 
 ```{r, results='show', purl = FALSE}
 stops %>%
   filter(!is.na(driver_race)) %>% 
   group_by(county_name, driver_race) %>%
   summarize(mean_age = mean(driver_age, na.rm=TRUE),
-            min_age = min(driver_age, na.rm=TRUE))
+            sd_age = sd(driver_age, na.rm=TRUE))
+```
+
+It is sometimes useful to rearrange the result of a query to inspect the values. For that we use `arrange()`. To sort in descending order, we need to add the `desc()` function. For instance, we can sort on `mean_age` to put the groups with the highest mean age first:
+
+```{r, results='show', purl = FALSE}
+stops %>%
+  filter(!is.na(driver_race)) %>% 
+  group_by(county_name, driver_race) %>%
+  summarize(mean_age = mean(driver_age, na.rm=TRUE),
+            sd_age = sd(driver_age, na.rm=TRUE)) %>% 
+  arrange(desc(mean_age))
 ```
 
 
 ## Tallying
 
 When working with data, it is also common to want to know the number of
-observations found for categorical variables. For this, **`dplyr`**
+observations found for categorical variables. For this, `dplyr`
 provides `count()`. For example, if we wanted to see how many traffic stops each officer recorded:
 
 ```{r}
@@ -376,25 +453,30 @@ stops %>%
   count(officer_id, name = "n_stops", sort = TRUE)
 ```
 
-`count()` calls `group_by()` transparently before counting the total number of records for each category. Similarly, we can count subgroups within groups:
+
+`count()` calls `group_by()` transparently before counting the total number of records for each category. 
+
+These are equivalent alternatives to the above: 
+
+```{r, eval=F, purl = FALSE}
+stops %>%
+  group_by(officer_id) %>%
+  summarize(n_stops = n()) %>% # n() returns the group size
+  arrange(desc(n_stops))
+
+stops %>%
+  group_by(officer_id) %>% 
+  tally(sort = TRUE, name = "n_stops") # tally() requires group_by before counting
+```
+
+
+We can also count subgroups within groups:
 
 ```{r}
 stops %>%
   count(officer_id, violation, name = "n_stops")
 ```
 
-
-Alternatives:
-```{r, eval=F, purl = FALSE}
-stops %>%
-  group_by(officer_id) %>% 
-  tally(sort = TRUE) # tally() requires group_by before counting
-
-stops %>%
-  group_by(officer_id) %>%
-  summarize(n = n()) %>% # n() is useful when the count is needed within a calculation
-  arrange(desc(n))
-```
 
 
 > <h3>Challenge</h3>
@@ -420,8 +502,8 @@ stops %>%
 ## Hint: use the year() function from lubridate.
 ```
 
-## Joining two tables
 
+## Joining two tables
 
 It is not uncommon that we have our data spread out in different tables and need to bring those together for analysis. In this example we will combine the numbers of stops for black and white drivers per county together with the numbers of the black and white total population for these counties. The population data are the estimated values of the 5 year average from the 2011-2015 American Community Survey (ACS):
 
@@ -474,15 +556,6 @@ trafficstops %>%
 ```
 
 
-`dplyr` join functions are generally equivalent to `merge` from the base command, but there are a few advantages: 
+`dplyr` join functions are generally equivalent to `merge` from the R base install, but [there are a few advantages](https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ). 
 
-* rows are kept in existing order
-* it runs faster
-* tells you what keys you're merging by (if you don't supply them)
-* also works with database tables.
-
-https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ
-
-See `?dplyr::join` for all the possible joins.
-
-
+For all the possible joins see `?dplyr::join`

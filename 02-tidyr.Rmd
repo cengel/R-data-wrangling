@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 ```{r, echo=FALSE, purl=FALSE, message = FALSE}
 library(tidyverse)
 library(xtable)
@@ -18,45 +23,30 @@ stops <- read.csv("data/MS_trafficstops_bw_age.csv")
 
 ------------
 
-`dplyr` pairs nicely with **`tidyr`** which enables you to swiftly convert between different data formats for plotting and analysis.
+`dplyr` pairs well with **`tidyr`** which enables you to flexibly convert between different tabular formats for plotting and analysis.
 
-The package **`tidyr`** addresses the common problem of wanting to reshape your data for plotting and use by different R functions. Sometimes we want data sets where we have one row per observation. Sometimes we want a data frame where each observation type has its own column, and rows are instead more aggregated groups - like surveys, where each column represents an answer. Moving back and forth between these formats is nontrivial, and **`tidyr`** gives you tools for this and more sophisticated  data manipulation.
-
-To learn more about **`tidyr`** after the workshop, you may want to check out this [cheatsheet about **`tidyr`**](https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf).
+The package **`tidyr`** addresses a very common problem of needing to reshape your data for plotting, for statistical summaries, or for use by different R functions. 
 
 
 ## About long and wide table format
 
-The 'long' format is where:
+The **"long" format** is where:
 
- - each column is a variable
- - each row is an observation
+1. each column is a variable
+2. each row is an observation
+3. each value must have its own cell
 
-In the 'long' format, you usually have 1 column for the observed variable and
-the other columns are ID variables.
+In a **"wide" format** we see modifications to rule 1, where each column no longer represents a single variable. Instead, columns can represent different levels or values of the same variable. Each observation type has its own column, like surveys, where each row could be an interview respondent and each column represents one possible answer to the same question. Another example are repeated observations over time, where each column represents, for example, a year. 
 
-
-For the 'wide' format a row, for example could be a reserarch subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:
-
-```{r wide-exmpl, results='asis', echo=FALSE}
-exmpl_obs <- data.frame(subject_ID = LETTERS[1:3], 
-                        question_1 = c(4, 4, 2),
-                        question_2 = c(3, 1, 5),
-                        question_3 = c(4, 5, 2))
-xtable(exmpl_obs)
-```
-
-
-You may find data input may be simpler or some other
-applications may prefer the 'wide' format. However, many of `R`'s functions have
-been designed assuming you have 'long' format data. This tutorial will help you
-efficiently transform your data regardless of original format.
-
-```{r wide-vs-long, echo=FALSE, results='asis', out.width='30%', fig.cap='Wide vs. Long Table Format', eval=TRUE}
+```{r wide-vs-long, echo=FALSE, results='asis', out.width='30%', fig.cap='Wide (left) vs. Long (right) Table Format', eval=TRUE}
 knitr::include_graphics('img/wide-vs-long.png')
 ```
 
-The choice of data format affects readability. For humans, the wide format is often more intuitive, since we can often see more of the data on the screen due to its shape. However, the long format is more machine readable and is closer to the formatting of databases. The `ID` variables in our dataframes are similar to the fields in a database and observed variables are like the database values.
+Long and wide data frame layouts affect readability. You may find that visually you may prefer the "wide" format, since you can see more of the data on the screen. However, all of the R functions we have used thus far expect for your data to be in a "long" data format. It simplifies the use of the functions and makes your code clearer and more efficient. The long format is more machine readable and is closer to the formatting of databases.
+
+Moving back and forth between these formats can be cumbersome, and **`tidyr`** provides the tools for this to make it easier.
+
+To learn more about **`tidyr`** after the workshop, you may want to check out this [cheatsheet about **`tidyr`**](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf).
 
 
 > Challenge 1
@@ -70,7 +60,7 @@ Now let's see this in action. First, using **`dplyr`**, let's create a data fram
 
 ```{r, purl=FALSE}
 violations <- stops %>%
-  count(county_name, violation)
+  count(county_name, violation, name = "n_violations")
 
 violations
 ```
@@ -79,28 +69,48 @@ violations
 head(violations)
 ```
 
-Now, to make this long data wide, we use `pivot_wider` from `tidyr` to turn the driver gender into columns. In addition to our data table we provide `pivot_wider` with two arguments: `names_from` describes which column to use for name of the output column, and `values_from` tells it from column to get the cell values. We'll use a pipe so we can ignore the data argument.
+Now, to make this long data wide, we use `pivot_wider` from `tidyr` to turn the different violation types into columns, where each possible value of the violation variable receives its own column.
+
+`pivot_wider()` takes three principal arguments:
+
+1. the data
+2. the `names_from` column variable whose values will become new column names.
+3. the `values_from` column variable whose values will fill the new column cells.
+ 
+We'll use a pipe into `pivot_wider` so we can leave out the data argument.
 
 ```{r, results='show', purl=FALSE}
 violations_wide <- violations %>%
   pivot_wider(names_from = violation, 
-              values_from = n) 
+              values_from = n_violations) 
 
 violations_wide
 ```
+
+It is worth taking a look at `?pivot_wider`. The function takes many more arguments which can help in reshaping, renaming the new columns, and instructions for how to treat the values or how to fill missing values.
 
 
 ## Wide to long with `pivot_longer`
 
 What if we had the opposite problem, and wanted to go from a wide to long
-format? For that, we use `pivot_longer`, which will increase the number of rows and decrease the number of columns. We provide the functino with thee arguments: `cols` which are the columns we want to pivot into the long format, `names_to`, which is a string specifying the name of the column to create from the data stored in the column names, and `values_to`, which is also a string, specifying the name of the column to create from the data stored in cell values.
+format? For that, we use `pivot_longer`, which will increase the number of rows and decrease the number of columns. 
+
+We are gathering the multiple violation columns and turn them into a pair of new variables. One variable includes the column names as values, and the other variable contains the values in each cell previously associated with the column names. 
+
+`pivot_longer()` takes four principal arguments:
+
+1. the data
+2. `cols` are the names of the columns we use to fill the a new values variable (or to drop).
+3. the `names_to` a string specifying the name of the column to create from the data stored in the column names (`cols`)
+4. the `values_to` which is also a string, specifying the name of the column to create from the data stored in cell values.
+
 So, to go backwards from `violations_wide`, and exclude `county_name` from the long format, we would do the following:
 
 ```{r, results='show', purl=FALSE}
 violations_long <- violations_wide %>%
   pivot_longer(cols = -county_name,        # exclude column with county name
                names_to = "violation",     # name is a string!
-               values_to = "n")            # also a string
+               values_to = "n_violations")            # also a string
 
 violations_long
 ```

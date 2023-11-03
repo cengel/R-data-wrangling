@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 Data Manipulation using tidyr | Data Wrangling with R</title>
   <meta name="description" content="Workshop materials for Data Wrangling with R" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 Data Manipulation using tidyr | Data Wrangling with R" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Workshop materials for Data Wrangling with R" />
   <meta name="github-repo" content="cengel/R-data-wrangling" />
@@ -32,8 +31,8 @@
   
 <link rel="prev" href="dplyr.html"/>
 
-<script src="libs/header-attrs-2.5/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,15 +48,16 @@
 
 
 
-
-<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -91,7 +91,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -104,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -116,6 +116,11 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -142,7 +147,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>1</b> Data Manipulation using <strong><code>dplyr</code></strong></a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="dplyr.html"><a href="dplyr.html#what-is-dplyr"><i class="fa fa-check"></i><b>1.1</b> What is <strong><code>dplyr</code></strong>?</a></li>
-<li class="chapter" data-level="1.2" data-path="dplyr.html"><a href="dplyr.html#subsetting-columns-and-rows"><i class="fa fa-check"></i><b>1.2</b> Subsetting columns and rows</a></li>
+<li class="chapter" data-level="1.2" data-path="dplyr.html"><a href="dplyr.html#selecting-columns-and-filtering-rows"><i class="fa fa-check"></i><b>1.2</b> Selecting columns and filtering rows</a></li>
 <li class="chapter" data-level="1.3" data-path="dplyr.html"><a href="dplyr.html#pipes"><i class="fa fa-check"></i><b>1.3</b> Pipes</a></li>
 <li class="chapter" data-level="1.4" data-path="dplyr.html"><a href="dplyr.html#add-new-columns"><i class="fa fa-check"></i><b>1.4</b> Add new columns</a></li>
 <li class="chapter" data-level="1.5" data-path="dplyr.html"><a href="dplyr.html#what-is-split-apply-combine"><i class="fa fa-check"></i><b>1.5</b> What is split-apply-combine?</a></li>
@@ -176,8 +181,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="tidyr" class="section level1" number="2">
-<h1><span class="header-section-number">Chapter 2</span> Data Manipulation using <strong><code>tidyr</code></strong></h1>
+<div id="tidyr" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Data Manipulation using <strong><code>tidyr</code></strong><a href="tidyr.html#tidyr" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <blockquote>
 <p>Learning Objectives</p>
 <ul>
@@ -188,104 +193,117 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </blockquote>
 <hr />
-<p><code>dplyr</code> pairs nicely with <strong><code>tidyr</code></strong> which enables you to swiftly convert between different data formats for plotting and analysis.</p>
-<p>The package <strong><code>tidyr</code></strong> addresses the common problem of wanting to reshape your data for plotting and use by different R functions. Sometimes we want data sets where we have one row per observation. Sometimes we want a data frame where each observation type has its own column, and rows are instead more aggregated groups - like surveys, where each column represents an answer. Moving back and forth between these formats is nontrivial, and <strong><code>tidyr</code></strong> gives you tools for this and more sophisticated data manipulation.</p>
-<p>To learn more about <strong><code>tidyr</code></strong> after the workshop, you may want to check out this <a href="https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf">cheatsheet about <strong><code>tidyr</code></strong></a>.</p>
-<div id="about-long-and-wide-table-format" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> About long and wide table format</h2>
-<p>The ‘long’ format is where:</p>
-<ul>
+<p><code>dplyr</code> pairs well with <strong><code>tidyr</code></strong> which enables you to flexibly convert between different tabular formats for plotting and analysis.</p>
+<p>The package <strong><code>tidyr</code></strong> addresses a very common problem of needing to reshape your data for plotting, for statistical summaries, or for use by different R functions.</p>
+<div id="about-long-and-wide-table-format" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> About long and wide table format<a href="tidyr.html#about-long-and-wide-table-format" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The <strong>“long” format</strong> is where:</p>
+<ol style="list-style-type: decimal">
 <li>each column is a variable</li>
 <li>each row is an observation</li>
-</ul>
-<p>In the ‘long’ format, you usually have 1 column for the observed variable and
-the other columns are ID variables.</p>
-<p>For the ‘wide’ format a row, for example could be a reserarch subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:</p>
-<p>You may find data input may be simpler or some other
-applications may prefer the ‘wide’ format. However, many of <code>R</code>‘s functions have
-been designed assuming you have ’long’ format data. This tutorial will help you
-efficiently transform your data regardless of original format.</p>
-<div class="figure"><span id="fig:wide-vs-long"></span>
-<img src="img/wide-vs-long.png" alt="Wide vs. Long Table Format" width="30%" />
+<li>each value must have its own cell</li>
+</ol>
+<p>In a <strong>“wide” format</strong> we see modifications to rule 1, where each column no longer represents a single variable. Instead, columns can represent different levels or values of the same variable. Each observation type has its own column, like surveys, where each row could be an interview respondent and each column represents one possible answer to the same question. Another example are repeated observations over time, where each column represents, for example, a year.</p>
+<div class="figure"><span style="display:block;" id="fig:wide-vs-long"></span>
+<img src="img/wide-vs-long.png" alt="Wide (left) vs. Long (right) Table Format" width="30%" />
 <p class="caption">
-Figure 2.1: Wide vs. Long Table Format
+Figure 2.1: Wide (left) vs. Long (right) Table Format
 </p>
 </div>
-<p>The choice of data format affects readability. For humans, the wide format is often more intuitive, since we can often see more of the data on the screen due to its shape. However, the long format is more machine readable and is closer to the formatting of databases. The <code>ID</code> variables in our dataframes are similar to the fields in a database and observed variables are like the database values.</p>
+<p>Long and wide data frame layouts affect readability. You may find that visually you may prefer the “wide” format, since you can see more of the data on the screen. However, all of the R functions we have used thus far expect for your data to be in a “long” data format. It simplifies the use of the functions and makes your code clearer and more efficient. The long format is more machine readable and is closer to the formatting of databases.</p>
+<p>Moving back and forth between these formats can be cumbersome, and <strong><code>tidyr</code></strong> provides the tools for this to make it easier.</p>
+<p>To learn more about <strong><code>tidyr</code></strong> after the workshop, you may want to check out this <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf">cheatsheet about <strong><code>tidyr</code></strong></a>.</p>
 <blockquote>
 <p>Challenge 1</p>
 <p>Is stops in a long or wide format?</p>
 </blockquote>
 </div>
-<div id="long-to-wide-with-pivot_wider" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Long to Wide with <code>pivot_wider</code></h2>
+<div id="long-to-wide-with-pivot_wider" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Long to Wide with <code>pivot_wider</code><a href="tidyr.html#long-to-wide-with-pivot_wider" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Now let’s see this in action. First, using <strong><code>dplyr</code></strong>, let’s create a data frame with the counts of different violations for each county:</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="tidyr.html#cb53-1" aria-hidden="true" tabindex="-1"></a>violations <span class="ot">&lt;-</span> stops <span class="sc">%&gt;%</span></span>
-<span id="cb53-2"><a href="tidyr.html#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(county_name, violation)</span>
-<span id="cb53-3"><a href="tidyr.html#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-4"><a href="tidyr.html#cb53-4" aria-hidden="true" tabindex="-1"></a>violations</span></code></pre></div>
-<pre><code>#&gt;   county_name                violation   n
-#&gt; 1       Adams        Breaks-Lights-etc   7
-#&gt; 2       Adams         Careless driving  48
-#&gt; 3       Adams License-Permit-Insurance 118
-#&gt; 4       Adams         Other or unknown  35
-#&gt; 5       Adams                Seat belt 229
-#&gt; 6       Adams                 Speeding 505</code></pre>
-<p>Now, to make this long data wide, we use <code>pivot_wider</code> from <code>tidyr</code> to turn the driver gender into columns. In addition to our data table we provide <code>pivot_wider</code> with two arguments: <code>names_from</code> describes which column to use for name of the output column, and <code>values_from</code> tells it from column to get the cell values. We’ll use a pipe so we can ignore the data argument.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="tidyr.html#cb55-1" aria-hidden="true" tabindex="-1"></a>violations_wide <span class="ot">&lt;-</span> violations <span class="sc">%&gt;%</span></span>
-<span id="cb55-2"><a href="tidyr.html#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> violation, </span>
-<span id="cb55-3"><a href="tidyr.html#cb55-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> n) </span>
-<span id="cb55-4"><a href="tidyr.html#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-5"><a href="tidyr.html#cb55-5" aria-hidden="true" tabindex="-1"></a>violations_wide</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 82 x 7
-#&gt;    county_name `Breaks-Lights-… `Careless drivi… `License-Permit…
-#&gt;    &lt;chr&gt;                  &lt;int&gt;            &lt;int&gt;            &lt;int&gt;
-#&gt;  1 Adams                      7               48              118
-#&gt;  2 Alcorn                    62              100              737
-#&gt;  3 Amite                     47               86              370
-#&gt;  4 Attala                    99              113              526
-#&gt;  5 Benton                     3                9               73
-#&gt;  6 Bolivar                   57              139             1034
-#&gt;  7 Calhoun                   26               38              383
-#&gt;  8 Carroll                   26               40              323
-#&gt;  9 Chickasaw                 42               53             1378
-#&gt; 10 Choctaw                    8                6               73
-#&gt; # … with 72 more rows, and 3 more variables: `Other or unknown` &lt;int&gt;, `Seat
-#&gt; #   belt` &lt;int&gt;, Speeding &lt;int&gt;</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="tidyr.html#cb57-1" tabindex="-1"></a>violations <span class="ot">&lt;-</span> stops <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="tidyr.html#cb57-2" tabindex="-1"></a>  <span class="fu">count</span>(county_name, violation, <span class="at">name =</span> <span class="st">&quot;n_violations&quot;</span>)</span>
+<span id="cb57-3"><a href="tidyr.html#cb57-3" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="tidyr.html#cb57-4" tabindex="-1"></a>violations</span></code></pre></div>
+<pre><code>#&gt;   county_name                violation n_violations
+#&gt; 1       Adams        Breaks-Lights-etc            7
+#&gt; 2       Adams         Careless driving           48
+#&gt; 3       Adams License-Permit-Insurance          118
+#&gt; 4       Adams         Other or unknown           35
+#&gt; 5       Adams                Seat belt          229
+#&gt; 6       Adams                 Speeding          505</code></pre>
+<p>Now, to make this long data wide, we use <code>pivot_wider</code> from <code>tidyr</code> to turn the different violation types into columns, where each possible value of the violation variable receives its own column.</p>
+<p><code>pivot_wider()</code> takes three principal arguments:</p>
+<ol style="list-style-type: decimal">
+<li>the data</li>
+<li>the <code>names_from</code> column variable whose values will become new column names.</li>
+<li>the <code>values_from</code> column variable whose values will fill the new column cells.</li>
+</ol>
+<p>We’ll use a pipe into <code>pivot_wider</code> so we can leave out the data argument.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="tidyr.html#cb59-1" tabindex="-1"></a>violations_wide <span class="ot">&lt;-</span> violations <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="tidyr.html#cb59-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> violation, </span>
+<span id="cb59-3"><a href="tidyr.html#cb59-3" tabindex="-1"></a>              <span class="at">values_from =</span> n_violations) </span>
+<span id="cb59-4"><a href="tidyr.html#cb59-4" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="tidyr.html#cb59-5" tabindex="-1"></a>violations_wide</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 82 × 7
+#&gt;    county_name `Breaks-Lights-etc` `Careless driving` `License-Permit-Insurance`
+#&gt;    &lt;chr&gt;                     &lt;int&gt;              &lt;int&gt;                      &lt;int&gt;
+#&gt;  1 Adams                         7                 48                        118
+#&gt;  2 Alcorn                       62                100                        737
+#&gt;  3 Amite                        47                 86                        370
+#&gt;  4 Attala                       99                113                        526
+#&gt;  5 Benton                        3                  9                         73
+#&gt;  6 Bolivar                      57                139                       1034
+#&gt;  7 Calhoun                      26                 38                        383
+#&gt;  8 Carroll                      26                 40                        323
+#&gt;  9 Chickasaw                    42                 53                       1378
+#&gt; 10 Choctaw                       8                  6                         73
+#&gt; # ℹ 72 more rows
+#&gt; # ℹ 3 more variables: `Other or unknown` &lt;int&gt;, `Seat belt` &lt;int&gt;,
+#&gt; #   Speeding &lt;int&gt;</code></pre>
+<p>It is worth taking a look at <code>?pivot_wider</code>. The function takes many more arguments which can help in reshaping, renaming the new columns, and instructions for how to treat the values or how to fill missing values.</p>
 </div>
-<div id="wide-to-long-with-pivot_longer" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Wide to long with <code>pivot_longer</code></h2>
+<div id="wide-to-long-with-pivot_longer" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Wide to long with <code>pivot_longer</code><a href="tidyr.html#wide-to-long-with-pivot_longer" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>What if we had the opposite problem, and wanted to go from a wide to long
-format? For that, we use <code>pivot_longer</code>, which will increase the number of rows and decrease the number of columns. We provide the functino with thee arguments: <code>cols</code> which are the columns we want to pivot into the long format, <code>names_to</code>, which is a string specifying the name of the column to create from the data stored in the column names, and <code>values_to</code>, which is also a string, specifying the name of the column to create from the data stored in cell values.
-So, to go backwards from <code>violations_wide</code>, and exclude <code>county_name</code> from the long format, we would do the following:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="tidyr.html#cb57-1" aria-hidden="true" tabindex="-1"></a>violations_long <span class="ot">&lt;-</span> violations_wide <span class="sc">%&gt;%</span></span>
-<span id="cb57-2"><a href="tidyr.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>county_name,        <span class="co"># exclude column with county name</span></span>
-<span id="cb57-3"><a href="tidyr.html#cb57-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;violation&quot;</span>,     <span class="co"># name is a string!</span></span>
-<span id="cb57-4"><a href="tidyr.html#cb57-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;n&quot;</span>)            <span class="co"># also a string</span></span>
-<span id="cb57-5"><a href="tidyr.html#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-6"><a href="tidyr.html#cb57-6" aria-hidden="true" tabindex="-1"></a>violations_long</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 492 x 3
-#&gt;    county_name violation                    n
-#&gt;    &lt;chr&gt;       &lt;chr&gt;                    &lt;int&gt;
-#&gt;  1 Adams       Breaks-Lights-etc            7
-#&gt;  2 Adams       Careless driving            48
-#&gt;  3 Adams       License-Permit-Insurance   118
-#&gt;  4 Adams       Other or unknown            35
-#&gt;  5 Adams       Seat belt                  229
-#&gt;  6 Adams       Speeding                   505
-#&gt;  7 Alcorn      Breaks-Lights-etc           62
-#&gt;  8 Alcorn      Careless driving           100
-#&gt;  9 Alcorn      License-Permit-Insurance   737
-#&gt; 10 Alcorn      Other or unknown           418
-#&gt; # … with 482 more rows</code></pre>
+format? For that, we use <code>pivot_longer</code>, which will increase the number of rows and decrease the number of columns.</p>
+<p>We are gathering the multiple violation columns and turn them into a pair of new variables. One variable includes the column names as values, and the other variable contains the values in each cell previously associated with the column names.</p>
+<p><code>pivot_longer()</code> takes four principal arguments:</p>
+<ol style="list-style-type: decimal">
+<li>the data</li>
+<li><code>cols</code> are the names of the columns we use to fill the a new values variable (or to drop).</li>
+<li>the <code>names_to</code> a string specifying the name of the column to create from the data stored in the column names (<code>cols</code>)</li>
+<li>the <code>values_to</code> which is also a string, specifying the name of the column to create from the data stored in cell values.</li>
+</ol>
+<p>So, to go backwards from <code>violations_wide</code>, and exclude <code>county_name</code> from the long format, we would do the following:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="tidyr.html#cb61-1" tabindex="-1"></a>violations_long <span class="ot">&lt;-</span> violations_wide <span class="sc">%&gt;%</span></span>
+<span id="cb61-2"><a href="tidyr.html#cb61-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>county_name,        <span class="co"># exclude column with county name</span></span>
+<span id="cb61-3"><a href="tidyr.html#cb61-3" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;violation&quot;</span>,     <span class="co"># name is a string!</span></span>
+<span id="cb61-4"><a href="tidyr.html#cb61-4" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;n_violations&quot;</span>)            <span class="co"># also a string</span></span>
+<span id="cb61-5"><a href="tidyr.html#cb61-5" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="tidyr.html#cb61-6" tabindex="-1"></a>violations_long</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 492 × 3
+#&gt;    county_name violation                n_violations
+#&gt;    &lt;chr&gt;       &lt;chr&gt;                           &lt;int&gt;
+#&gt;  1 Adams       Breaks-Lights-etc                   7
+#&gt;  2 Adams       Careless driving                   48
+#&gt;  3 Adams       License-Permit-Insurance          118
+#&gt;  4 Adams       Other or unknown                   35
+#&gt;  5 Adams       Seat belt                         229
+#&gt;  6 Adams       Speeding                          505
+#&gt;  7 Alcorn      Breaks-Lights-etc                  62
+#&gt;  8 Alcorn      Careless driving                  100
+#&gt;  9 Alcorn      License-Permit-Insurance          737
+#&gt; 10 Alcorn      Other or unknown                  418
+#&gt; # ℹ 482 more rows</code></pre>
 <p>We could also have used a specification for what columns to include. This can be
 useful if you have a large number of identifying columns, and it’s easier to
 specify what to gather than what to leave alone. And if the columns are adjacent to each other, we don’t even need to list them all out – we can use the <code>:</code> operator!</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="tidyr.html#cb59-1" aria-hidden="true" tabindex="-1"></a>violations_wide <span class="sc">%&gt;%</span></span>
-<span id="cb59-2"><a href="tidyr.html#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="st">`</span><span class="at">Breaks-Lights-etc</span><span class="st">`</span><span class="sc">:</span>Speeding,      <span class="co"># this also works</span></span>
-<span id="cb59-3"><a href="tidyr.html#cb59-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;violation&quot;</span>, </span>
-<span id="cb59-4"><a href="tidyr.html#cb59-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 492 x 3
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="tidyr.html#cb63-1" tabindex="-1"></a>violations_wide <span class="sc">%&gt;%</span></span>
+<span id="cb63-2"><a href="tidyr.html#cb63-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="st">`</span><span class="at">Breaks-Lights-etc</span><span class="st">`</span><span class="sc">:</span>Speeding,      <span class="co"># this also works</span></span>
+<span id="cb63-3"><a href="tidyr.html#cb63-3" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;violation&quot;</span>, </span>
+<span id="cb63-4"><a href="tidyr.html#cb63-4" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 492 × 3
 #&gt;    county_name violation                    n
 #&gt;    &lt;chr&gt;       &lt;chr&gt;                    &lt;int&gt;
 #&gt;  1 Adams       Breaks-Lights-etc            7
@@ -298,9 +316,9 @@ specify what to gather than what to leave alone. And if the columns are adjacent
 #&gt;  8 Alcorn      Careless driving           100
 #&gt;  9 Alcorn      License-Permit-Insurance   737
 #&gt; 10 Alcorn      Other or unknown           418
-#&gt; # … with 482 more rows</code></pre>
+#&gt; # ℹ 482 more rows</code></pre>
 <p>There are many powerful operations you can do with the <code>pivot_*</code> functions. To learn more review the vignette:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="tidyr.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;pivot&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="tidyr.html#cb65-1" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;pivot&quot;</span>)</span></code></pre></div>
 <blockquote>
 <h3>
 Challenge
@@ -330,8 +348,8 @@ unique violation - year combination, like this:</li>
   
 --->
 </div>
-<div id="exporting-data" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Exporting data</h2>
+<div id="exporting-data" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Exporting data<a href="tidyr.html#exporting-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Similar to the <code>read_csv()</code> function used for reading CSV files into R, there is a <code>write_csv()</code> function that generates CSV files from data frames.</p>
 <p>Before using <code>write_csv()</code>, we are going to create a new folder, <code>data_output</code>,
 in our working directory that will store this generated dataset. We don’t want
@@ -343,7 +361,7 @@ directory, so even if the files it contains are deleted, we can always
 re-generate them.</p>
 <p>We can now save the table generated above in our <code>data_output</code>
 folder:</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="tidyr.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(violation_wide, <span class="st">&quot;data_output/county_violations.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="tidyr.html#cb66-1" tabindex="-1"></a><span class="fu">write_csv</span>(violation_wide, <span class="st">&quot;data_output/county_violations.csv&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
@@ -363,7 +381,6 @@ folder:</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -382,6 +399,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -402,6 +420,10 @@ gitbook.start({
 "text": null
 },
 "download": ["R-data-wrangling.pdf", "R-data-wrangling.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

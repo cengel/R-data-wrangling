@@ -39,7 +39,7 @@ download.file("http://bit.ly/MS_acs_2015_bw",
 Boehmke, Bradley C. (2016) Data Wrangling with R
 http://link.springer.com/book/10.1007%2F978-3-319-45599-0
 
-Grolemund, G & Wickham, H (2017): R for Data Science http://r4ds.had.co.nz
+Grolemund, G & Wickham, H (2023): R for Data Science https://r4ds.hadley.nz
 
 Wickham, H. (2014): Tidy Data https://www.jstatsoft.org/article/view/v059i10
 

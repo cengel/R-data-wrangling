@@ -4,18 +4,20 @@
 %
 \documentclass[
 ]{book}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -34,14 +36,6 @@
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  pdftitle={Data Wrangling with R},
-  pdfauthor={Claudia A Engel},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
 \usepackage{color}
 \usepackage{fancyvrb}
 \newcommand{\VerbBar}{|}
@@ -53,13 +47,13 @@
 \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
 \newcommand{\BuiltInTok}[1]{#1}
 \newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
@@ -67,7 +61,7 @@
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
 \newcommand{\ExtensionTok}[1]{#1}
 \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\ImportTok}[1]{#1}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
@@ -76,13 +70,13 @@
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
 \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -117,15 +111,23 @@
   \thm@postskip=\thm@preskip
 }
 \makeatother
-\ifluatex
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Data Wrangling with R},
+  pdfauthor={Claudia A Engel},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
 
 \title{Data Wrangling with R}
 \author{Claudia A Engel}
-\date{Last updated: February 23, 2021}
+\date{Last updated: November 03, 2023}
 
 \begin{document}
 \maketitle
@@ -190,7 +192,7 @@
 Boehmke, Bradley C. (2016) Data Wrangling with R
 \url{http://link.springer.com/book/10.1007\%2F978-3-319-45599-0}
 
-Grolemund, G \& Wickham, H (2017): R for Data Science \url{http://r4ds.had.co.nz}
+Grolemund, G \& Wickham, H (2023): R for Data Science \url{https://r4ds.hadley.nz}
 
 Wickham, H. (2014): Tidy Data \url{https://www.jstatsoft.org/article/view/v059i10}
 
@@ -260,79 +262,43 @@ If you need to use functions from \texttt{tidyverse} packages other than the cor
 \textbf{\texttt{dplyr}} is one part of a larger \textbf{\texttt{tidyverse}} that enables you to work
 with data in tidy data formats. ``Tidy datasets are easy to manipulate, model and visualise, and have a specific structure: each variable is a column, each observation is a row, and each type of observational unit is a table.'' (From Wickham, H. (2014): Tidy Data \url{https://www.jstatsoft.org/article/view/v059i10})
 
-The package \textbf{\texttt{dplyr}} provides convenient tools for the most common data manipulation
-tasks. It is built to work directly with data frames, with many common tasks
-optimized by being written in a compiled language (C++). An additional feature is the
-ability to work directly with data stored in an external database. The benefits of
-doing this are that the data can be managed natively in a relational database,
-queries can be conducted on that database, and only the results of the query are
-returned.
+The package \textbf{\texttt{dplyr}} provides convenient tools for the most common data manipulation tasks. It is built to work directly with data frames, which is one of the most common data formats to work with.
 
-This addresses a common problem with R in that all operations are conducted
-in-memory and thus the amount of data you can work with is limited by available
-memory. The database connections essentially remove that limitation in that you
-can have a database of many 100s GB, conduct queries on it directly, and pull
-back into R only what you need for analysis.
-
-To learn more about \textbf{\texttt{dplyr}} after the workshop, you may want to check out the \href{https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf}{handy data transformation with \textbf{\texttt{dplyr}} cheatsheet}.
-
-\hypertarget{subsetting-columns-and-rows}{%
-\section{Subsetting columns and rows}\label{subsetting-columns-and-rows}}
+To learn more about \textbf{\texttt{dplyr}} after the workshop, you may want to check out the \href{https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf}{handy data transformation with \textbf{\texttt{dplyr}} cheatsheet}.
 
 Let's begin with loading our sample data into a data frame.
 
-We will be working a small subset of the data from the \href{https://openpolicing.stanford.edu}{Stanford Open Policing Project}. It contains information about traffic stops for blacks and whites in the state of Mississippi during January 2013 to mid-July of 2016.
+We will be working a small subset of the data from the \href{https://openpolicing.stanford.edu}{Stanford Open Policing Project}. It contains information about traffic stops in the state of Mississippi during January 2013 to mid-July of 2016.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{stops }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"data/MS\_trafficstops\_bw\_age.csv"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-#> Parsed with column specification:
-#> cols(
-#>   id = col_character(),
-#>   stop_date = col_date(format = ""),
-#>   county_name = col_character(),
-#>   county_fips = col_double(),
-#>   police_department = col_character(),
-#>   driver_gender = col_character(),
-#>   driver_birthdate = col_date(format = ""),
-#>   driver_race = col_character(),
-#>   officer_id = col_character(),
-#>   driver_age = col_double(),
-#>   violation = col_character()
-#> )
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{stops}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 #> # A tibble: 211,211 x 11
-#>    id    stop_date  county_name county_fips police_departme~ driver_gender
-#>    <chr> <date>     <chr>             <dbl> <chr>            <chr>        
-#>  1 MS-2~ 2013-01-01 Jones             28067 Mississippi Hig~ male         
-#>  2 MS-2~ 2013-01-01 Lauderdale        28075 Mississippi Hig~ male         
-#>  3 MS-2~ 2013-01-01 Pike              28113 Mississippi Hig~ male         
-#>  4 MS-2~ 2013-01-01 Hancock           28045 Mississippi Hig~ male         
-#>  5 MS-2~ 2013-01-01 Holmes            28051 Mississippi Hig~ male         
-#>  6 MS-2~ 2013-01-01 Jackson           28059 Mississippi Hig~ female       
-#>  7 MS-2~ 2013-01-01 Jackson           28059 Mississippi Hig~ female       
-#>  8 MS-2~ 2013-01-01 Grenada           28043 Mississippi Hig~ female       
-#>  9 MS-2~ 2013-01-01 Holmes            28051 Mississippi Hig~ male         
-#> 10 MS-2~ 2013-01-01 Holmes            28051 Mississippi Hig~ male         
-#> # ... with 211,201 more rows, and 5 more variables: driver_birthdate <date>,
-#> #   driver_race <chr>, officer_id <chr>, driver_age <dbl>, violation <chr>
+#>    id         stop_date  county_name county_fips police_department driver_gender
+#>    <chr>      <date>     <chr>             <dbl> <chr>             <chr>        
+#>  1 MS-2013-0~ 2013-01-01 Jones             28067 Mississippi High~ male         
+#>  2 MS-2013-0~ 2013-01-01 Lauderdale        28075 Mississippi High~ male         
+#>  3 MS-2013-0~ 2013-01-01 Pike              28113 Mississippi High~ male         
+#>  4 MS-2013-0~ 2013-01-01 Hancock           28045 Mississippi High~ male         
+#>  5 MS-2013-0~ 2013-01-01 Holmes            28051 Mississippi High~ male         
+#>  6 MS-2013-0~ 2013-01-01 Jackson           28059 Mississippi High~ female       
+#>  7 MS-2013-0~ 2013-01-01 Jackson           28059 Mississippi High~ female       
+#>  8 MS-2013-0~ 2013-01-01 Grenada           28043 Mississippi High~ female       
+#>  9 MS-2013-0~ 2013-01-01 Holmes            28051 Mississippi High~ male         
+#> 10 MS-2013-0~ 2013-01-01 Holmes            28051 Mississippi High~ male         
+#> # i 211,201 more rows
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
 \end{verbatim}
 
 You may have noticed that by using \texttt{read\_csv} we have generated an object
 of class \texttt{tbl\_df}, also known as a ``tibble''. Tibble's data
-structure is very similar to a data frame. For our purposes the only differences
+structure is very similar to a data frame. For our purposes the relevant differences
 are that
 
 \begin{itemize}
@@ -341,7 +307,7 @@ are that
   \def\labelenumi{(\arabic{enumi})}
   \tightlist
   \item
-    columns of class \texttt{character} are never converted into factors\footnote{This is now also true for the base \texttt{read.csv} starting with R version 4.},
+    it tries to recognize and \texttt{date} types
   \end{enumerate}
 \item
   \begin{enumerate}
@@ -349,7 +315,7 @@ are that
   \setcounter{enumi}{1}
   \tightlist
   \item
-    it tries to recognize and \texttt{date} types
+    the output displays the data type of each column under its name, and
   \end{enumerate}
 \item
   \begin{enumerate}
@@ -357,44 +323,66 @@ are that
   \setcounter{enumi}{2}
   \tightlist
   \item
-    the output displays the data type of each column under its name, and
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{(\arabic{enumi})}
-  \setcounter{enumi}{3}
-  \tightlist
-  \item
     it only prints the first few rows of data and only as many columns as
     fit on one screen. If we wanted to print all columns we can use the print command, and set the \texttt{width} parameter to \texttt{Inf}. To print the first 6 rows for example we would do this: \texttt{print(my\_tibble,\ n=6,\ width=Inf)}.
   \end{enumerate}
 \end{itemize}
 
-To select columns of a
-data frame with \texttt{dplyr}, use \texttt{select()}. The first argument to this function is the data
-frame (\texttt{stops}), and the subsequent arguments are the columns to keep.
+We are going to learn some of the most common dplyr functions:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{select()}: subset columns
+\item
+  \texttt{filter()}: subset rows on conditions
+\item
+  \texttt{mutate()}: create new columns by using information from other columns
+\item
+  \texttt{group\_by()} and \texttt{summarize()}: create summary statistics on grouped data
+\item
+  \texttt{arrange()}: sort results
+\item
+  \texttt{count()}: count discrete values
+\end{itemize}
+
+\hypertarget{selecting-columns-and-filtering-rows}{%
+\section{Selecting columns and filtering rows}\label{selecting-columns-and-filtering-rows}}
+
+To select columns of a data frame with \texttt{dplyr}, use \texttt{select()}. The first argument to this function is the data frame (\texttt{stops}), and the subsequent arguments are the columns to keep. You may have done something similar in the past using subsetting. select() is essentially doing the same thing as subsetting, using a package (dplyr) instead of R's base functions.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{select}\NormalTok{(stops, police\_department, officer\_id, driver\_race)}
+\FunctionTok{select}\NormalTok{(stops, county\_name, driver\_gender, driver\_birthdate, driver\_race)}
+
+\CommentTok{\# this is the same as subsetting in base R:}
+\NormalTok{stops[}\FunctionTok{c}\NormalTok{(}\StringTok{"county\_name"}\NormalTok{, }\StringTok{"driver\_gender"}\NormalTok{, }\StringTok{"driver\_birthdate"}\NormalTok{,}\StringTok{"driver\_race"}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+Alternatively, if you are selecting columns adjacent to each other, you can use a : to select a range of columns, read as ``select columns from \_\_\_ to \_\_\_.''
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{select}\NormalTok{(stops, county\_name, driver\_gender}\SpecialCharTok{:}\NormalTok{driver\_race)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> # A tibble: 211,211 x 3
-#>    police_department          officer_id driver_race
-#>    <chr>                      <chr>      <chr>      
-#>  1 Mississippi Highway Patrol J042       Black      
-#>  2 Mississippi Highway Patrol B026       Black      
-#>  3 Mississippi Highway Patrol M009       Black      
-#>  4 Mississippi Highway Patrol K035       White      
-#>  5 Mississippi Highway Patrol D028       White      
-#>  6 Mississippi Highway Patrol K023       White      
-#>  7 Mississippi Highway Patrol K032       White      
-#>  8 Mississippi Highway Patrol D021       White      
-#>  9 Mississippi Highway Patrol R021       White      
-#> 10 Mississippi Highway Patrol R021       White      
-#> # ... with 211,201 more rows
+#> # A tibble: 211,211 x 4
+#>    county_name driver_gender driver_birthdate driver_race
+#>    <chr>       <chr>         <date>           <chr>      
+#>  1 Jones       male          1950-06-14       Black      
+#>  2 Lauderdale  male          1967-04-06       Black      
+#>  3 Pike        male          1974-04-15       Black      
+#>  4 Hancock     male          1981-03-23       White      
+#>  5 Holmes      male          1992-08-03       White      
+#>  6 Jackson     female        1960-05-02       White      
+#>  7 Jackson     female        1953-03-16       White      
+#>  8 Grenada     female        1993-06-14       White      
+#>  9 Holmes      male          1947-12-11       White      
+#> 10 Holmes      male          1984-07-14       White      
+#> # i 211,201 more rows
 \end{verbatim}
 
 It is worth knowing that \texttt{dplyr} is backed by another package with a number of helper functions, which provide convenient functions to select columns based on their names. For example:
@@ -419,12 +407,12 @@ It is worth knowing that \texttt{dplyr} is backed by another package with a numb
 #>  8 female        1993-06-14       White               20
 #>  9 male          1947-12-11       White               65
 #> 10 male          1984-07-14       White               28
-#> # ... with 211,201 more rows
+#> # i 211,201 more rows
 \end{verbatim}
 
-Check out the \href{https://tidyselect.r-lib.org/reference/language.html}{tidyselect reference} for more.
+Other examles are: \texttt{ends\_with()}, \texttt{contains()}, \texttt{last\_col()} and more. Check out the \href{https://tidyselect.r-lib.org/reference/language.html}{tidyselect reference} for more.
 
-To subset rows based on specific criteria, we use \texttt{filter()}:
+To choose rows based on specific criteria, we can use the \texttt{filter()} function. The argument after the dataframe is the condition we want our resulting data frame to adhere to.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -434,20 +422,92 @@ To subset rows based on specific criteria, we use \texttt{filter()}:
 
 \begin{verbatim}
 #> # A tibble: 3,528 x 11
-#>    id    stop_date  county_name county_fips police_departme~ driver_gender
-#>    <chr> <date>     <chr>             <dbl> <chr>            <chr>        
-#>  1 MS-2~ 2013-01-02 Yazoo             28163 Mississippi Hig~ male         
-#>  2 MS-2~ 2013-01-02 Yazoo             28163 Mississippi Hig~ female       
-#>  3 MS-2~ 2013-01-02 Yazoo             28163 Mississippi Hig~ male         
-#>  4 MS-2~ 2013-01-02 Yazoo             28163 Mississippi Hig~ female       
-#>  5 MS-2~ 2013-01-02 Yazoo             28163 Mississippi Hig~ male         
-#>  6 MS-2~ 2013-01-03 Yazoo             28163 Mississippi Hig~ male         
-#>  7 MS-2~ 2013-01-03 Yazoo             28163 Mississippi Hig~ male         
-#>  8 MS-2~ 2013-01-04 Yazoo             28163 Mississippi Hig~ male         
-#>  9 MS-2~ 2013-01-04 Yazoo             28163 Mississippi Hig~ male         
-#> 10 MS-2~ 2013-01-04 Yazoo             28163 Mississippi Hig~ female       
-#> # ... with 3,518 more rows, and 5 more variables: driver_birthdate <date>,
-#> #   driver_race <chr>, officer_id <chr>, driver_age <dbl>, violation <chr>
+#>    id         stop_date  county_name county_fips police_department driver_gender
+#>    <chr>      <date>     <chr>             <dbl> <chr>             <chr>        
+#>  1 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  2 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ female       
+#>  3 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  4 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ female       
+#>  5 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  6 MS-2013-0~ 2013-01-03 Yazoo             28163 Mississippi High~ male         
+#>  7 MS-2013-0~ 2013-01-03 Yazoo             28163 Mississippi High~ male         
+#>  8 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ male         
+#>  9 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ male         
+#> 10 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ female       
+#> # i 3,518 more rows
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
+\end{verbatim}
+
+We can also specify multiple conditions within the \texttt{filter()} function. We can combine conditions using either ``and'' or ``or'' statements. In an ``and'' statement, an observation (row) must meet \textbf{all conditions} in order to be included in the resulting dataframe. To form ``and'' statements within \texttt{dplyr}, we can pass our desired conditions as arguments in the \texttt{filter()} function, separated by commas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{filter}\NormalTok{(stops, county\_name }\SpecialCharTok{==} \StringTok{"Yazoo"}\NormalTok{, }
+\NormalTok{       driver\_age }\SpecialCharTok{\textgreater{}} \DecValTok{65}\NormalTok{,}
+\NormalTok{       violation }\SpecialCharTok{==} \StringTok{"Careless driving"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+#> # A tibble: 4 x 11
+#>   id          stop_date  county_name county_fips police_department driver_gender
+#>   <chr>       <date>     <chr>             <dbl> <chr>             <chr>        
+#> 1 MS-2013-33~ 2013-06-18 Yazoo             28163 Mississippi High~ male         
+#> 2 MS-2014-36~ 2014-07-31 Yazoo             28163 Mississippi High~ female       
+#> 3 MS-2015-01~ 2015-01-10 Yazoo             28163 Mississippi High~ male         
+#> 4 MS-2015-50~ 2015-10-16 Yazoo             28163 Mississippi High~ female       
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
+\end{verbatim}
+
+We can also form ``and'' statements with the \& operator instead of commas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{filter}\NormalTok{(stops, county\_name }\SpecialCharTok{==} \StringTok{"Yazoo"} \SpecialCharTok{\&} 
+\NormalTok{       driver\_age }\SpecialCharTok{\textgreater{}} \DecValTok{65} \SpecialCharTok{\&}
+\NormalTok{       violation }\SpecialCharTok{==} \StringTok{"Careless driving"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+#> # A tibble: 4 x 11
+#>   id          stop_date  county_name county_fips police_department driver_gender
+#>   <chr>       <date>     <chr>             <dbl> <chr>             <chr>        
+#> 1 MS-2013-33~ 2013-06-18 Yazoo             28163 Mississippi High~ male         
+#> 2 MS-2014-36~ 2014-07-31 Yazoo             28163 Mississippi High~ female       
+#> 3 MS-2015-01~ 2015-01-10 Yazoo             28163 Mississippi High~ male         
+#> 4 MS-2015-50~ 2015-10-16 Yazoo             28163 Mississippi High~ female       
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
+\end{verbatim}
+
+In an ``or'' statement, observations must meet \textbf{at least one} of the specified conditions. To form ``or'' statements we use the logical operator for ``or'', which is the vertical bar (\textbar):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{filter}\NormalTok{(stops, county\_name }\SpecialCharTok{==} \StringTok{"Yazoo"} \SpecialCharTok{|}\NormalTok{ county\_name }\SpecialCharTok{==} \StringTok{"Adams"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+#> # A tibble: 4,470 x 11
+#>    id         stop_date  county_name county_fips police_department driver_gender
+#>    <chr>      <date>     <chr>             <dbl> <chr>             <chr>        
+#>  1 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  2 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ female       
+#>  3 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  4 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ female       
+#>  5 MS-2013-0~ 2013-01-02 Yazoo             28163 Mississippi High~ male         
+#>  6 MS-2013-0~ 2013-01-03 Yazoo             28163 Mississippi High~ male         
+#>  7 MS-2013-0~ 2013-01-03 Yazoo             28163 Mississippi High~ male         
+#>  8 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ male         
+#>  9 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ male         
+#> 10 MS-2013-0~ 2013-01-04 Yazoo             28163 Mississippi High~ female       
+#> # i 4,460 more rows
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
 \end{verbatim}
 
 Here are some other ways to subset rows:
@@ -476,7 +536,7 @@ Here are some other ways to subset rows:
   \end{itemize}
 \end{itemize}
 
-To sort rows by variables use the \texttt{arrange} function:
+To sort rows by variables use the \texttt{arrange()} function:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -486,20 +546,21 @@ To sort rows by variables use the \texttt{arrange} function:
 
 \begin{verbatim}
 #> # A tibble: 211,211 x 11
-#>    id    stop_date  county_name county_fips police_departme~ driver_gender
-#>    <chr> <date>     <chr>             <dbl> <chr>            <chr>        
-#>  1 MS-2~ 2013-02-09 Adams             28001 Mississippi Hig~ male         
-#>  2 MS-2~ 2013-03-02 Adams             28001 Mississippi Hig~ female       
-#>  3 MS-2~ 2013-03-16 Adams             28001 Mississippi Hig~ female       
-#>  4 MS-2~ 2013-03-20 Adams             28001 Mississippi Hig~ female       
-#>  5 MS-2~ 2013-04-06 Adams             28001 Mississippi Hig~ female       
-#>  6 MS-2~ 2013-04-13 Adams             28001 Mississippi Hig~ female       
-#>  7 MS-2~ 2013-04-19 Adams             28001 Mississippi Hig~ female       
-#>  8 MS-2~ 2013-04-21 Adams             28001 Mississippi Hig~ female       
-#>  9 MS-2~ 2013-04-24 Adams             28001 Mississippi Hig~ male         
-#> 10 MS-2~ 2013-04-24 Adams             28001 Mississippi Hig~ male         
-#> # ... with 211,201 more rows, and 5 more variables: driver_birthdate <date>,
-#> #   driver_race <chr>, officer_id <chr>, driver_age <dbl>, violation <chr>
+#>    id         stop_date  county_name county_fips police_department driver_gender
+#>    <chr>      <date>     <chr>             <dbl> <chr>             <chr>        
+#>  1 MS-2013-0~ 2013-02-09 Adams             28001 Mississippi High~ male         
+#>  2 MS-2013-1~ 2013-03-02 Adams             28001 Mississippi High~ female       
+#>  3 MS-2013-1~ 2013-03-16 Adams             28001 Mississippi High~ female       
+#>  4 MS-2013-1~ 2013-03-20 Adams             28001 Mississippi High~ female       
+#>  5 MS-2013-1~ 2013-04-06 Adams             28001 Mississippi High~ female       
+#>  6 MS-2013-2~ 2013-04-13 Adams             28001 Mississippi High~ female       
+#>  7 MS-2013-2~ 2013-04-19 Adams             28001 Mississippi High~ female       
+#>  8 MS-2013-2~ 2013-04-21 Adams             28001 Mississippi High~ female       
+#>  9 MS-2013-2~ 2013-04-24 Adams             28001 Mississippi High~ male         
+#> 10 MS-2013-2~ 2013-04-24 Adams             28001 Mississippi High~ male         
+#> # i 211,201 more rows
+#> # i 5 more variables: driver_birthdate <date>, driver_race <chr>,
+#> #   officer_id <chr>, driver_age <dbl>, violation <chr>
 \end{verbatim}
 
 \hypertarget{pipes}{%
@@ -513,9 +574,8 @@ What if you wanted to filter \textbf{and} select on the same data? For example, 
   Intermediate steps:
 \end{itemize}
 
-With intermediate steps, you essentially create a temporary data frame and use
-that as input to the next function. This can clutter up your workspace with lots
-of objects.
+With intermediate steps, you create a temporary data frame and use
+that as input to the next function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -524,20 +584,23 @@ of objects.
 \end{Highlighting}
 \end{Shaded}
 
+This is readable, but can clutter up your workspace with lots of objects that you have to name individually. With multiple steps, that can be hard to keep track of.
+
 \begin{itemize}
 \tightlist
 \item
   Nested functions
 \end{itemize}
 
-You can also nest functions (i.e.~placce one function inside of another).
-This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out.
+You can also nest functions (i.e.~place one function inside of another).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{select}\NormalTok{(}\FunctionTok{filter}\NormalTok{(stops, driver\_age }\SpecialCharTok{\textgreater{}} \DecValTok{85}\NormalTok{), violation, driver\_gender)}
 \end{Highlighting}
 \end{Shaded}
+
+This is handy, but can be difficult to read if too many functions are nested as things are evaluated from the inside out (in this case, filtering, then selecting).
 
 \begin{itemize}
 \tightlist
@@ -547,15 +610,38 @@ This is handy, but can be difficult to read if too many functions are nested as 
 
 The last option, called ``pipes''. Pipes let you take
 the output of one function and send it directly to the next, which is useful
-when you need to do many things to the same dataset. Pipes in R look like
-\texttt{\%\textgreater{}\%} and are made available via the \texttt{magrittr} package, which is installed automatically with \textbf{\texttt{dplyr}}. If you use RStudio, you can type the pipe with Ctrl
+when you need to do many things to the same dataset.
+
+There are now two Pipes in R:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\item
+  \texttt{\%\textgreater{}\%} (called magrittr pipe; made available via the \texttt{magrittr} package, installed automatically with \texttt{dplyr}) or
+\item
+  \texttt{\textbar{}\textgreater{}} (called native R pipe and it comes preinstalled with R v4.1.0 onwards).
+\end{enumerate}
+
+Both the pipes, by and large, function similarly with a few differences (For more information, check: \url{https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/}). The choice of which pipe to be used can be changed in the Global settings in R studio and once that is done, you can type the pipe with: Ctrl
 + Shift + M if you have a PC or Cmd +
 Shift + M if you have a Mac.
+
+The following example is run using the magrittr pipe, which I will use for the rest of the tutorial.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{filter}\NormalTok{(driver\_age }\SpecialCharTok{\textgreater{}} \DecValTok{85}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(violation, driver\_gender)}
+\end{Highlighting}
+\end{Shaded}
+
+However, the output will be same with the native pipe so you can feel free to use this pipe as well.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stops }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(driver\_age }\SpecialCharTok{\textgreater{}} \DecValTok{85}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
   \FunctionTok{select}\NormalTok{(violation, driver\_gender)}
 \end{Highlighting}
 \end{Shaded}
@@ -591,6 +677,8 @@ could do so by assigning it a new name:
 
 Note that the final data frame is the leftmost part of this expression.
 
+Some may find it helpful to read the pipe like the word ``then''. For instance, in the above example, we take the dataframe \texttt{stops}, then we filter for rows with \texttt{driver\_age\ \textgreater{}\ 85}, then we select columns \texttt{violation}, \texttt{driver\_gender} and \texttt{driver\_race}. The \texttt{dplyr} functions by themselves are somewhat simple, but by combining them into linear workflows with the pipe, we can accomplish more complex data wrangling operations.
+
 \begin{quote}
 Challenge
 
@@ -602,20 +690,18 @@ Using pipes, subset the \texttt{stops} data to include stops in Tunica county on
 
 Frequently you'll want to create new columns based on the values in existing columns or. For this we'll use \texttt{mutate()}. We can also reassign values to an existing column with that function.
 
-Be aware that new and edited columns will not permanently be added to the existing data frame -- unless we explicitly save the output.
+Be aware that new and edited columns will not permanently be added to the existing data frame, munless we explicitly save the output.
 
-So here is an example using the \texttt{year()} function from the lubridate package to extract the year of the drivers' birthdate:
+So here is an example using the \texttt{year()} function (from the \texttt{lubridate} package, which is part of the \texttt{tidyverse}) to extract the year of the drivers' birth:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(lubridate)}
-
 \NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{birth\_year =} \FunctionTok{year}\NormalTok{(driver\_birthdate))}
 \end{Highlighting}
 \end{Shaded}
 
-We can keep adding columns like this:
+We can keep adding columns like this, for example, the decade of the birth year:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -644,7 +730,7 @@ We are beginning to see the power of piping. Here is a slightly expanded example
 \caption{\label{fig:driver-birth-cohorts}Driver Birth Cohorts}
 \end{figure}
 
-Mutate can also be used in conjunction with logical conditions. For example, we could create a new column, where we assign everyone born after the year 2000 to a group ``millenial'' and overyone before to ``pre-millenial''.
+Mutate can also be used in conjunction with logical conditions. For example, we could create a new column, where we assign everyone born after the year 2000 to a group ``millenial'' and everyone before to ``pre-millenial''.
 
 In order to do this we take advantage of the \texttt{ifelse} function:
 
@@ -674,7 +760,7 @@ In conjunction with mutate, this works like this:
 #>  8 1993-06-14       pre-millenial
 #>  9 1947-12-11       pre-millenial
 #> 10 1984-07-14       pre-millenial
-#> # ... with 211,201 more rows
+#> # i 211,201 more rows
 \end{verbatim}
 
 More advanced conditional recoding can be done with \href{https://dplyr.tidyverse.org/reference/case_when.html}{\texttt{case\_when()}}.
@@ -693,14 +779,23 @@ Think about how the commands should be ordered to produce this data frame!
 \section{What is split-apply-combine?}\label{what-is-split-apply-combine}}
 
 Many data analysis tasks can be approached using the \emph{split-apply-combine}
-paradigm: split the data into groups, apply some analysis to each group, and
-then combine the results.
+paradigm:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{split} the data into groups,
+\item
+  \textbf{apply} some analysis to each group, and
+\item
+  \textbf{combine} the results.
+\end{itemize}
 
 \begin{figure}
 \includegraphics[width=\textwidth]{img/split-apply-combine} \caption{Split - Apply - Combine}\label{fig:split-apply-combine}
 \end{figure}
 
-\textbf{\texttt{dplyr}} makes this possible through the use of the \texttt{group\_by()} function.
+\texttt{dplyr} makes this possible through the use of the \texttt{group\_by()} function.
 
 \texttt{group\_by()} is often used together with \texttt{summarize()}, which collapses each
 group into a single-row summary of that group. \texttt{group\_by()} takes as arguments
@@ -710,14 +805,10 @@ to calculate the summary statistics. So to view the mean age for black and white
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(driver\_race) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(driver\_race) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# needs a dategorical variable to group by}
   \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_age =} \FunctionTok{mean}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> `summarise()` ungrouping output (override with `.groups` argument)
-\end{verbatim}
 
 \begin{verbatim}
 #> # A tibble: 3 x 2
@@ -728,7 +819,7 @@ to calculate the summary statistics. So to view the mean age for black and white
 #> 3 <NA>            34.5
 \end{verbatim}
 
-If we wanted to remove the line with \texttt{NA} we could insert a \texttt{filter()} in the chain:
+If we wanted to remove the line where driver\_race is \texttt{NA} we could insert a \texttt{filter()} in the chain:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -738,10 +829,6 @@ If we wanted to remove the line with \texttt{NA} we could insert a \texttt{filte
   \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_age =} \FunctionTok{mean}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-#> `summarise()` ungrouping output (override with `.groups` argument)
-\end{verbatim}
 
 \begin{verbatim}
 #> # A tibble: 2 x 2
@@ -765,10 +852,6 @@ You can also group by multiple columns:
 \end{Shaded}
 
 \begin{verbatim}
-#> `summarise()` regrouping output by 'county_name' (override with `.groups` argument)
-\end{verbatim}
-
-\begin{verbatim}
 #> # A tibble: 163 x 3
 #> # Groups:   county_name [82]
 #>    county_name driver_race mean_age
@@ -783,12 +866,43 @@ You can also group by multiple columns:
 #>  8 Attala      White           38.6
 #>  9 Benton      Black           34.7
 #> 10 Benton      White           32.0
-#> # ... with 153 more rows
+#> # i 153 more rows
+\end{verbatim}
+
+Note that the output is a ``grouped'' tibble, grouped by \texttt{county\_name}. What it means is that the tibble ``remembers'' the grouping of the counties, so for any operation you would do after that it will take that grouping into account.
+
+To obtain an ``ungrouped'' tibble, you can use the \texttt{ungroup} function\footnote{There are currently some experimental features implemented for the \texttt{summary} function tthat might change how grouping and ungrouping are handled in the future}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(driver\_race)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(county\_name, driver\_race) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_age =} \FunctionTok{mean}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+#> # A tibble: 163 x 3
+#>    county_name driver_race mean_age
+#>    <chr>       <chr>          <dbl>
+#>  1 Adams       Black           36.2
+#>  2 Adams       White           40.0
+#>  3 Alcorn      Black           34.6
+#>  4 Alcorn      White           33.6
+#>  5 Amite       Black           37.5
+#>  6 Amite       White           42.1
+#>  7 Attala      Black           36.4
+#>  8 Attala      White           38.6
+#>  9 Benton      Black           34.7
+#> 10 Benton      White           32.0
+#> # i 153 more rows
 \end{verbatim}
 
 Once the data are grouped, you can also summarize multiple variables at the same
 time (and not necessarily on the same variable). For instance, we could add a
-column indicating the minimum age in each group (i.e.~county):
+column indicating the standard deviation for the age in each group:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -796,37 +910,64 @@ column indicating the minimum age in each group (i.e.~county):
   \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(driver\_race)) }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{group\_by}\NormalTok{(county\_name, driver\_race) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_age =} \FunctionTok{mean}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{),}
-            \AttributeTok{min\_age =} \FunctionTok{min}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{))}
+            \AttributeTok{sd\_age =} \FunctionTok{sd}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> `summarise()` regrouping output by 'county_name' (override with `.groups` argument)
+#> # A tibble: 163 x 4
+#> # Groups:   county_name [82]
+#>    county_name driver_race mean_age sd_age
+#>    <chr>       <chr>          <dbl>  <dbl>
+#>  1 Adams       Black           36.2  14.9 
+#>  2 Adams       White           40.0  15.8 
+#>  3 Alcorn      Black           34.6  12.9 
+#>  4 Alcorn      White           33.6  13.6 
+#>  5 Amite       Black           37.5  13.4 
+#>  6 Amite       White           42.1  14.9 
+#>  7 Attala      Black           36.4  13.8 
+#>  8 Attala      White           38.6  15.5 
+#>  9 Benton      Black           34.7  12.0 
+#> 10 Benton      White           32.0   9.50
+#> # i 153 more rows
 \end{verbatim}
+
+It is sometimes useful to rearrange the result of a query to inspect the values. For that we use \texttt{arrange()}. To sort in descending order, we need to add the \texttt{desc()} function. For instance, we can sort on \texttt{mean\_age} to put the groups with the highest mean age first:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(driver\_race)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(county\_name, driver\_race) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_age =} \FunctionTok{mean}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{),}
+            \AttributeTok{sd\_age =} \FunctionTok{sd}\NormalTok{(driver\_age, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(mean\_age))}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 #> # A tibble: 163 x 4
 #> # Groups:   county_name [82]
-#>    county_name driver_race mean_age min_age
-#>    <chr>       <chr>          <dbl>   <dbl>
-#>  1 Adams       Black           36.2      16
-#>  2 Adams       White           40.0      16
-#>  3 Alcorn      Black           34.6      17
-#>  4 Alcorn      White           33.6      15
-#>  5 Amite       Black           37.5      17
-#>  6 Amite       White           42.1      15
-#>  7 Attala      Black           36.4       8
-#>  8 Attala      White           38.6      15
-#>  9 Benton      Black           34.7      18
-#> 10 Benton      White           32.0      18
-#> # ... with 153 more rows
+#>    county_name driver_race mean_age sd_age
+#>    <chr>       <chr>          <dbl>  <dbl>
+#>  1 Amite       White           42.1   14.9
+#>  2 Quitman     White           42.0   16.6
+#>  3 Sharkey     White           41.1   14.2
+#>  4 Coahoma     White           40.7   15.7
+#>  5 Warren      White           40.5   15.1
+#>  6 Claiborne   White           40.5   15.4
+#>  7 Issaquena   White           40.4   13.7
+#>  8 Yazoo       White           40.3   15.1
+#>  9 Adams       White           40.0   15.8
+#> 10 Smith       Black           39.9   14.5
+#> # i 153 more rows
 \end{verbatim}
 
 \hypertarget{tallying}{%
 \section{Tallying}\label{tallying}}
 
 When working with data, it is also common to want to know the number of
-observations found for categorical variables. For this, \textbf{\texttt{dplyr}}
+observations found for categorical variables. For this, \texttt{dplyr}
 provides \texttt{count()}. For example, if we wanted to see how many traffic stops each officer recorded:
 
 \begin{Shaded}
@@ -854,27 +995,29 @@ We can optionally sort the results in descending order by adding \texttt{sort=TR
 \end{Highlighting}
 \end{Shaded}
 
-\texttt{count()} calls \texttt{group\_by()} transparently before counting the total number of records for each category. Similarly, we can count subgroups within groups:
+\texttt{count()} calls \texttt{group\_by()} transparently before counting the total number of records for each category.
+
+These are equivalent alternatives to the above:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(officer\_id) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{n\_stops =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# n() returns the group size}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(n\_stops))}
+
+\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(officer\_id) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tally}\NormalTok{(}\AttributeTok{sort =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{name =} \StringTok{"n\_stops"}\NormalTok{) }\CommentTok{\# tally() requires group\_by before counting}
+\end{Highlighting}
+\end{Shaded}
+
+We can also count subgroups within groups:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{count}\NormalTok{(officer\_id, violation, }\AttributeTok{name =} \StringTok{"n\_stops"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Alternatives:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(officer\_id) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{tally}\NormalTok{(}\AttributeTok{sort =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\# tally() requires group\_by before counting}
-
-\NormalTok{stops }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(officer\_id) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{n =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# n() is useful when the count is needed within a calculation}
-  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(n))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -893,22 +1036,6 @@ It is not uncommon that we have our data spread out in different tables and need
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{acs }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"data/MS\_acs2015\_bw.csv"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-#> Parsed with column specification:
-#> cols(
-#>   County = col_character(),
-#>   FIPS = col_double(),
-#>   black_pop = col_double(),
-#>   white_pop = col_double(),
-#>   bw_pop = col_double()
-#> )
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{acs}
 \end{Highlighting}
 \end{Shaded}
@@ -927,7 +1054,7 @@ It is not uncommon that we have our data spread out in different tables and need
 #>  8 Scott      28123     10562     16920  27482
 #>  9 Wayne      28153      8015     12154  20169
 #> 10 Bolivar    28011     21648     11197  32845
-#> # ... with 72 more rows
+#> # i 72 more rows
 \end{verbatim}
 
 In a first step we count all the stops per county.
@@ -953,7 +1080,7 @@ In a first step we count all the stops per county.
 #>  8 Carroll        1788
 #>  9 Chickasaw      3869
 #> 10 Choctaw         613
-#> # ... with 72 more rows
+#> # i 72 more rows
 \end{verbatim}
 
 We will then pipe this into our next operation where we bring the two tables together. We will use \texttt{left\_join}, which returns all rows from the left table, and all columns from the left and the right table. As ID, which uniquely identifies the corresponding records in each table we use the County names.
@@ -980,7 +1107,7 @@ We will then pipe this into our next operation where we bring the two tables tog
 #>  8 Carroll        1788 28015      3470      6702  10172
 #>  9 Chickasaw      3869 28017      7549      9522  17071
 #> 10 Choctaw         613 28019      2596      5661   8257
-#> # ... with 72 more rows
+#> # i 72 more rows
 \end{verbatim}
 
 Now we can, for example calculate the stop rate, i.e.~the number of stops per population in each county.
@@ -993,23 +1120,9 @@ Use the snippet from above and pipe into the additional operations
 to do this.
 \end{quote}
 
-\texttt{dplyr} join functions are generally equivalent to \texttt{merge} from the base command, but there are a few advantages:
+\texttt{dplyr} join functions are generally equivalent to \texttt{merge} from the R base install, but \href{https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ}{there are a few advantages}.
 
-\begin{itemize}
-\tightlist
-\item
-  rows are kept in existing order
-\item
-  it runs faster
-\item
-  tells you what keys you're merging by (if you don't supply them)
-\item
-  also works with database tables.
-\end{itemize}
-
-\url{https://groups.google.com/d/msg/manipulatr/OuAPC4VyfIc/Qnt8mDfq0WwJ}
-
-See \texttt{?dplyr::join} for all the possible joins.
+For all the possible joins see \texttt{?dplyr::join}
 
 \hypertarget{tidyr}{%
 \chapter{\texorpdfstring{Data Manipulation using \textbf{\texttt{tidyr}}}{Data Manipulation using tidyr}}\label{tidyr}}
@@ -1032,53 +1145,37 @@ Learning Objectives
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\texttt{dplyr} pairs nicely with \textbf{\texttt{tidyr}} which enables you to swiftly convert between different data formats for plotting and analysis.
+\texttt{dplyr} pairs well with \textbf{\texttt{tidyr}} which enables you to flexibly convert between different tabular formats for plotting and analysis.
 
-The package \textbf{\texttt{tidyr}} addresses the common problem of wanting to reshape your data for plotting and use by different R functions. Sometimes we want data sets where we have one row per observation. Sometimes we want a data frame where each observation type has its own column, and rows are instead more aggregated groups - like surveys, where each column represents an answer. Moving back and forth between these formats is nontrivial, and \textbf{\texttt{tidyr}} gives you tools for this and more sophisticated data manipulation.
-
-To learn more about \textbf{\texttt{tidyr}} after the workshop, you may want to check out this \href{https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf}{cheatsheet about \textbf{\texttt{tidyr}}}.
+The package \textbf{\texttt{tidyr}} addresses a very common problem of needing to reshape your data for plotting, for statistical summaries, or for use by different R functions.
 
 \hypertarget{about-long-and-wide-table-format}{%
 \section{About long and wide table format}\label{about-long-and-wide-table-format}}
 
-The `long' format is where:
+The \textbf{``long'' format} is where:
 
-\begin{itemize}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
   each column is a variable
 \item
   each row is an observation
-\end{itemize}
+\item
+  each value must have its own cell
+\end{enumerate}
 
-In the `long' format, you usually have 1 column for the observed variable and
-the other columns are ID variables.
-
-For the `wide' format a row, for example could be a reserarch subject for which you have multiple observation variables containing the same type of data, for example responses to a set of survey questions, or repeated observations over time, or a mix of both. Here is an example:
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlrrr}
-  \hline
- & subject\_ID & question\_1 & question\_2 & question\_3 \\ 
-  \hline
-1 & A & 4.00 & 3.00 & 4.00 \\ 
-  2 & B & 4.00 & 1.00 & 5.00 \\ 
-  3 & C & 2.00 & 5.00 & 2.00 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-You may find data input may be simpler or some other
-applications may prefer the `wide' format. However, many of \texttt{R}`s functions have
-been designed assuming you have 'long' format data. This tutorial will help you
-efficiently transform your data regardless of original format.
+In a \textbf{``wide'' format} we see modifications to rule 1, where each column no longer represents a single variable. Instead, columns can represent different levels or values of the same variable. Each observation type has its own column, like surveys, where each row could be an interview respondent and each column represents one possible answer to the same question. Another example are repeated observations over time, where each column represents, for example, a year.
 
 \begin{figure}
-\includegraphics[width=0.3\linewidth]{img/wide-vs-long} \caption{Wide vs. Long Table Format}\label{fig:wide-vs-long}
+\includegraphics[width=0.3\linewidth]{img/wide-vs-long} \caption{Wide (left) vs. Long (right) Table Format}\label{fig:wide-vs-long}
 \end{figure}
 
-The choice of data format affects readability. For humans, the wide format is often more intuitive, since we can often see more of the data on the screen due to its shape. However, the long format is more machine readable and is closer to the formatting of databases. The \texttt{ID} variables in our dataframes are similar to the fields in a database and observed variables are like the database values.
+Long and wide data frame layouts affect readability. You may find that visually you may prefer the ``wide'' format, since you can see more of the data on the screen. However, all of the R functions we have used thus far expect for your data to be in a ``long'' data format. It simplifies the use of the functions and makes your code clearer and more efficient. The long format is more machine readable and is closer to the formatting of databases.
+
+Moving back and forth between these formats can be cumbersome, and \textbf{\texttt{tidyr}} provides the tools for this to make it easier.
+
+To learn more about \textbf{\texttt{tidyr}} after the workshop, you may want to check out this \href{https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf}{cheatsheet about \textbf{\texttt{tidyr}}}.
 
 \begin{quote}
 Challenge 1
@@ -1094,29 +1191,44 @@ Now let's see this in action. First, using \textbf{\texttt{dplyr}}, let's create
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{violations }\OtherTok{\textless{}{-}}\NormalTok{ stops }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{count}\NormalTok{(county\_name, violation)}
+  \FunctionTok{count}\NormalTok{(county\_name, violation, }\AttributeTok{name =} \StringTok{"n\_violations"}\NormalTok{)}
 
 \NormalTok{violations}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#>   county_name                violation   n
-#> 1       Adams        Breaks-Lights-etc   7
-#> 2       Adams         Careless driving  48
-#> 3       Adams License-Permit-Insurance 118
-#> 4       Adams         Other or unknown  35
-#> 5       Adams                Seat belt 229
-#> 6       Adams                 Speeding 505
+#>   county_name                violation n_violations
+#> 1       Adams        Breaks-Lights-etc            7
+#> 2       Adams         Careless driving           48
+#> 3       Adams License-Permit-Insurance          118
+#> 4       Adams         Other or unknown           35
+#> 5       Adams                Seat belt          229
+#> 6       Adams                 Speeding          505
 \end{verbatim}
 
-Now, to make this long data wide, we use \texttt{pivot\_wider} from \texttt{tidyr} to turn the driver gender into columns. In addition to our data table we provide \texttt{pivot\_wider} with two arguments: \texttt{names\_from} describes which column to use for name of the output column, and \texttt{values\_from} tells it from column to get the cell values. We'll use a pipe so we can ignore the data argument.
+Now, to make this long data wide, we use \texttt{pivot\_wider} from \texttt{tidyr} to turn the different violation types into columns, where each possible value of the violation variable receives its own column.
+
+\texttt{pivot\_wider()} takes three principal arguments:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the data
+\item
+  the \texttt{names\_from} column variable whose values will become new column names.
+\item
+  the \texttt{values\_from} column variable whose values will fill the new column cells.
+\end{enumerate}
+
+We'll use a pipe into \texttt{pivot\_wider} so we can leave out the data argument.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{violations\_wide }\OtherTok{\textless{}{-}}\NormalTok{ violations }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ violation, }
-              \AttributeTok{values\_from =}\NormalTok{ n) }
+              \AttributeTok{values\_from =}\NormalTok{ n\_violations) }
 
 \NormalTok{violations\_wide}
 \end{Highlighting}
@@ -1124,27 +1236,48 @@ Now, to make this long data wide, we use \texttt{pivot\_wider} from \texttt{tidy
 
 \begin{verbatim}
 #> # A tibble: 82 x 7
-#>    county_name `Breaks-Lights-~ `Careless drivi~ `License-Permit~
-#>    <chr>                  <int>            <int>            <int>
-#>  1 Adams                      7               48              118
-#>  2 Alcorn                    62              100              737
-#>  3 Amite                     47               86              370
-#>  4 Attala                    99              113              526
-#>  5 Benton                     3                9               73
-#>  6 Bolivar                   57              139             1034
-#>  7 Calhoun                   26               38              383
-#>  8 Carroll                   26               40              323
-#>  9 Chickasaw                 42               53             1378
-#> 10 Choctaw                    8                6               73
-#> # ... with 72 more rows, and 3 more variables: `Other or unknown` <int>, `Seat
-#> #   belt` <int>, Speeding <int>
+#>    county_name `Breaks-Lights-etc` `Careless driving` `License-Permit-Insurance`
+#>    <chr>                     <int>              <int>                      <int>
+#>  1 Adams                         7                 48                        118
+#>  2 Alcorn                       62                100                        737
+#>  3 Amite                        47                 86                        370
+#>  4 Attala                       99                113                        526
+#>  5 Benton                        3                  9                         73
+#>  6 Bolivar                      57                139                       1034
+#>  7 Calhoun                      26                 38                        383
+#>  8 Carroll                      26                 40                        323
+#>  9 Chickasaw                    42                 53                       1378
+#> 10 Choctaw                       8                  6                         73
+#> # i 72 more rows
+#> # i 3 more variables: `Other or unknown` <int>, `Seat belt` <int>,
+#> #   Speeding <int>
 \end{verbatim}
+
+It is worth taking a look at \texttt{?pivot\_wider}. The function takes many more arguments which can help in reshaping, renaming the new columns, and instructions for how to treat the values or how to fill missing values.
 
 \hypertarget{wide-to-long-with-pivot_longer}{%
 \section{\texorpdfstring{Wide to long with \texttt{pivot\_longer}}{Wide to long with pivot\_longer}}\label{wide-to-long-with-pivot_longer}}
 
 What if we had the opposite problem, and wanted to go from a wide to long
-format? For that, we use \texttt{pivot\_longer}, which will increase the number of rows and decrease the number of columns. We provide the functino with thee arguments: \texttt{cols} which are the columns we want to pivot into the long format, \texttt{names\_to}, which is a string specifying the name of the column to create from the data stored in the column names, and \texttt{values\_to}, which is also a string, specifying the name of the column to create from the data stored in cell values.
+format? For that, we use \texttt{pivot\_longer}, which will increase the number of rows and decrease the number of columns.
+
+We are gathering the multiple violation columns and turn them into a pair of new variables. One variable includes the column names as values, and the other variable contains the values in each cell previously associated with the column names.
+
+\texttt{pivot\_longer()} takes four principal arguments:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the data
+\item
+  \texttt{cols} are the names of the columns we use to fill the a new values variable (or to drop).
+\item
+  the \texttt{names\_to} a string specifying the name of the column to create from the data stored in the column names (\texttt{cols})
+\item
+  the \texttt{values\_to} which is also a string, specifying the name of the column to create from the data stored in cell values.
+\end{enumerate}
+
 So, to go backwards from \texttt{violations\_wide}, and exclude \texttt{county\_name} from the long format, we would do the following:
 
 \begin{Shaded}
@@ -1152,7 +1285,7 @@ So, to go backwards from \texttt{violations\_wide}, and exclude \texttt{county\_
 \NormalTok{violations\_long }\OtherTok{\textless{}{-}}\NormalTok{ violations\_wide }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{county\_name,        }\CommentTok{\# exclude column with county name}
                \AttributeTok{names\_to =} \StringTok{"violation"}\NormalTok{,     }\CommentTok{\# name is a string!}
-               \AttributeTok{values\_to =} \StringTok{"n"}\NormalTok{)            }\CommentTok{\# also a string}
+               \AttributeTok{values\_to =} \StringTok{"n\_violations"}\NormalTok{)            }\CommentTok{\# also a string}
 
 \NormalTok{violations\_long}
 \end{Highlighting}
@@ -1160,19 +1293,19 @@ So, to go backwards from \texttt{violations\_wide}, and exclude \texttt{county\_
 
 \begin{verbatim}
 #> # A tibble: 492 x 3
-#>    county_name violation                    n
-#>    <chr>       <chr>                    <int>
-#>  1 Adams       Breaks-Lights-etc            7
-#>  2 Adams       Careless driving            48
-#>  3 Adams       License-Permit-Insurance   118
-#>  4 Adams       Other or unknown            35
-#>  5 Adams       Seat belt                  229
-#>  6 Adams       Speeding                   505
-#>  7 Alcorn      Breaks-Lights-etc           62
-#>  8 Alcorn      Careless driving           100
-#>  9 Alcorn      License-Permit-Insurance   737
-#> 10 Alcorn      Other or unknown           418
-#> # ... with 482 more rows
+#>    county_name violation                n_violations
+#>    <chr>       <chr>                           <int>
+#>  1 Adams       Breaks-Lights-etc                   7
+#>  2 Adams       Careless driving                   48
+#>  3 Adams       License-Permit-Insurance          118
+#>  4 Adams       Other or unknown                   35
+#>  5 Adams       Seat belt                         229
+#>  6 Adams       Speeding                          505
+#>  7 Alcorn      Breaks-Lights-etc                  62
+#>  8 Alcorn      Careless driving                  100
+#>  9 Alcorn      License-Permit-Insurance          737
+#> 10 Alcorn      Other or unknown                  418
+#> # i 482 more rows
 \end{verbatim}
 
 We could also have used a specification for what columns to include. This can be
@@ -1202,7 +1335,7 @@ specify what to gather than what to leave alone. And if the columns are adjacent
 #>  8 Alcorn      Careless driving           100
 #>  9 Alcorn      License-Permit-Insurance   737
 #> 10 Alcorn      Other or unknown           418
-#> # ... with 482 more rows
+#> # i 482 more rows
 \end{verbatim}
 
 There are many powerful operations you can do with the \texttt{pivot\_*} functions. To learn more review the vignette:
